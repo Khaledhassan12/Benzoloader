@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Benzo</string>
+    <string name="app_main">Benzo</string>
+    <string name="app_browser">Benzo Browser</string>
+
+    <!-- Navigation Drawer & Categories -->
+    <string name="nav_all">All Downloads</string>
+    <string name="nav_downloading">Downloading</string>
+    <string name="nav_completed">Completed</string>
+    <string name="nav_queued">Queued</string>
+    <string name="nav_video">Video</string>
+    <string name="nav_music">Music</string>
+    <string name="nav_documents">Documents</string>
+    <string name="nav_archives">Archives</string>
+    <string name="nav_programs">Applications</string>
+    <string name="nav_torrent">Torrent</string>
+    <string name="nav_trash">Trash</string>
+
+    <!-- Actions & Toolbar -->
+    <string name="action_add">Add Download</string>
+    <string name="action_add_torrent">Add Torrent / Magnet</string>
+    <string name="action_browser">Browser</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_sort_name">By Name</string>
+    <string name="action_sort_size">By Size</string>
+    <string name="action_sort_date">By Date</string>
+    <string name="action_sort_type">By Type</string>
+    <string name="action_pause_all">Pause All</string>
+    <string name="action_resume_all">Resume All</string>
+    <string name="action_select_all">Select All</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_delete_file">Delete with file</string>
+    <string name="action_open">Open</string>
+    <string name="action_open_folder">Open Folder</string>
+    <string name="action_properties">Properties</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_copy_url">Copy Link</string>
+    <string name="action_share">Share</string>
+
+    <!-- Editor Screen -->
+    <string name="editor_title">New Download</string>
+    <string name="editor_url_hint">Download URL (http, https, ftp)</string>
+    <string name="editor_file_name">File Name</string>
+    <string name="editor_save_path">Save Location</string>
+    <string name="editor_threads">Download Threads (Segments)</string>
+    <string name="editor_start_now">Start Now</string>
+    <string name="editor_add_to_queue">Add to Queue</string>
+    <string name="editor_advanced">Advanced Options</string>
+    <string name="editor_user_agent">Custom User-Agent</string>
+    <string name="editor_referer">Referer</string>
+    <string name="editor_cookies">Cookies</string>
+    <string name="editor_wifi_only">Download only over Wi-Fi</string>
+    <string name="editor_schedule">Schedule Download</string>
+
+    <!-- Torrent Screen -->
+    <string name="torrent_title">Torrent Details</string>
+    <string name="torrent_name">Name</string>
+    <string name="torrent_size">Total Size</string>
+    <string name="torrent_files_count">Files: %1$d</string>
+    <string name="torrent_select_files">Select Files to Download</string>
+    <string name="torrent_seeds_peers">Seeds: %1$d | Peers: %2$d</string>
+    <string name="torrent_magnet_fetching">Fetching torrent metadata from DHT...</string>
+
+    <!-- Statuses -->
+    <string name="status_queued">Queued</string>
+    <string name="status_connecting">Connecting...</string>
+    <string name="status_downloading">Downloading</string>
+    <string name="status_paused">Paused</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_error">Error</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_active">Active Downloads</string>
+    <string name="notification_channel_active_desc">Progress and speed of active downloads</string>
+    <string name="notification_channel_completed">Completed Downloads</string>
+    <string name="notification_channel_completed_desc">Notification when a download finishes</string>
+    <string name="notification_channel_error">Errors and Alerts</string>
+    <string name="notification_channel_error_desc">Download failure and network errors</string>
+    <string name="notification_pause">Pause</string>
+    <string name="notification_resume">Resume</string>
+    <string name="notification_cancel">Cancel</string>
+    <string name="notification_open">Open</string>
+    <string name="notification_exit">Exit</string>
+    <string name="notification_speed">%1$s/s</string>
+    <string name="notification_eta">ETA: %1$s</string>
+
+    <!-- Browser -->
+    <string name="browser_search_or_url">Search or enter URL</string>
+    <string name="browser_media_detected">Media detected: %1$d</string>
+    <string name="browser_download_media">Download Media</string>
+    <string name="browser_desktop_site">Desktop Site</string>
+    <string name="browser_bookmarks">Bookmarks</string>
+    <string name="browser_history">History</string>
+
+    <!-- Settings -->
+    <string name="pref_downloading">Downloading</string>
+    <string name="pref_max_downloads">Max concurrent downloads</string>
+    <string name="pref_default_threads">Default threads count (1-16)</string>
+    <string name="pref_speed_limit">Speed Limit</string>
+    <string name="pref_speed_unlimited">Unlimited</string>
+    <string name="pref_network">Network</string>
+    <string name="pref_wifi_only">Download on Wi-Fi only</string>
+    <string name="pref_power">Power &amp; Battery</string>
+    <string name="pref_battery_threshold">Stop if battery below (%)</string>
+    <string name="pref_stop_on_unplug">Stop when charger disconnected</string>
+    <string name="pref_appearance">Appearance</string>
+    <string name="pref_dark_theme">Dark Theme</string>
+    <string name="pref_sounds">Sounds &amp; Vibrations</string>
+    <string name="pref_sound_on_complete">Sound on completion</string>
+    <string name="pref_vibrate_on_complete">Vibrate on completion</string>
+
+    <!-- Common Dialogs & Messages -->
+    <string name="empty_downloads_title">No Downloads Yet</string>
+    <string name="empty_downloads_subtitle">Tap + to add a download URL, open a torrent, or browse the web</string>
+    <string name="dialog_confirm_delete">Delete this download?</string>
+    <string name="dialog_delete_file_checkbox">Also delete downloaded file from storage</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_apply">Apply</string>
+    <string name="toast_link_copied">Link copied to clipboard</string>
+    <string name="toast_download_added">Download added successfully</string>
+    <string name="toast_invalid_url">Invalid URL</string>
+    <string name="toast_permission_required">Storage and notification permissions are required</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="@dimen/popup_radius"
+    android:insetRight="@dimen/popup_radius">
+    <shape android:shape="rectangle">
+        <solid android:color="?attr/myDialog"/>
+        <corners android:radius="@dimen/popup_radius"/>
+        <padding
+            android:left="@dimen/divider_width"
+            android:top="@dimen/popup_radius"
+            android:right="@dimen/divider_width"
+            android:bottom="@dimen/popup_radius"/>
+        <stroke
+            android:width="@dimen/divider_width"
+            android:color="?attr/myDivider"/>
+    </shape>
+</inset>

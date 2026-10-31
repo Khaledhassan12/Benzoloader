@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Benzo" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="colorPrimaryContainer">#003355</item>
+        <item name="colorOnPrimaryContainer">#D1E4FF</item>
+        <item name="android:statusBarColor">@color/surface_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorBackground">@color/background_dark</item>
+    </style>
+    <style name="Theme.Benzo.Dialog" parent="Theme.Material3.DayNight.Dialog">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+</resources>
