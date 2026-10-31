@@ -1,0 +1,26 @@
+# Built application files
+*.apk
+*.ap_
+*.aab
+
+# Generated files
+bin/
+gen/
+out/
+
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc.)
+local.properties
+
+# Project cache files
+.changes/
+.idea/
+.DS_Store
+*.iml
+Skills/
+ADM - REPORT.md
+Benzo_Architectural_Blueprint.md
+WORKING_NOTES.md
