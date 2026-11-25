@@ -18,7 +18,8 @@ class TorrentTaskRunner(
     private val repository: DownloadRepository,
     private val filesDir: File,
     private val sequential: () -> Boolean,
-    private val seedAfterFinish: () -> Boolean
+    private val seedAfterFinish: () -> Boolean,
+    private val onSeeding: (hash: String) -> Unit = {}
 ) {
 
     /** Returns true when the torrent finished, false when it failed. Cancellation is rethrown. */
@@ -57,6 +58,7 @@ class TorrentTaskRunner(
                     totalBytes = if (st.total > 0) st.total else item.totalBytes, status = DownloadStatus.RUNNING))
                 if (st.isFinished) {
                     if (!seedAfterFinish()) engine.pauseTorrent(hash) // user chose not to keep uploading
+                    else onSeeding(hash) // the seeding monitor applies the ratio and time limits
                     break
                 }
                 delay(1000)

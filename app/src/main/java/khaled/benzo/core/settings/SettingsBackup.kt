@@ -40,6 +40,8 @@ object SettingsBackup {
         "clear_finished_on_start" to Spec.Bool,
         "torrent_sequential" to Spec.Bool,
         "torrent_seed_after_finish" to Spec.Bool,
+        "torrent_seed_ratio_tenths" to Spec.IntRange(0, 100, 5),
+        "torrent_seed_minutes" to Spec.IntRange(0, 4320, 30),
         "browser_history" to Spec.Bool,
         "browser_save_tabs" to Spec.Bool,
         "dark_mode" to Spec.Bool,

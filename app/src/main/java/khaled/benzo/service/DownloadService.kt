@@ -35,6 +35,7 @@ class DownloadService : Service() {
     private lateinit var httpRunner: HttpTaskRunner
     private lateinit var torrentRunner: TorrentTaskRunner
     private lateinit var autoResume: AutoResumeScheduler
+    private lateinit var seedingMonitor: khaled.benzo.core.torrent.SeedingMonitor
 
     private val activeJobs = ConcurrentHashMap<Long, Job>()
     private val activeItems = ConcurrentHashMap<Long, DownloadItem>()
@@ -49,7 +50,10 @@ class DownloadService : Service() {
         limiter = TokenBucketLimiter(settings.speedLimitBytesPerSec)
         deviceConditions = DeviceConditions(this, settings)
         httpRunner = HttpTaskRunner(repository, downloadEngine, limiter)
-        torrentRunner = TorrentTaskRunner(repository, filesDir, { settings.torrentSequential }, { settings.torrentSeedAfterFinish })
+        torrentRunner = TorrentTaskRunner(repository, filesDir, { settings.torrentSequential }, { settings.torrentSeedAfterFinish }) { seedingMonitor.watch(it) }
+        seedingMonitor = khaled.benzo.core.torrent.SeedingMonitor({ settings.seedRatioTenths }, { settings.seedMinutes }, { h ->
+            khaled.benzo.core.torrent.TorrentEngine.orNull()?.getStats(h)?.let { khaled.benzo.core.torrent.SeedingMonitor.Snapshot(it.uploaded, it.total, it.seedingSeconds) }
+        }, { h -> khaled.benzo.core.torrent.TorrentEngine.orNull()?.pauseTorrent(h) })
         autoResume = AutoResumeScheduler(serviceScope, repository, settings)
         ScheduleManager.rearm(this)
 
@@ -60,6 +64,7 @@ class DownloadService : Service() {
         serviceScope.launch {
             while (isActive) {
                 processQueue()
+                seedingMonitor.check()
                 delay(1000)
             }
         }

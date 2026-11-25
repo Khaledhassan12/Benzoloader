@@ -188,4 +188,7 @@
     <string name="browser_tab_close_confirm">إغلاق التبويب \"%1$s\"؟</string>
     <string name="browser_tabs_max">وصلت للحد الأقصى من التبويبات. أغلق تبويبًا أولًا.</string>
     <string name="pref_browser_save_tabs">المتصفح: احتفظ بالتبويبات المفتوحة وأعد فتحها المرة الجاية (العناوين تتخزن على الجهاز)</string>
+    <string name="pref_seed_ratio">التورنت: أوقف المشاركة عند نسبة رفع</string>
+    <string name="pref_seed_minutes">التورنت: أوقف المشاركة بعد (ساعات:دقائق)</string>
+    <string name="pref_unlimited">بدون حد</string>
 </resources>

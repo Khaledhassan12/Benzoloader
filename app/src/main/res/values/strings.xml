@@ -188,4 +188,7 @@
     <string name="browser_tab_close_confirm">Close the tab \"%1$s\"?</string>
     <string name="browser_tabs_max">The tab limit is reached. Close a tab first.</string>
     <string name="pref_browser_save_tabs">Browser: keep open tabs and reopen them next time (addresses are stored on this device)</string>
+    <string name="pref_seed_ratio">Torrents: stop seeding at share ratio</string>
+    <string name="pref_seed_minutes">Torrents: stop seeding after (hours:minutes)</string>
+    <string name="pref_unlimited">no limit</string>
 </resources>

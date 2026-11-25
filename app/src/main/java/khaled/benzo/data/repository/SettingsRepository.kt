@@ -123,6 +123,16 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_TORRENT_SEED, true)
         set(value) = prefs.edit().putBoolean(KEY_TORRENT_SEED, value).apply()
 
+    /** Stop uploading a finished torrent at this share ratio, in tenths (15 = 1.5). 0 = no limit (the default: seeding never stopped before). */
+    var seedRatioTenths: Int
+        get() = prefs.getInt(KEY_SEED_RATIO, 0).coerceIn(0, 100)
+        set(value) = prefs.edit().putInt(KEY_SEED_RATIO, value.coerceIn(0, 100)).apply()
+
+    /** Stop uploading after this many minutes of seeding. 0 = no limit. */
+    var seedMinutes: Int
+        get() = prefs.getInt(KEY_SEED_MINUTES, 0).coerceIn(0, 4320)
+        set(value) = prefs.edit().putInt(KEY_SEED_MINUTES, value.coerceIn(0, 4320)).apply()
+
     /** Remember visited pages in the browser. Off by default (privacy). */
     var browserHistory: Boolean
         get() = prefs.getBoolean(KEY_BROWSER_HISTORY, false)
@@ -158,7 +168,7 @@ class SettingsRepository(context: Context) {
         KEY_PAUSE_AFTER_ERROR to pauseAfterError, KEY_AUTO_RESUME to autoResume,
         KEY_NOTIF_LOCK to notifOnLockScreen, KEY_NOTIF_PAUSE_ALL to notifPauseAllButton,
         KEY_KEEP_SCREEN to keepScreenOn, KEY_CLEAR_FINISHED to clearFinishedOnStart,
-        KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish,
+        KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes,
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode,
         KEY_DOWNLOAD_PATH to defaultDownloadPath
     )
@@ -205,6 +215,8 @@ class SettingsRepository(context: Context) {
         private const val KEY_BROWSER_TABS = "browser_saved_tabs"
         private const val KEY_TORRENT_SEQ = "torrent_sequential"
         private const val KEY_TORRENT_SEED = "torrent_seed_after_finish"
+        private const val KEY_SEED_RATIO = "torrent_seed_ratio_tenths"
+        private const val KEY_SEED_MINUTES = "torrent_seed_minutes"
         private const val KEY_KEEP_SCREEN = "keep_screen_on"
         private const val KEY_CLEAR_FINISHED = "clear_finished_on_start"
         private const val KEY_NOTIF_LOCK = "notif_lock_screen"

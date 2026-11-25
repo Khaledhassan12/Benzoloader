@@ -32,6 +32,15 @@ class SettingsActivity : AppCompatActivity() {
         binding.btnScheduleStop.text = getString(khaled.benzo.R.string.pref_schedule_stop, fmt(stopMinute))
     }
 
+    private fun updateSeedLabels() {
+        val tenths = binding.sliderSeedRatio.value.toInt()
+        val mins = binding.sliderSeedMinutes.value.toInt()
+        binding.txtSeedRatio.text = getString(khaled.benzo.R.string.pref_seed_ratio) + ": " +
+            if (tenths == 0) getString(khaled.benzo.R.string.pref_unlimited) else "%d.%d".format(tenths / 10, tenths % 10)
+        binding.txtSeedMinutes.text = getString(khaled.benzo.R.string.pref_seed_minutes) + ": " +
+            if (mins == 0) getString(khaled.benzo.R.string.pref_unlimited) else "%d:%02d".format(mins / 60, mins % 60)
+    }
+
     private fun updateSpeedLabel() {
         val v = binding.sliderSpeedLimit.value.toInt()
         binding.txtSpeedLimit.text = if (v == 0) getString(khaled.benzo.R.string.pref_speed_limit) + ": " +
@@ -75,6 +84,11 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchClearFinished.isChecked = repo.clearFinishedOnStart
         binding.switchTorrentSequential.isChecked = repo.torrentSequential
         binding.switchTorrentSeed.isChecked = repo.torrentSeedAfterFinish
+        binding.sliderSeedRatio.value = repo.seedRatioTenths.toFloat()
+        binding.sliderSeedMinutes.value = repo.seedMinutes.toFloat()
+        updateSeedLabels()
+        binding.sliderSeedRatio.addOnChangeListener { _, _, _ -> updateSeedLabels() }
+        binding.sliderSeedMinutes.addOnChangeListener { _, _, _ -> updateSeedLabels() }
         binding.switchBrowserHistory.isChecked = repo.browserHistory
         binding.switchBrowserSaveTabs.isChecked = repo.browserSaveTabs
     }
@@ -102,6 +116,8 @@ class SettingsActivity : AppCompatActivity() {
             clearFinished = binding.switchClearFinished.isChecked,
             torrentSequential = binding.switchTorrentSequential.isChecked,
             torrentSeed = binding.switchTorrentSeed.isChecked,
+            seedRatioTenths = binding.sliderSeedRatio.value.toInt(),
+            seedMinutes = binding.sliderSeedMinutes.value.toInt(),
             browserHistory = binding.switchBrowserHistory.isChecked,
             browserSaveTabs = binding.switchBrowserSaveTabs.isChecked
         )

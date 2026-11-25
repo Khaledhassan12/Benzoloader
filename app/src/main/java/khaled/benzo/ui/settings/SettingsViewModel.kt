@@ -30,6 +30,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         clearFinished: Boolean,
         torrentSequential: Boolean,
         torrentSeed: Boolean,
+        seedRatioTenths: Int,
+        seedMinutes: Int,
         browserHistory: Boolean,
         browserSaveTabs: Boolean
     ) {
@@ -54,6 +56,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         repository.clearFinishedOnStart = clearFinished
         repository.torrentSequential = torrentSequential
         repository.torrentSeedAfterFinish = torrentSeed
+        repository.seedRatioTenths = seedRatioTenths
+        repository.seedMinutes = seedMinutes
         repository.browserHistory = browserHistory
         repository.browserSaveTabs = browserSaveTabs
         khaled.benzo.service.ScheduleManager.rearm(getApplication())

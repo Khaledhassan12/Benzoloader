@@ -139,6 +139,8 @@ class TorrentEngine(context: Context? = null) {
             peers = st.numPeers(),
             progress = progress,
             isFinished = st.isFinished,
+            uploaded = st.allTimeUpload(),
+            seedingSeconds = st.seedingDuration(),
             state = TorrentMapping.stateName(st.state().name, h.flags().and_(PAUSED_FLAG).nonZero(), st.isFinished)
         )
     }
@@ -165,7 +167,9 @@ class TorrentEngine(context: Context? = null) {
         val peers: Int,
         val progress: Int,
         val isFinished: Boolean,
-        val state: String = "UNKNOWN"
+        val state: String = "UNKNOWN",
+        val uploaded: Long = 0L,
+        val seedingSeconds: Long = 0L
     )
 
     companion object {
