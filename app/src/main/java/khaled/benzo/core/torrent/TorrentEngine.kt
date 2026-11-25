@@ -145,6 +145,13 @@ class TorrentEngine(context: Context? = null) {
         if (deleteFiles) session.remove(h, SESSION_DELETE_FILES) else session.remove(h)
     }
 
+    /** The .torrent bytes once the session has the metadata (a magnet link gets it from the swarm), else null. */
+    fun metadataBytes(infoHash: String): ByteArray? {
+        val h = handle(infoHash)?.takeIf { it.isValid } ?: return null
+        if (!h.status().hasMetadata()) return null
+        return try { h.torrentFile()?.takeIf { it.isValid }?.bencode() } catch (e: Exception) { null }
+    }
+
     /** Live snapshot from libtorrent, or null when the torrent is not in the session. */
     fun getStats(infoHash: String): TorrentStats? {
         val h = handle(infoHash)?.takeIf { it.isValid } ?: return null

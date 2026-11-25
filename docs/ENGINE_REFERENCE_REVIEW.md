@@ -26,7 +26,8 @@ Scope of this file: README and documentation pages only. It is not a code-level 
 - Unknown length: single chunk path exists (length -1).
 - Final length verification before completing (DownloadEngine, "Verification failed").
 - Chunks persisted in Room (ChunkEntity) with byte positions.
-- Not present: If-Range on resume requests; reconciling saved chunk positions against the actual file size at recovery; checksum verification when a trusted checksum is offered. These are candidates for the next HTTP slice.
+- Added (written, unbuilt): chunk workers flush file data (channel.force) every 8 MB and when a chunk stops, so saved progress cannot run far ahead of the disk after a power loss or system crash (before, nothing was ever flushed explicitly). Also: a magnet torrent keeps its metadata as a .torrent file once the session has it.
+- Not present: If-Range on resume requests (the validator check before resume exists); checksum verification when a trusted checksum is offered; libtorrent fast-resume data (jlibtorrent has TorrentHandle.saveResumeData and SaveResumeDataAlert, and libtorrent.write_resume_data_buf; not wired, so a restarted torrent re-checks its files).
 
 ## Torrent side
 Torrents use jlibtorrent 1.2.0.18 (libtorrent) with a torrent-specific runner, separate from the HTTP chunk table, as the report advises. Open: resume data after app restart, tracker and port settings, stopped-seeding label.

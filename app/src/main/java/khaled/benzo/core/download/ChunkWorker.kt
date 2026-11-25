@@ -127,6 +127,8 @@ class ChunkWorker(
                 val channel = raf.channel
                 body.byteStream().use { input ->
                     var pos = writeFrom
+                    var unsynced = 0L
+                    try {
                     while (true) {
                         coroutineContext.ensureActive()
                         val limit = if (chunk.endByte >= 0) minOf(buffer.size.toLong(), chunk.endByte - pos + 1).toInt() else buffer.size
@@ -137,7 +139,14 @@ class ChunkWorker(
                         val bb = ByteBuffer.wrap(buffer, 0, read)
                         while (bb.hasRemaining()) pos += channel.write(bb, pos)
                         chunk.currentByte = pos
+                        unsynced += read
+                        // Progress is saved in the database while the bytes may still sit in the OS cache. After a power loss
+                        // or system crash the database could be ahead of the disk, so flush regularly. A killed app is safe either way.
+                        if (unsynced >= SYNC_EVERY_BYTES) { channel.force(false); unsynced = 0L }
                         onProgress(chunk, read)
+                    }
+                    } finally {
+                        if (unsynced > 0L) runCatching { channel.force(false) } // also on pause, cancel and failure
                     }
                 }
             }
@@ -145,4 +154,6 @@ class ChunkWorker(
             if (chunk.endByte < 0) streamEnded = true
         }
     }
+
+    private companion object { const val SYNC_EVERY_BYTES = 8L * 1024 * 1024 }
 }

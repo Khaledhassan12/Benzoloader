@@ -44,6 +44,7 @@ class TorrentTaskRunner(
             }
             val grace = StartGrace(START_GRACE_POLLS)
             var optionsApplied = false
+            var metadataSaved = false
             while (!failed && currentCoroutineContext().isActive) {
                 val st = engine.getStats(hash)
                 when (grace.onPoll(st != null)) {
@@ -53,6 +54,7 @@ class TorrentTaskRunner(
                 }
                 if (st == null) { failed = true; break }
                 if (!optionsApplied) optionsApplied = engine.setSequential(hash, sequential())
+                if (!metadataSaved) metadataSaved = saveMetadataOnce(engine, hash)
                 repository.updateProgress(id, st.downloaded, st.downloadSpeed)
                 onRunning(item.copy(downloadedBytes = st.downloaded, speed = st.downloadSpeed,
                     totalBytes = if (st.total > 0) st.total else item.totalBytes, status = DownloadStatus.RUNNING))
@@ -70,6 +72,22 @@ class TorrentTaskRunner(
             failed = true
         }
         return !failed
+    }
+
+    /**
+     * A magnet torrent has no .torrent file until its metadata arrives. Once it does, keep it next to the others so the
+     * next start re-adds it from the file instead of asking the swarm again. Returns true when nothing more is to do.
+     */
+    private fun saveMetadataOnce(engine: TorrentEngine, hash: String): Boolean {
+        val tf = File(File(filesDir, "torrents"), "$hash.torrent")
+        if (tf.exists()) return true
+        val bytes = engine.metadataBytes(hash) ?: return false
+        return try {
+            tf.parentFile?.mkdirs()
+            val tmp = File(tf.parentFile, "$hash.torrent.tmp")
+            tmp.writeBytes(bytes)
+            tmp.renameTo(tf) || run { tmp.delete(); false }
+        } catch (e: java.io.IOException) { false }
     }
 
     private companion object { const val START_GRACE_POLLS = 20 }
