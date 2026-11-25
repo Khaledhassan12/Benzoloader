@@ -24,10 +24,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val downloads: StateFlow<List<DownloadItem>> = MutableStateFlow<List<DownloadItem>>(emptyList())
 
+    /** Counts for the bottom bar badges: (unfinished, finished), over all downloads regardless of the current filter. */
+    val counts: StateFlow<Pair<Int, Int>> = MutableStateFlow(0 to 0)
+
     val selectedCategory = _selectedCategory.asStateFlow()
     val listState = _state.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            repository.getAllDownloads(null).collect { all ->
+                val done = all.count { it.status == khaled.benzo.data.model.DownloadStatus.COMPLETED }
+                (counts as MutableStateFlow).value = (all.size - done) to done
+            }
+        }
         viewModelScope.launch {
             combine(repository.getAllDownloads(null), _state) { all, st -> st.apply(all) }.collect { list ->
                 (downloads as MutableStateFlow).value = list

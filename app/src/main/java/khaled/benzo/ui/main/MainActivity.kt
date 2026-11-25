@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
         binding.navAdd.setOnClickListener { binding.fabAdd.performClick() }
         binding.navSettings.setOnClickListener { startActivity(Intent(this, khaled.benzo.ui.settings.SettingsHubActivity::class.java)) }
         binding.navBrowser.setOnClickListener { startActivity(Intent(this, BrowserActivity::class.java)) }
-        binding.navQueue.setOnClickListener { viewModel.setCategory(FileCategory.DOWNLOADING) }
+        binding.navQueue.setOnClickListener { viewModel.setStatusFilter(khaled.benzo.core.queue.StatusFilter.UNFINISHED) }
         binding.navFinished.setOnClickListener { viewModel.setCategory(FileCategory.COMPLETED) }
         binding.navList.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.START) }
         binding.navPower.setOnClickListener { v ->
@@ -180,6 +180,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.counts.collect { (open, done) ->
+                binding.badgeQueue.text = open.toString(); binding.badgeQueue.visibility = if (open > 0) View.VISIBLE else View.GONE
+                binding.badgeFinished.text = done.toString(); binding.badgeFinished.visibility = if (done > 0) View.VISIBLE else View.GONE
+            }
+        }
         lifecycleScope.launch {
             khaled.benzo.service.QueueWaitState.reasons.collect { adapter.setWaiting(it) }
         }

@@ -78,7 +78,8 @@ object QueuePolicy {
     }
 }
 
-enum class StatusFilter { ALL, ACTIVE, QUEUED, PAUSED, FAILED, COMPLETED }
+/** UNFINISHED is the bottom bar's Queue: everything not completed (queued, connecting, running, paused, failed), so no pending work is hidden. */
+enum class StatusFilter { ALL, ACTIVE, QUEUED, PAUSED, FAILED, COMPLETED, UNFINISHED }
 enum class SortKey { TIME, NAME, SIZE, CATEGORY }
 
 object ListLogic {
@@ -89,6 +90,7 @@ object ListLogic {
         StatusFilter.PAUSED -> item.status == DownloadStatus.PAUSED
         StatusFilter.FAILED -> item.status == DownloadStatus.ERROR
         StatusFilter.COMPLETED -> item.status == DownloadStatus.COMPLETED
+        StatusFilter.UNFINISHED -> item.status != DownloadStatus.COMPLETED
     }
 
     fun apply(items: List<DownloadItem>, filter: StatusFilter, query: String, sort: SortKey, ascending: Boolean): List<DownloadItem> {

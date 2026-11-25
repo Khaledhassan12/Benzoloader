@@ -76,6 +76,11 @@ class QueuePolicyTest {
         assertEquals(listOf(3L), ListLogic.apply(items, StatusFilter.FAILED, "", SortKey.TIME, true).map { it.id })
         assertEquals(5, ListLogic.apply(items, StatusFilter.ALL, "", SortKey.TIME, true).size)
     }
+    @Test fun unfinishedKeepsEverythingButCompleted() {
+        val u = ListLogic.apply(items, StatusFilter.UNFINISHED, "", SortKey.TIME, true)
+        assertEquals(true, u.none { it.status == DownloadStatus.COMPLETED })
+        assertEquals(items.size - ListLogic.apply(items, StatusFilter.COMPLETED, "", SortKey.TIME, true).size, u.size)
+    }
     @Test fun searchIsCaseInsensitive() = assertEquals(listOf(2L), ListLogic.apply(items, StatusFilter.ALL, "a.MP", SortKey.TIME, true).map { it.id })
     @Test fun sortsByNameSizeAndDirection() {
         assertEquals(listOf(2L, 1L, 3L, 4L, 5L), ListLogic.apply(items, StatusFilter.ALL, "", SortKey.NAME, true).map { it.id })
