@@ -44,6 +44,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | Scheduler (start/stop times) | WRITTEN |
 | Start service after phone boot | NOT BUILT. Android 15+ does not allow it for this service type |
 | Add to bottom/top of list, after-finishing action | NOT STARTED |
+| Deleting a list item while it runs | WRITTEN (before: only the row was removed and the transfer kept running). Whether Delete should also remove partial files is not decided |
 
 ### Torrent
 | Item | State |
@@ -113,6 +114,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 ## Batch history (newest first)
 | Commit | Time (25 Nov, Cairo) | Change | State |
 |---|---|---|---|
+| `5ef01a9` | 18:05 | List Delete stops the running transfer first; removed torrents lose their stored files | WRITTEN, TESTS WRITTEN |
 | `69e6ead` | 17:50 | Torrent fast-resume (resume data saved and reused) | WRITTEN, TESTS WRITTEN (store) |
 | `c9d73af` | 17:34 | Manual light / dark / follow-system choice | WRITTEN, NOT RENDERED |
 | `2260b7b` | 17:30 | Disabling a container row now disables its child rows (Cataloging category rows) | WRITTEN, NOT RENDERED |
