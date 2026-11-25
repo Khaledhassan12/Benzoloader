@@ -214,6 +214,7 @@ class DownloadService : Service() {
                 }
                 notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateSuccessMs))
                 autoResume.onSuccess(id)
+                if (exitIfFinished(justCompleted = true)) return@launch
             } else {
                 val failedStatus = khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError)
                 repository.updateStatusAndSpeed(id, failedStatus, 0L)
@@ -255,6 +256,7 @@ class DownloadService : Service() {
                 (repository.getDownload(id) ?: item).let { notificationHelper.showCompletedNotification(it) }
                 if (settings.soundOnComplete) notificationHelper.playSound(R.raw.done)
                 notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateSuccessMs))
+                if (exitIfFinished(justCompleted = true)) return@launch
             }
             if (activeJobs.isEmpty()) wakeLockManager.release()
             updateNotification()
@@ -306,8 +308,21 @@ class DownloadService : Service() {
         notifManager.notify(NotificationHelper.NOTIFICATION_ID_FOREGROUND, notif)
     }
 
-    private fun stopAllAndExit() {
-        if (settings.clearNotifsOnExit) notificationHelper.clearCompletedNotifications()
+    /** "After finishing: exit". Counts what is still running, waiting to start (QUEUED) or seeding before it stops the service. */
+    private suspend fun exitIfFinished(justCompleted: Boolean): Boolean {
+        val mode = khaled.benzo.core.queue.AfterFinish.fromCode(settings.afterFinish)
+        if (mode == khaled.benzo.core.queue.AfterFinish.NOTHING) return false
+        val waiting = repository.getAllOnce().count { it.status == DownloadStatus.QUEUED }
+        if (khaled.benzo.core.queue.AfterFinishPolicy.shouldExit(mode, justCompleted, activeJobs.size, waiting, seedingMonitor.watchedCount())) {
+            stopAllAndExit(clearFinished = false)
+            return true
+        }
+        return false
+    }
+
+    /** [clearFinished]: only for the user's own Exit; an automatic exit after finishing must leave the completion notice to be seen. */
+    private fun stopAllAndExit(clearFinished: Boolean = true) {
+        if (clearFinished && settings.clearNotifsOnExit) notificationHelper.clearCompletedNotifications()
         activeJobs.values.forEach { it.cancel() }
         activeJobs.clear()
         activeItems.clear()

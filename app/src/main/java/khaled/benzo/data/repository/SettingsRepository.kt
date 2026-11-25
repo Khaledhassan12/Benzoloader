@@ -195,6 +195,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_QUICK_ADD_START, false)
         set(value) = prefs.edit().putBoolean(KEY_QUICK_ADD_START, value).apply()
 
+    /** [khaled.benzo.core.queue.AfterFinish] code: what the service does when the last download completes. */
+    var afterFinish: Int
+        get() = prefs.getInt(KEY_AFTER_FINISH, 0).coerceIn(0, 1)
+        set(value) = prefs.edit().putInt(KEY_AFTER_FINISH, value.coerceIn(0, 1)).apply()
+
     var newestFirst: Boolean
         get() = prefs.getBoolean(KEY_NEWEST_FIRST, false)
         set(value) = prefs.edit().putBoolean(KEY_NEWEST_FIRST, value).apply()
@@ -270,7 +275,7 @@ class SettingsRepository(context: Context) {
         KEY_PAUSE_AFTER_ERROR to pauseAfterError, KEY_AUTO_RESUME to autoResume,
         KEY_NOTIF_LOCK to notifOnLockScreen, KEY_NOTIF_PAUSE_ALL to notifPauseAllButton,
         KEY_KEEP_SCREEN to keepScreenOn, KEY_CLEAR_FINISHED to clearFinishedOnStart,
-        KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes, KEY_TORRENT_DHT to torrentDht, KEY_TORRENT_CONNECTIONS to torrentConnections, KEY_NEWEST_FIRST to newestFirst, KEY_QUICK_ADD to quickAddLinks, KEY_QUICK_ADD_START to quickAddStart, KEY_LIST_BOTTOM to listAddToBottom, KEY_MIN_THREAD_KB to minThreadKb, KEY_VIB_SUCCESS to vibrateSuccessMs, KEY_VIB_ERROR to vibrateErrorMs, KEY_VIB_ERROR_ON to vibrateOnError, KEY_CLEAR_NOTIFS_EXIT to clearNotifsOnExit, KEY_DEFAULT_UA to defaultUserAgent, KEY_TORRENT_FIXED_PORT to torrentFixedPort, KEY_TORRENT_PORT to torrentPort, KEY_TORRENT_ANON to torrentAnonymous,
+        KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes, KEY_TORRENT_DHT to torrentDht, KEY_TORRENT_CONNECTIONS to torrentConnections, KEY_NEWEST_FIRST to newestFirst, KEY_AFTER_FINISH to afterFinish, KEY_QUICK_ADD to quickAddLinks, KEY_QUICK_ADD_START to quickAddStart, KEY_LIST_BOTTOM to listAddToBottom, KEY_MIN_THREAD_KB to minThreadKb, KEY_VIB_SUCCESS to vibrateSuccessMs, KEY_VIB_ERROR to vibrateErrorMs, KEY_VIB_ERROR_ON to vibrateOnError, KEY_CLEAR_NOTIFS_EXIT to clearNotifsOnExit, KEY_DEFAULT_UA to defaultUserAgent, KEY_TORRENT_FIXED_PORT to torrentFixedPort, KEY_TORRENT_PORT to torrentPort, KEY_TORRENT_ANON to torrentAnonymous,
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor, KEY_THEME_MODE to themeMode,
         KEY_DOWNLOAD_PATH to defaultDownloadPath
     )
@@ -322,6 +327,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_TORRENT_DHT = "torrent_dht"
         private const val KEY_TORRENT_CONNECTIONS = "torrent_connections"
         private const val KEY_NEWEST_FIRST = "newest_first"
+        private const val KEY_AFTER_FINISH = "after_finish"
         private const val KEY_QUICK_ADD = "quick_add_links"
         private const val KEY_QUICK_ADD_START = "quick_add_start"
         private const val KEY_LIST_BOTTOM = "list_add_to_bottom"

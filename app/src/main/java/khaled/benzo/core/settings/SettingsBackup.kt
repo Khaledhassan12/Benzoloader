@@ -44,6 +44,7 @@ object SettingsBackup {
         "torrent_seed_minutes" to Spec.IntRange(0, 4320, 30),
         "torrent_dht" to Spec.Bool,
         "newest_first" to Spec.Bool,
+        "after_finish" to Spec.IntRange(0, 1, 1),
         "quick_add_links" to Spec.Bool,
         "quick_add_start" to Spec.Bool,
         "list_add_to_bottom" to Spec.Bool,

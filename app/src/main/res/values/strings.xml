@@ -305,4 +305,7 @@
     <string name="sum_quick_add">Applies to links you open or share to the app. If the folder has a problem, the editor opens with a message</string>
     <string name="pref_quick_add_start">Start them after adding</string>
     <string name="sum_quick_add_start">Off: they go to the queue and the queue rules decide when they start</string>
+    <string name="row_after_finish">After finishing</string>
+    <string name="after_finish_nothing">Do nothing</string>
+    <string name="after_finish_exit">Exit (stop the service)</string>
 </resources>

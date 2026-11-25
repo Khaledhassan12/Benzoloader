@@ -123,6 +123,36 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    private var afterFinishCode = 0
+
+    /** Value row for "after finishing": title, then the current choice in the accent colour; a tap opens a single-choice dialog. */
+    private fun setupAfterFinishRow() {
+        val row = binding.txtAfterFinish
+        val d = resources.displayMetrics.density
+        row.minHeight = (72 * d).toInt()
+        row.gravity = android.view.Gravity.CENTER_VERTICAL
+        row.setPadding((20 * d).toInt(), (12 * d).toInt(), (20 * d).toInt(), (12 * d).toInt())
+        val tv = android.util.TypedValue(); theme.resolveAttribute(android.R.attr.selectableItemBackground, tv, true)
+        row.setBackgroundResource(tv.resourceId)
+        val labels = arrayOf(getString(khaled.benzo.R.string.after_finish_nothing), getString(khaled.benzo.R.string.after_finish_exit))
+        fun show() {
+            val accent = com.google.android.material.color.MaterialColors.getColor(row, com.google.android.material.R.attr.colorPrimary)
+            val b = android.text.SpannableStringBuilder(getString(khaled.benzo.R.string.row_after_finish)).append('\n')
+            val start = b.length
+            b.append(labels[afterFinishCode])
+            b.setSpan(android.text.style.ForegroundColorSpan(accent), start, b.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            row.text = b
+        }
+        row.setOnClickListener {
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(khaled.benzo.R.string.row_after_finish)
+                .setSingleChoiceItems(labels, afterFinishCode) { dlg, which -> afterFinishCode = which; show(); dlg.dismiss() }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
+        show()
+    }
+
     private var valueRows: List<ValueRow> = emptyList()
     private fun refreshValueRows() = valueRows.forEach { it.refresh() }
 
@@ -202,6 +232,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
         binding.switchNewestFirst.isChecked = repo.newestFirst
         binding.switchQuickAdd.isChecked = repo.quickAddLinks
+        afterFinishCode = repo.afterFinish
+        setupAfterFinishRow()
         binding.switchQuickAddStart.isChecked = repo.quickAddStart
         binding.switchListBottom.isChecked = repo.listAddToBottom
         binding.sliderMinThread.value = repo.minThreadKb.toFloat()
@@ -230,6 +262,7 @@ class SettingsActivity : AppCompatActivity() {
         val repo = khaled.benzo.data.repository.SettingsRepository(this)
         repo.newestFirst = binding.switchNewestFirst.isChecked
         repo.quickAddLinks = binding.switchQuickAdd.isChecked
+        repo.afterFinish = afterFinishCode
         repo.quickAddStart = binding.switchQuickAddStart.isChecked
         repo.listAddToBottom = binding.switchListBottom.isChecked
         repo.minThreadKb = binding.sliderMinThread.value.toInt()
