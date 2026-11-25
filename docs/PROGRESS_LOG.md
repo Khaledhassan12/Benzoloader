@@ -92,7 +92,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | Item | State |
 |---|---|
 | Settings hub with category screens | WRITTEN, NOT RENDERED |
-| Bottom navigation bar (Queue, Finished, badges), switchable in Interface | WRITTEN, NOT RENDERED |
+| Bottom navigation bar (Queue, Finished, badges), switchable in Interface | WRITTEN, NOT RENDERED. Reconciled 20:01: badges exist (badgeQueue, badgeFinished in activity_main.xml, filled in MainActivity from MainViewModel counts over all downloads, hidden at zero, drawable back_badge, commit 1860a86). A stale "NOT done: badges" note in UI_PARITY_PLAN Step 2b caused a wrong later claim; corrected, no regression found in code |
 | Theme: device colours (Material You) plus four presets | WRITTEN, NOT RENDERED. PARTIAL: no custom colour picker |
 | Manual light / dark / follow-system choice (Interface) | WRITTEN, NOT RENDERED. Default follows the system, as before. The old stored `dark_mode` key stays unread |
 | Green value rows for 8 slider settings | WRITTEN, NOT RENDERED |
