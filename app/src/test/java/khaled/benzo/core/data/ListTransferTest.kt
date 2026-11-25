@@ -13,6 +13,13 @@ class ListTransferTest {
         assertFalse(t.contains("SECRET")); assertFalse(t.contains("http://r")); assertFalse(t.contains("UA\n"))
     }
 
+    @Test fun urlsAreKeptUnchangedAndFileWarnsAboutTokens() {
+        val u = "https://user:pw@h.com/f.zip?token=abc&sig=1"
+        val t = ListTransfer.format(listOf(item(u, "f.zip")))
+        assertTrue(t.contains(u)); assertTrue(t.contains("sensitive"))
+        assertEquals(u, ListTransfer.parse(t)[0].url)
+    }
+
     @Test fun roundTrip() {
         val items = listOf(item("https://a.com/f.zip", "f.zip"), item("http://b.org/v.mp4", "v.mp4"))
         val back = ListTransfer.parse(ListTransfer.format(items))

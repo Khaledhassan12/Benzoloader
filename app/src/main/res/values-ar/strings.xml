@@ -138,7 +138,7 @@
     <string name="nav_failed">فاشلة</string>
     <string name="action_export_list">تصدير القائمة (.txt)</string>
     <string name="action_import_list">استيراد قائمة (.txt)</string>
-    <string name="list_export_done">تم تصدير القائمة. الكوكيز والرؤوس غير مضمّنة.</string>
+    <string name="list_export_done">تم تصدير القائمة. الكوكيز والرؤوس غير مضمّنة، لكن الروابط قد تحتوي على رموز خاصة. شاركها بحذر.</string>
     <string name="list_import_done">تمت إضافة %1$d وتخطي %2$d</string>
     <string name="list_transfer_failed">تعذّرت قراءة الملف أو كتابته</string>
 </resources>

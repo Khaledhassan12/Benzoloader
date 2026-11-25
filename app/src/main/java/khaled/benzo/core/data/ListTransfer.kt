@@ -8,10 +8,13 @@ data class ImportEntry(val url: String, val fileName: String?)
 /**
  * Plain-text list format: one download per line, `URL` or `URL<TAB>file name`.
  * Lines that are empty or start with `#` are ignored.
- * Cookies, headers, referer and user-agent are never written, so a shared list carries no session data.
+ * Cookies, headers, referer and user-agent are never written. URLs are written unchanged: they may carry tokens or
+ * user:password@host, so the file is NOT secret-free and says so in its header.
  */
 object ListTransfer {
-    const val HEADER = "# Benzoloader download list"
+    const val HEADER = "# Benzoloader download list\n" +
+        "# Cookies and headers are not included. Links are saved exactly as they are,\n" +
+        "# so signed or private links (tokens in the query, user:password@host) still work and stay sensitive. Share with care."
 
     fun format(items: List<DownloadItem>): String {
         val sb = StringBuilder(HEADER).append('\n')
