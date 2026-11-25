@@ -257,4 +257,9 @@
     <string name="sum_wifi_only">Mobile data is not used for downloads</string>
     <string name="sum_stop_on_unplug">Running downloads go back to the queue</string>
     <string name="sum_keep_screen">Only while this app is in front</string>
+    <string name="pref_torrent_fixed_port">Use a fixed port</string>
+    <string name="sum_torrent_fixed_port">Off keeps the engine\'s own port setting</string>
+    <string name="pref_torrent_port">Port (1024 to 65535)</string>
+    <string name="pref_torrent_anonymous">Anonymous mode</string>
+    <string name="sum_torrent_anonymous">Hides identifying details from peers and trackers; some features stop working</string>
 </resources>

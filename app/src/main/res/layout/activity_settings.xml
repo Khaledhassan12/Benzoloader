@@ -28,6 +28,11 @@
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchTorrentDht" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_dht" />
         <TextView android:id="@+id/txtTorrentConnections" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_connections" android:textAppearance="?attr/textAppearanceBodyMedium" />
         <com.google.android.material.slider.Slider android:id="@+id/sliderTorrentConnections" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="50.0" android:value="0.0" android:valueFrom="0.0" android:valueTo="1000.0" />
+        <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchTorrentFixedPort" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_fixed_port" app:prefSummary="@string/sum_torrent_fixed_port" />
+        <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="20dp" android:hint="@string/pref_torrent_port">
+          <com.google.android.material.textfield.TextInputEditText android:id="@+id/editTorrentPort" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:maxLength="5" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchTorrentAnonymous" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_anonymous" app:prefSummary="@string/sum_torrent_anonymous" />
       </LinearLayout>
       <LinearLayout android:id="@+id/section_notifications" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchSoundComplete" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:checked="true" android:text="@string/pref_sound_on_complete" />

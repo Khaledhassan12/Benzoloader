@@ -132,7 +132,10 @@ class DownloadService : Service() {
             limiter.setLimit(limit)
             appliedLimit = limit
         }
-        khaled.benzo.core.torrent.TorrentEngine.orNull()?.configureNetwork(settings.torrentDht, settings.torrentConnections)
+        khaled.benzo.core.torrent.TorrentEngine.orNull()?.configureNetwork(
+            settings.torrentDht, settings.torrentConnections,
+            khaled.benzo.core.torrent.TorrentNetworkPolicy.portToApply(settings.torrentFixedPort, settings.torrentPort), settings.torrentAnonymous
+        )
         val entities = khaled.benzo.data.db.BenzoDatabase.getInstance(this)
             .downloadDao().getPendingAndActiveDownloads()
         val items = entities.map { it.toModel() }

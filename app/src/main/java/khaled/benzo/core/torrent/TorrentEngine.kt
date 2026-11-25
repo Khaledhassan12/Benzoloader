@@ -26,6 +26,7 @@ class TorrentEngine(context: Context? = null) {
             if (!session.isRunning) {
                 session.start()
                 libraryConnectionsDefault = session.settings().connectionsLimit()
+                libraryListenDefault = session.settings().listenInterfaces()
                 applyNetwork()
             }
         }
@@ -34,11 +35,14 @@ class TorrentEngine(context: Context? = null) {
     private var libraryConnectionsDefault = 0
     private var wantDht = true
     private var wantConnections = 0
+    private var wantPort = 0
+    private var wantAnonymous = false
+    private var libraryListenDefault = ""
 
     /** Network settings. Applied at once when the session runs, otherwise right after it starts. Cheap to call repeatedly. */
-    fun configureNetwork(dht: Boolean, connectionsLimit: Int) = synchronized(lock) {
-        if (dht == wantDht && connectionsLimit == wantConnections) return@synchronized
-        wantDht = dht; wantConnections = connectionsLimit
+    fun configureNetwork(dht: Boolean, connectionsLimit: Int, fixedPort: Int, anonymous: Boolean) = synchronized(lock) {
+        if (dht == wantDht && connectionsLimit == wantConnections && fixedPort == wantPort && anonymous == wantAnonymous) return@synchronized
+        wantDht = dht; wantConnections = connectionsLimit; wantPort = fixedPort; wantAnonymous = anonymous
         if (session.isRunning) applyNetwork()
     }
 
@@ -46,6 +50,9 @@ class TorrentEngine(context: Context? = null) {
         val pack = session.settings()
         pack.enableDht(wantDht)
         pack.connectionsLimit(TorrentNetworkPolicy.connectionsToApply(wantConnections, libraryConnectionsDefault))
+        pack.anonymousMode(wantAnonymous)
+        if (wantPort != 0) pack.listenInterfaces(TorrentNetworkPolicy.listenInterfaces(wantPort))
+        else if (libraryListenDefault.isNotEmpty()) pack.listenInterfaces(libraryListenDefault)
         session.applySettings(pack)
     }
 

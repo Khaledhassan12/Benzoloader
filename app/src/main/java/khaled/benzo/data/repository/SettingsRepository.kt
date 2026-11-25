@@ -138,6 +138,19 @@ class SettingsRepository(context: Context) {
         get() = prefs.getInt(KEY_TORRENT_CONNECTIONS, 0).coerceIn(0, 1000)
         set(value) = prefs.edit().putInt(KEY_TORRENT_CONNECTIONS, value.coerceIn(0, 1000)).apply()
 
+    /** Fixed torrent listen port. Off keeps the library's own listen setting. */
+    var torrentFixedPort: Boolean
+        get() = prefs.getBoolean(KEY_TORRENT_FIXED_PORT, false)
+        set(value) = prefs.edit().putBoolean(KEY_TORRENT_FIXED_PORT, value).apply()
+
+    var torrentPort: Int
+        get() = prefs.getInt(KEY_TORRENT_PORT, 6881).coerceIn(1024, 65535)
+        set(value) = prefs.edit().putInt(KEY_TORRENT_PORT, value.coerceIn(1024, 65535)).apply()
+
+    var torrentAnonymous: Boolean
+        get() = prefs.getBoolean(KEY_TORRENT_ANON, false)
+        set(value) = prefs.edit().putBoolean(KEY_TORRENT_ANON, value).apply()
+
     var seedMinutes: Int
         get() = prefs.getInt(KEY_SEED_MINUTES, 0).coerceIn(0, 4320)
         set(value) = prefs.edit().putInt(KEY_SEED_MINUTES, value.coerceIn(0, 4320)).apply()
@@ -204,7 +217,7 @@ class SettingsRepository(context: Context) {
         KEY_PAUSE_AFTER_ERROR to pauseAfterError, KEY_AUTO_RESUME to autoResume,
         KEY_NOTIF_LOCK to notifOnLockScreen, KEY_NOTIF_PAUSE_ALL to notifPauseAllButton,
         KEY_KEEP_SCREEN to keepScreenOn, KEY_CLEAR_FINISHED to clearFinishedOnStart,
-        KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes, KEY_TORRENT_DHT to torrentDht, KEY_TORRENT_CONNECTIONS to torrentConnections,
+        KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes, KEY_TORRENT_DHT to torrentDht, KEY_TORRENT_CONNECTIONS to torrentConnections, KEY_TORRENT_FIXED_PORT to torrentFixedPort, KEY_TORRENT_PORT to torrentPort, KEY_TORRENT_ANON to torrentAnonymous,
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor,
         KEY_DOWNLOAD_PATH to defaultDownloadPath
     )
@@ -255,6 +268,9 @@ class SettingsRepository(context: Context) {
         private const val KEY_SEED_MINUTES = "torrent_seed_minutes"
         private const val KEY_TORRENT_DHT = "torrent_dht"
         private const val KEY_TORRENT_CONNECTIONS = "torrent_connections"
+        private const val KEY_TORRENT_FIXED_PORT = "torrent_fixed_port"
+        private const val KEY_TORRENT_PORT = "torrent_port"
+        private const val KEY_TORRENT_ANON = "torrent_anonymous"
         private const val KEY_ALLFILES_DECLINED = "allfiles_declined"
         private const val KEY_KEEP_SCREEN = "keep_screen_on"
         private const val KEY_CLEAR_FINISHED = "clear_finished_on_start"

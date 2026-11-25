@@ -120,6 +120,11 @@ class SettingsActivity : AppCompatActivity() {
             if (index >= 0 && index != repo.themeColor) { repo.themeColor = index; recreate() }
         }
         binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
+        binding.switchTorrentFixedPort.isChecked = repo.torrentFixedPort
+        binding.switchTorrentAnonymous.isChecked = repo.torrentAnonymous
+        binding.editTorrentPort.setText(repo.torrentPort.toString())
+        binding.editTorrentPort.isEnabled = repo.torrentFixedPort
+        binding.switchTorrentFixedPort.setOnCheckedChangeListener { _, on -> binding.editTorrentPort.isEnabled = on }
         updateConnectionsLabel()
         binding.sliderTorrentConnections.addOnChangeListener { _, _, _ -> updateConnectionsLabel() }
         updateSeedLabels()
@@ -132,6 +137,13 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun saveAndFinish() {
+        val repo = khaled.benzo.data.repository.SettingsRepository(this)
+        repo.torrentFixedPort = binding.switchTorrentFixedPort.isChecked
+        repo.torrentAnonymous = binding.switchTorrentAnonymous.isChecked
+        // An empty or out-of-range port keeps the previous saved port.
+        binding.editTorrentPort.text?.toString()?.toIntOrNull()
+            ?.takeIf { it in khaled.benzo.core.torrent.TorrentNetworkPolicy.MIN_PORT..khaled.benzo.core.torrent.TorrentNetworkPolicy.MAX_PORT }
+            ?.let { repo.torrentPort = it }
         viewModel.saveSettings(
             maxDownloads = binding.sliderMaxDownloads.value.toInt(),
             defaultThreads = binding.sliderDefaultThreads.value.toInt(),
