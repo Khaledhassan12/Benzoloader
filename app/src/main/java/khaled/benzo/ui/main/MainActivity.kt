@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_other -> viewModel.setCategory(FileCategory.OTHER)
                 R.id.nav_torrent -> viewModel.setCategory(FileCategory.TORRENT)
                 R.id.nav_browser -> startActivity(Intent(this, BrowserActivity::class.java))
-                R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+                R.id.nav_settings -> startActivity(Intent(this, khaled.benzo.ui.settings.SettingsHubActivity::class.java))
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             true
@@ -259,7 +259,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
+                startActivity(Intent(this, khaled.benzo.ui.settings.SettingsHubActivity::class.java))
                 true
             }
             R.id.action_resume_all -> {

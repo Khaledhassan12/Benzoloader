@@ -1,381 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbarSettings"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/barBackground"
-            app:navigationIcon="@drawable/abc_ic_ab_back_material"
-            app:title="@string/action_settings"
-            app:titleTextColor="?attr/onBar" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Category: Downloading -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_downloading"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/pref_max_downloads"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/sliderMaxDownloads"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="1.0"
-                android:value="3.0"
-                android:valueFrom="1.0"
-                android:valueTo="5.0" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/pref_default_threads"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/sliderDefaultThreads"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="1.0"
-                android:value="4.0"
-                android:valueFrom="1.0"
-                android:valueTo="16.0" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchCatalog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/pref_catalog" />
-
-            <Button
-                android:id="@+id/btnFolderNames"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_folder_names" />
-
-            <Button
-                android:id="@+id/btnAllFilesAccess"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/allfiles_settings_button" />
-
-            <TextView
-                android:id="@+id/txtErrorRetries"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/pref_error_retries"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/sliderErrorRetries"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="1.0"
-                android:value="4.0"
-                android:valueFrom="0.0"
-                android:valueTo="10.0" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchAutoResume"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_auto_resume" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchPauseAfterError"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_pause_after_error" />
-
-            <!-- Category: Network -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="16dp"
-                android:background="@color/divider" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_network"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchWifiOnly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/pref_wifi_only" />
-
-            <!-- Category: Power & Battery -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="16dp"
-                android:background="@color/divider" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_power"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtBatteryThreshold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/pref_battery_threshold"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/sliderBattery"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="5.0"
-                android:value="15.0"
-                android:valueFrom="5.0"
-                android:valueTo="50.0" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchStopOnUnplug"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_stop_on_unplug" />
-
-            <TextView
-                android:id="@+id/txtSpeedLimit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/pref_speed_limit"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/sliderSpeedLimit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="64.0"
-                android:value="0.0"
-                android:valueFrom="0.0"
-                android:valueTo="10240.0" />
-
-            <!-- Category: Schedule -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="16dp"
-                android:background="@color/divider" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_schedule"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchSchedule"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/pref_schedule_enable" />
-
-            <Button
-                android:id="@+id/btnScheduleStart"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_schedule_start" />
-
-            <Button
-                android:id="@+id/btnScheduleStop"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_schedule_stop" />
-
-            <!-- Category: Sounds & Vibrations -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="16dp"
-                android:background="@color/divider" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_sounds"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchSoundComplete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:checked="true"
-                android:text="@string/pref_sound_on_complete" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchVibrateComplete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:checked="true"
-                android:text="@string/pref_vibrate_on_complete" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchNotifLockScreen"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_notif_lock_screen" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchNotifPauseAll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_notif_pause_all" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchKeepScreenOn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_keep_screen_on" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchClearFinished"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_clear_finished" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchTorrentSequential"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_torrent_sequential" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchTorrentSeed"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_torrent_seed" />
-
-            <TextView
-                android:id="@+id/txtSeedRatio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/pref_seed_ratio"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/sliderSeedRatio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="5.0"
-                android:value="0.0"
-                android:valueFrom="0.0"
-                android:valueTo="100.0" />
-
-            <TextView
-                android:id="@+id/txtSeedMinutes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_seed_minutes"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/sliderSeedMinutes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="30.0"
-                android:value="0.0"
-                android:valueFrom="0.0"
-                android:valueTo="4320.0" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchTorrentDht"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_torrent_dht" />
-
-            <TextView
-                android:id="@+id/txtTorrentConnections"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/pref_torrent_connections"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/sliderTorrentConnections"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stepSize="50.0"
-                android:value="0.0"
-                android:valueFrom="0.0"
-                android:valueTo="1000.0" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchBrowserHistory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_browser_history" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchBrowserSaveTabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/pref_browser_save_tabs" />
-
-        </LinearLayout>
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+  <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbarSettings" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" android:background="?attr/barBackground" app:navigationIcon="@drawable/abc_ic_ab_back_material" app:title="@string/action_settings" app:titleTextColor="?attr/onBar" />
+  <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+      <LinearLayout android:id="@+id/section_downloading" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/pref_max_downloads" android:textAppearance="?attr/textAppearanceBodyMedium" />
+        <com.google.android.material.slider.Slider android:id="@+id/sliderMaxDownloads" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="1.0" android:value="3.0" android:valueFrom="1.0" android:valueTo="5.0" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_default_threads" android:textAppearance="?attr/textAppearanceBodyMedium" />
+        <com.google.android.material.slider.Slider android:id="@+id/sliderDefaultThreads" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="1.0" android:value="4.0" android:valueFrom="1.0" android:valueTo="16.0" />
+        <Button android:id="@+id/btnAllFilesAccess" style="?attr/materialButtonOutlinedStyle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/allfiles_settings_button" />
+        <TextView android:id="@+id/txtErrorRetries" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_error_retries" android:textAppearance="?attr/textAppearanceBodyMedium" />
+        <com.google.android.material.slider.Slider android:id="@+id/sliderErrorRetries" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="1.0" android:value="4.0" android:valueFrom="0.0" android:valueTo="10.0" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchAutoResume" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_auto_resume" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchPauseAfterError" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_pause_after_error" />
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="16dp" android:background="@color/divider" />
+        <TextView android:id="@+id/txtSpeedLimit" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/pref_speed_limit" android:textAppearance="?attr/textAppearanceBodyMedium" />
+        <com.google.android.material.slider.Slider android:id="@+id/sliderSpeedLimit" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="64.0" android:value="0.0" android:valueFrom="0.0" android:valueTo="10240.0" />
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="16dp" android:background="@color/divider" />
+      </LinearLayout>
+      <LinearLayout android:id="@+id/section_torrent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchTorrentSequential" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_torrent_sequential" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchTorrentSeed" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_torrent_seed" />
+        <TextView android:id="@+id/txtSeedRatio" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_seed_ratio" android:textAppearance="?attr/textAppearanceBodyMedium" />
+        <com.google.android.material.slider.Slider android:id="@+id/sliderSeedRatio" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="5.0" android:value="0.0" android:valueFrom="0.0" android:valueTo="100.0" />
+        <TextView android:id="@+id/txtSeedMinutes" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_seed_minutes" android:textAppearance="?attr/textAppearanceBodyMedium" />
+        <com.google.android.material.slider.Slider android:id="@+id/sliderSeedMinutes" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="30.0" android:value="0.0" android:valueFrom="0.0" android:valueTo="4320.0" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchTorrentDht" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_dht" />
+        <TextView android:id="@+id/txtTorrentConnections" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_connections" android:textAppearance="?attr/textAppearanceBodyMedium" />
+        <com.google.android.material.slider.Slider android:id="@+id/sliderTorrentConnections" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="50.0" android:value="0.0" android:valueFrom="0.0" android:valueTo="1000.0" />
+      </LinearLayout>
+      <LinearLayout android:id="@+id/section_notifications" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchSoundComplete" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:checked="true" android:text="@string/pref_sound_on_complete" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchVibrateComplete" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:checked="true" android:text="@string/pref_vibrate_on_complete" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchNotifLockScreen" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_notif_lock_screen" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchNotifPauseAll" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_notif_pause_all" />
+      </LinearLayout>
+      <LinearLayout android:id="@+id/section_automation" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchWifiOnly" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_wifi_only" />
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="16dp" android:background="@color/divider" />
+        <TextView android:id="@+id/txtBatteryThreshold" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_battery_threshold" android:textAppearance="?attr/textAppearanceBodyMedium" />
+        <com.google.android.material.slider.Slider android:id="@+id/sliderBattery" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="5.0" android:value="15.0" android:valueFrom="5.0" android:valueTo="50.0" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchStopOnUnplug" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_stop_on_unplug" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchKeepScreenOn" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_keep_screen_on" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchClearFinished" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_clear_finished" />
+      </LinearLayout>
+      <LinearLayout android:id="@+id/section_cataloging" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchCatalog" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_catalog" />
+        <Button android:id="@+id/btnFolderNames" style="?attr/materialButtonOutlinedStyle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_folder_names" />
+      </LinearLayout>
+      <LinearLayout android:id="@+id/section_scheduler" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchSchedule" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_schedule_enable" />
+        <Button android:id="@+id/btnScheduleStart" style="?android:attr/buttonBarButtonStyle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_schedule_start" />
+        <Button android:id="@+id/btnScheduleStop" style="?android:attr/buttonBarButtonStyle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_schedule_stop" />
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="16dp" android:background="@color/divider" />
+      </LinearLayout>
+      <LinearLayout android:id="@+id/section_browser" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchBrowserHistory" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_browser_history" />
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchBrowserSaveTabs" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_browser_save_tabs" />
+      </LinearLayout>
     </LinearLayout>
-
-</ScrollView>
+  </ScrollView>
+</LinearLayout>

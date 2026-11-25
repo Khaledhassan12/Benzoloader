@@ -226,4 +226,18 @@
     <string name="pref_torrent_dht">البحث عن مصادر التورنت بـ DHT (روابط المغناطيس محتاجاها)</string>
     <string name="pref_torrent_connections">حد اتصالات التورنت</string>
     <string name="pref_torrent_connections_default">الافتراضي للمكتبة</string>
+    <string name="cat_downloading">التحميل</string>
+    <string name="cat_downloading_sub">التحميلات المتزامنة، الخيوط، السرعة، الأخطاء، الوصول للتخزين</string>
+    <string name="cat_torrent">تورنت</string>
+    <string name="cat_torrent_sub">التحميل المتسلسل، المشاركة، DHT، الاتصالات</string>
+    <string name="cat_notifications">الإشعارات</string>
+    <string name="cat_notifications_sub">الأصوات، الاهتزاز، شاشة القفل، الأزرار</string>
+    <string name="cat_automation">الأتمتة</string>
+    <string name="cat_automation_sub">قاعدة الواي فاي، قاعدة البطارية، الشاشة، مسح المنتهي</string>
+    <string name="cat_cataloging">التصنيف</string>
+    <string name="cat_cataloging_sub">ترتيب الملفات المنتهية في مجلدات حسب النوع</string>
+    <string name="cat_scheduler">الجدولة</string>
+    <string name="cat_scheduler_sub">وقت البدء، وقت الإيقاف</string>
+    <string name="cat_browser">المتصفح</string>
+    <string name="cat_browser_sub">سجل الزيارات، التابات المفتوحة</string>
 </resources>

@@ -20,7 +20,20 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         loadCurrentSettings()
+        showOnlyRequestedSection()
     }
+
+    /** With [EXTRA_SECTION] only that category is shown (the hub opens it this way); without it every category stays visible. */
+    private fun showOnlyRequestedSection() {
+        val wanted = SettingsSection.fromId(intent.getStringExtra(EXTRA_SECTION)) ?: return
+        for (s in SettingsSection.entries) {
+            val v = findViewById<android.view.View>(resources.getIdentifier("section_" + s.id, "id", packageName))
+            v?.visibility = if (s == wanted) android.view.View.VISIBLE else android.view.View.GONE
+        }
+        binding.toolbarSettings.setTitle(wanted.title)
+    }
+
+    companion object { const val EXTRA_SECTION = "section" }
 
     private var startMinute = 0
     private var stopMinute = 0

@@ -106,6 +106,10 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.settings.SettingsHubActivity"
+            android:exported="false" />
+
         <!-- Settings Activity -->
         <activity
             android:name=".ui.settings.SettingsActivity"
