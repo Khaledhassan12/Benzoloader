@@ -30,7 +30,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         clearFinished: Boolean,
         torrentSequential: Boolean,
         torrentSeed: Boolean,
-        browserHistory: Boolean
+        browserHistory: Boolean,
+        browserSaveTabs: Boolean
     ) {
         repository.maxConcurrentDownloads = maxDownloads
         repository.defaultPartsCount = defaultThreads
@@ -54,6 +55,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         repository.torrentSequential = torrentSequential
         repository.torrentSeedAfterFinish = torrentSeed
         repository.browserHistory = browserHistory
+        repository.browserSaveTabs = browserSaveTabs
         khaled.benzo.service.ScheduleManager.rearm(getApplication())
     }
 }

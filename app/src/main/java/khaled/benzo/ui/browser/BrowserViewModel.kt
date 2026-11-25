@@ -38,6 +38,10 @@ class BrowserViewModel(application: Application) : AndroidViewModel(application)
         _detectedMediaList.value = emptyList()
     }
 
+    val saveTabsEnabled: Boolean get() = settings.browserSaveTabs
+    fun savedTabsText(): String? = settings.browserSavedTabs
+    fun persistTabs() { if (settings.browserSaveTabs) settings.browserSavedTabs = tabs.serialize() }
+
     val historyEnabled: Boolean get() = settings.browserHistory
 
     /** Records a finished page load when the setting is on. Call from a background coroutine. */

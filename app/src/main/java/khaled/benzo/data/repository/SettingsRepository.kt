@@ -128,6 +128,16 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_BROWSER_HISTORY, false)
         set(value) = prefs.edit().putBoolean(KEY_BROWSER_HISTORY, value).apply()
 
+    /** Keep the browser's open tabs (web addresses and titles) on this device and reopen them next time. Off by default (privacy). */
+    var browserSaveTabs: Boolean
+        get() = prefs.getBoolean(KEY_BROWSER_SAVE_TABS, false)
+        set(value) = prefs.edit().putBoolean(KEY_BROWSER_SAVE_TABS, value).also { if (!value) it.remove(KEY_BROWSER_TABS) }.apply()
+
+    /** Output of TabList.serialize(). Not part of the settings backup. */
+    var browserSavedTabs: String?
+        get() = prefs.getString(KEY_BROWSER_TABS, null)
+        set(value) = (if (value.isNullOrEmpty()) prefs.edit().remove(KEY_BROWSER_TABS) else prefs.edit().putString(KEY_BROWSER_TABS, value)).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -149,7 +159,7 @@ class SettingsRepository(context: Context) {
         KEY_NOTIF_LOCK to notifOnLockScreen, KEY_NOTIF_PAUSE_ALL to notifPauseAllButton,
         KEY_KEEP_SCREEN to keepScreenOn, KEY_CLEAR_FINISHED to clearFinishedOnStart,
         KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish,
-        KEY_BROWSER_HISTORY to browserHistory, KEY_DARK_MODE to isDarkMode,
+        KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode,
         KEY_DOWNLOAD_PATH to defaultDownloadPath
     )
 
@@ -191,6 +201,8 @@ class SettingsRepository(context: Context) {
         private const val KEY_PAUSE_AFTER_ERROR = "pause_after_error"
         private const val KEY_AUTO_RESUME = "auto_resume"
         private const val KEY_BROWSER_HISTORY = "browser_history"
+        private const val KEY_BROWSER_SAVE_TABS = "browser_save_tabs"
+        private const val KEY_BROWSER_TABS = "browser_saved_tabs"
         private const val KEY_TORRENT_SEQ = "torrent_sequential"
         private const val KEY_TORRENT_SEED = "torrent_seed_after_finish"
         private const val KEY_KEEP_SCREEN = "keep_screen_on"

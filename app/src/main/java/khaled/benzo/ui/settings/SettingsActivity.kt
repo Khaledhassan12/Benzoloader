@@ -76,6 +76,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchTorrentSequential.isChecked = repo.torrentSequential
         binding.switchTorrentSeed.isChecked = repo.torrentSeedAfterFinish
         binding.switchBrowserHistory.isChecked = repo.browserHistory
+        binding.switchBrowserSaveTabs.isChecked = repo.browserSaveTabs
     }
 
     private fun saveAndFinish() {
@@ -101,7 +102,8 @@ class SettingsActivity : AppCompatActivity() {
             clearFinished = binding.switchClearFinished.isChecked,
             torrentSequential = binding.switchTorrentSequential.isChecked,
             torrentSeed = binding.switchTorrentSeed.isChecked,
-            browserHistory = binding.switchBrowserHistory.isChecked
+            browserHistory = binding.switchBrowserHistory.isChecked,
+            browserSaveTabs = binding.switchBrowserSaveTabs.isChecked
         )
         finish()
     }

@@ -44,13 +44,23 @@ class BrowserActivity : AppCompatActivity() {
             showSelectedTab()
         } else {
             viewModel.tabsStarted = true
-            loadUrl(intent.getStringExtra("extra_url") ?: "https://www.google.com")
+            val extra = intent.getStringExtra("extra_url")
+            if (viewModel.saveTabsEnabled && viewModel.savedTabsText() != null) {
+                // Reopen the saved tabs; a link opened from outside gets its own new tab.
+                viewModel.tabs = khaled.benzo.core.browser.TabList.parse(viewModel.savedTabsText())
+                if (extra != null) viewModel.tabs = viewModel.tabs.open("")
+                showSelectedTab()
+                if (extra != null) loadUrl(extra)
+            } else {
+                loadUrl(extra ?: "https://www.google.com")
+            }
         }
     }
 
     override fun onStop() {
         super.onStop()
         saveCurrentTabState()
+        viewModel.persistTabs()
     }
 
     private fun saveCurrentTabState() {
@@ -147,7 +157,8 @@ class BrowserActivity : AppCompatActivity() {
                 binding.progressBarBrowser.visibility = View.GONE
                 val pageUrl = url
                 val pageTitle = view?.title
-                if (pageUrl != null && pageUrl != "about:blank") {
+                // Ignore a page that is not the one the WebView shows now (a slow page from the tab we just left).
+                if (pageUrl != null && pageUrl != "about:blank" && pageUrl == view?.url) {
                     viewModel.tabs = viewModel.tabs.update(viewModel.tabs.selectedId, pageUrl, pageTitle)
                 }
                 lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) { viewModel.recordVisit(pageTitle, pageUrl) }

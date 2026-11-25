@@ -41,6 +41,7 @@ object SettingsBackup {
         "torrent_sequential" to Spec.Bool,
         "torrent_seed_after_finish" to Spec.Bool,
         "browser_history" to Spec.Bool,
+        "browser_save_tabs" to Spec.Bool,
         "dark_mode" to Spec.Bool,
         "download_path" to Spec.Text(512) { isPlausiblePath(it) }
     )

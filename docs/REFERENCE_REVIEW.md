@@ -29,4 +29,14 @@ No script from them was run, nothing was installed, and no UI framework change w
 
 ## Found, not changed
 - targetSdk 36 enforces edge-to-edge. Only the main screen sets fitsSystemWindows. Other screens (editor dialog, settings, browser, torrent, props) are not checked and need a layout check at the final build.
-- Permissions skill not applied in detail yet.
+
+
+## Permissions skill (android/skills security/android-permissions-security, read in full at 15:35)
+Applied or confirmed:
+- Runtime permission flow: NotificationPermissionFlow already follows the skill's check, rationale, launch flow and checks the grant at call time (no cached state).
+- Settings and list export/import use the system file picker (CreateDocument / OpenDocument), so they need no storage permission, and no persistable URI grant is taken: access ends with the single call (least privilege).
+- Components: audited earlier (non-launcher components not exported, PendingIntent immutable). The app declares no custom permissions or content providers of its own to harden.
+Found, not changed, decision open:
+- The manifest still requests READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE and MANAGE_EXTERNAL_STORAGE. The skill lists broad storage permissions as an over-privilege risk. A download manager that writes to user-chosen folders may need some of them, so I did not remove any without a device test. Needs a decision and a review of which API levels use which.
+Not applicable: Photo Picker, location, Binder caller verification, bound services (none in the app).
+
