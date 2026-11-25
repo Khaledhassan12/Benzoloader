@@ -5,4 +5,7 @@
     <attr name="barBackground" format="color|reference" />
     <attr name="onBar" format="color|reference" />
     <attr name="hintGreen" format="color|reference" />
+    <declare-styleable name="PrefSwitch">
+        <attr name="prefSummary" format="string" />
+    </declare-styleable>
 </resources>

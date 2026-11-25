@@ -254,4 +254,7 @@
     <string name="theme_blue">Blue</string>
     <string name="theme_purple">Purple</string>
     <string name="theme_orange">Orange</string>
+    <string name="sum_wifi_only">Mobile data is not used for downloads</string>
+    <string name="sum_stop_on_unplug">Running downloads go back to the queue</string>
+    <string name="sum_keep_screen">Only while this app is in front</string>
 </resources>

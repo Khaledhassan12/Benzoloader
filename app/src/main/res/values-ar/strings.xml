@@ -254,4 +254,7 @@
     <string name="theme_blue">أزرق</string>
     <string name="theme_purple">بنفسجي</string>
     <string name="theme_orange">برتقالي</string>
+    <string name="sum_wifi_only">بيانات الموبايل مش بتتستخدم في التحميل</string>
+    <string name="sum_stop_on_unplug">التحميلات الشغالة بترجع للطابور</string>
+    <string name="sum_keep_screen">فقط والتطبيق ظاهر على الشاشة</string>
 </resources>
