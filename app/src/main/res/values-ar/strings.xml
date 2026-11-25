@@ -213,7 +213,7 @@
     <string name="legacy_storage_why">في أندرويد 10 وأقدم، التطبيق محتاج صلاحية التخزين عشان يحفظ التحميلات في المجلد اللي اخترته.</string>
     <string name="legacy_storage_settings">صلاحية التخزين اترفضت. تقدر تسمح بيها من إعدادات التطبيق.</string>
     <string name="action_reset_settings">إعادة ضبط الإعدادات</string>
-    <string name="reset_settings_confirm">ترجّع كل الإعدادات لقيمها الافتراضية؟ تحميلاتك وسجل المتصفح والمفضلة وبيانات الدخول المحفوظة مش هتتأثر. التابات المحفوظة هتتمسح لأن "إبقاء التابات مفتوحة" هيرجع مقفول. لو عايز تحتفظ بإعداداتك الحالية، صدّرها الأول.</string>
+    <string name="reset_settings_confirm">ترجّع الإعدادات للوضع الافتراضي؟</string>
     <string name="reset_settings_do">إعادة ضبط</string>
     <string name="reset_settings_done">تمت إعادة ضبط الإعدادات.</string>
     <string name="wait_no_network">في انتظار الشبكة</string>

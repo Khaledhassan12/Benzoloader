@@ -327,7 +327,7 @@ class MainActivity : AppCompatActivity() {
     private fun confirmResetSettings() {
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setMessage(R.string.reset_settings_confirm)
-            .setPositiveButton(R.string.reset_settings_do) { _, _ ->
+            .setPositiveButton(android.R.string.ok) { _, _ ->
                 khaled.benzo.data.repository.SettingsRepository(this).resetToDefaults()
                 khaled.benzo.service.ScheduleManager.rearm(this)
                 android.widget.Toast.makeText(this, R.string.reset_settings_done, android.widget.Toast.LENGTH_LONG).show()
