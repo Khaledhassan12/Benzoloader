@@ -28,7 +28,11 @@ class SettingsActivity : AppCompatActivity() {
 
     /** Rows that only matter while [parent] is on are faded and disabled when it is off. Their values are still saved. */
     private fun bindDependents(parent: android.widget.CompoundButton, vararg rows: android.view.View) {
-        fun apply(on: Boolean) = rows.forEach { it.isEnabled = on; it.alpha = if (on) 1f else 0.38f }
+        fun set(v: android.view.View, on: Boolean) {
+            v.isEnabled = on
+            (v as? android.view.ViewGroup)?.let { g -> for (i in 0 until g.childCount) set(g.getChildAt(i), on) }
+        }
+        fun apply(on: Boolean) = rows.forEach { set(it, on); it.alpha = if (on) 1f else 0.38f }
         apply(parent.isChecked)
         parent.setOnCheckedChangeListener { _, on -> apply(on) }
     }
