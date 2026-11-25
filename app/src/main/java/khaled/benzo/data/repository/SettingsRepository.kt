@@ -93,6 +93,16 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_AUTO_RESUME, false)
         set(value) = prefs.edit().putBoolean(KEY_AUTO_RESUME, value).apply()
 
+    /** Show the ongoing notification's content on the lock screen. Off by default: the system's private behaviour stays. */
+    var notifOnLockScreen: Boolean
+        get() = prefs.getBoolean(KEY_NOTIF_LOCK, false)
+        set(value) = prefs.edit().putBoolean(KEY_NOTIF_LOCK, value).apply()
+
+    /** Add a "Stop all" button to the ongoing notification (Exit is always there). Off by default. */
+    var notifStopAllButton: Boolean
+        get() = prefs.getBoolean(KEY_NOTIF_STOP_ALL, false)
+        set(value) = prefs.edit().putBoolean(KEY_NOTIF_STOP_ALL, value).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -118,6 +128,8 @@ class SettingsRepository(context: Context) {
         private const val KEY_ERROR_RETRIES = "error_retries"
         private const val KEY_PAUSE_AFTER_ERROR = "pause_after_error"
         private const val KEY_AUTO_RESUME = "auto_resume"
+        private const val KEY_NOTIF_LOCK = "notif_lock_screen"
+        private const val KEY_NOTIF_STOP_ALL = "notif_stop_all_button"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_DOWNLOAD_PATH = "download_path"
     }

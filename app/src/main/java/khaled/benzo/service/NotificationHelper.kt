@@ -13,11 +13,16 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import khaled.benzo.R
 import khaled.benzo.core.download.SpeedTracker
+import khaled.benzo.core.notify.LockScreenMode
+import khaled.benzo.core.notify.NotifButton
+import khaled.benzo.core.notify.NotificationPolicy
 import khaled.benzo.data.model.DownloadItem
 import khaled.benzo.receiver.DownloadActionReceiver
 import khaled.benzo.ui.main.MainActivity
 
 class NotificationHelper(private val context: Context) {
+
+    private val settings by lazy { khaled.benzo.data.repository.SettingsRepository(context) }
 
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -84,6 +89,16 @@ class NotificationHelper(private val context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val stopAllIntent = Intent(context, DownloadActionReceiver::class.java).apply {
+            action = DownloadActionReceiver.ACTION_PAUSE_ALL
+        }
+        val stopAllPendingIntent = PendingIntent.getBroadcast(
+            context,
+            2,
+            stopAllIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val title = if (activeTasks.isNotEmpty()) {
             if (activeTasks.size == 1) {
                 activeTasks.first().fileName
@@ -121,7 +136,18 @@ class NotificationHelper(private val context: Context) {
             .setContentIntent(mainPendingIntent)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
-            .addAction(R.drawable.stat_stop, context.getString(R.string.notification_exit), exitPendingIntent)
+            .setVisibility(
+                when (NotificationPolicy.lockScreen(settings.notifOnLockScreen)) {
+                    LockScreenMode.FULL -> NotificationCompat.VISIBILITY_PUBLIC
+                    LockScreenMode.HIDE_CONTENT -> NotificationCompat.VISIBILITY_PRIVATE
+                }
+            )
+        for (b in NotificationPolicy.buttons(settings.notifStopAllButton)) {
+            when (b) {
+                NotifButton.STOP_ALL -> builder.addAction(R.drawable.stat_stop, context.getString(R.string.notification_stop_all), stopAllPendingIntent)
+                NotifButton.EXIT -> builder.addAction(R.drawable.stat_stop, context.getString(R.string.notification_exit), exitPendingIntent)
+            }
+        }
 
         if (totalBytes > 0) {
             builder.setProgress(100, overallPercent, false)

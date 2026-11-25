@@ -69,6 +69,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.btnScheduleStop.setOnClickListener { pickTime(stopMinute) { stopMinute = it; updateScheduleLabels() } }
         binding.switchSoundComplete.isChecked = repo.soundOnComplete
         binding.switchVibrateComplete.isChecked = repo.vibrateOnComplete
+        binding.switchNotifLockScreen.isChecked = repo.notifOnLockScreen
+        binding.switchNotifStopAll.isChecked = repo.notifStopAllButton
     }
 
     private fun saveAndFinish() {
@@ -87,7 +89,9 @@ class SettingsActivity : AppCompatActivity() {
             catalogEnabled = binding.switchCatalog.isChecked,
             errorRetries = binding.sliderErrorRetries.value.toInt(),
             pauseAfterError = binding.switchPauseAfterError.isChecked,
-            autoResume = binding.switchAutoResume.isChecked
+            autoResume = binding.switchAutoResume.isChecked,
+            notifLockScreen = binding.switchNotifLockScreen.isChecked,
+            notifStopAll = binding.switchNotifStopAll.isChecked
         )
         finish()
     }

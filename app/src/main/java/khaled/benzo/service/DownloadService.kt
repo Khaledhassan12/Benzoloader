@@ -97,7 +97,7 @@ class DownloadService : Service() {
             DownloadActionReceiver.ACTION_EXIT_APP -> {
                 stopAllAndExit()
             }
-            ACTION_PAUSE_ALL_BATTERY -> {
+            ACTION_PAUSE_ALL_BATTERY, DownloadActionReceiver.ACTION_PAUSE_ALL -> {
                 serviceScope.launch {
                     repository.pauseAll()
                     activeJobs.keys.toList().forEach { pauseTask(it) }

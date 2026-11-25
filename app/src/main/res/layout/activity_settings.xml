@@ -256,6 +256,20 @@
                 android:checked="true"
                 android:text="@string/pref_vibrate_on_complete" />
 
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchNotifLockScreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/pref_notif_lock_screen" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchNotifStopAll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/pref_notif_stop_all" />
+
         </LinearLayout>
 
     </LinearLayout>
