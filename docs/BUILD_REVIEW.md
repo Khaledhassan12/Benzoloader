@@ -14,3 +14,8 @@ Findings (none changed; each is a decision for later):
 7. targetSdk 36: behaviour changes (edge-to-edge, predictive back and others) are the reason the layout checks stay on the list.
 8. minSdk 26 is above every library minimum I know of, but I did not check each one.
 9. logging-interceptor is declared and not used. Candidate to remove later.
+
+## Verification capabilities at the final stage (checked 25 Nov, no build run)
+- Sandbox: 1 CPU, about 1 GB RAM, no /dev/kvm. An Android emulator cannot run here with acceleration, so no on-device run or screenshot from this sandbox. Its toolchain (JDK 17, Gradle 8.9, Android SDK) can compile and run JVM unit tests when the build stage opens.
+- GitHub Actions: the emulator-runner action (github.com/ReactiveCircus/android-emulator-runner) documents hardware-accelerated emulators on Linux runners with KVM enabled, and the GitHub runners page calls nested virtualization experimental and unsupported. So a CI job can plausibly boot an emulator, run instrumented tests and capture screenshots as artifacts. Not tried; an emulator on the CI runner is not the owner's phone, and feasibility for this repository's visibility and runner type is unverified.
+- Not available: Paparazzi/Roborazzi style render tests are not in the project; adding them is a dependency decision for the build stage.
