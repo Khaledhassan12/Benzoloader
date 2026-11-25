@@ -26,7 +26,7 @@ class DownloadEngineTest {
     private fun sha(b: ByteArray) = MessageDigest.getInstance("SHA-256").digest(b).toList()
 
     /** Builds a response like a real file server. */
-    private fun respond(req: RecordedRequest, honorRange: Boolean, policy: SocketPolicy = SocketPolicy.KEEP_OPEN, throttle: Boolean = false): MockResponse {
+    private fun respond(req: RecordedRequest, honorRange: Boolean, policy: SocketPolicy = SocketPolicy.KEEP_OPEN, throttle: Boolean = false, etag: String? = null): MockResponse {
         val range = req.getHeader("Range")
         var start = 0; var end = data.size - 1
         val r = MockResponse()
@@ -38,6 +38,7 @@ class DownloadEngineTest {
             r.setResponseCode(206).setHeader("Content-Range", "bytes $start-$end/${data.size}")
         } else r.setResponseCode(200)
         if (honorRange) r.setHeader("Accept-Ranges", "bytes")
+        if (etag != null) r.setHeader("ETag", etag)
         val body = Buffer().write(data, start, end - start + 1)
         r.setBody(body)
         r.socketPolicy = policy
@@ -55,6 +56,8 @@ class DownloadEngineTest {
                 "/flaky" -> if (flakyHits.incrementAndGet() <= 3 && request.getHeader("Range") != "bytes=0-0")
                     respond(request, true, SocketPolicy.DISCONNECT_DURING_RESPONSE_BODY) else respond(request, true)
                 "/slow" -> respond(request, true, throttle = true)
+                "/slowtag" -> respond(request, true, throttle = true, etag = "\"v1\"")
+                "/slowtag2" -> respond(request, true, throttle = true, etag = "\"v2\"")
                 "/badlen" -> respond(request, true, SocketPolicy.DISCONNECT_DURING_RESPONSE_BODY)
                 else -> MockResponse().setResponseCode(404)
             }
@@ -172,5 +175,36 @@ class DownloadEngineTest {
         assertTrue(r.isSuccess)
         val seen = generateSequence { server.takeRequest(200, TimeUnit.MILLISECONDS) }.toList()
         assertTrue(seen.isNotEmpty() && seen.all { it.getHeader("User-Agent") == "UA-Test" && it.getHeader("Cookie") == "a=b" })
+    }
+
+    /** Pauses a throttled download part-way and returns the saved chunks. */
+    private suspend fun pausedChunks(path: String): List<DownloadChunk> = coroutineScope {
+        val store = mutableListOf<DownloadChunk>()
+        val job = launch(Dispatchers.IO) { runCatching { run(item(path, 4), store = store) } }
+        delay(700)
+        job.cancelAndJoin()
+        store.map { it.copy() }
+    }
+
+    @Test fun resumedRangedRequestsCarryIfRange() = runBlocking {
+        val saved = pausedChunks("/slowtag")
+        assertTrue(saved.sumOf { it.downloadedSize } > 0)
+        while (server.takeRequest(50, TimeUnit.MILLISECONDS) != null) { /* drop requests of the first run */ }
+        val r = run(item("/slowtag", 4), existing = saved)
+        assertTrue(r.exceptionOrNull()?.toString() ?: "", r.isSuccess)
+        assertEquals(sha(data), sha(File(dir, "out.bin").readBytes()))
+        val seen = generateSequence { server.takeRequest(200, TimeUnit.MILLISECONDS) }.toList()
+        val ranged = seen.filter { it.getHeader("Range") != null && it.getHeader("Range") != "bytes=0-0" }
+        assertTrue(ranged.isNotEmpty())
+        assertTrue(ranged.all { it.getHeader("If-Range") == "\"v1\"" })
+    }
+
+    @Test fun fileChangedOnServerRestartsCleanOnResume() = runBlocking {
+        val saved = pausedChunks("/slowtag")
+        // the same download now answers with another version tag: the old partial data must not be reused
+        val changed = item("/slowtag2", 4)
+        val r = run(changed, existing = saved)
+        assertTrue(r.exceptionOrNull()?.toString() ?: "", r.isSuccess)
+        assertEquals(sha(data), sha(File(dir, "out.bin").readBytes()))
     }
 }
