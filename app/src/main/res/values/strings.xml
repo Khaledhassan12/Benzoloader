@@ -69,6 +69,7 @@
     <string name="status_connecting">Connecting...</string>
     <string name="status_downloading">Downloading</string>
     <string name="status_paused">Paused</string>
+    <string name="toast_downloaded">Downloaded %1$s</string>
     <string name="status_completed">Completed</string>
     <string name="status_error">Error</string>
 

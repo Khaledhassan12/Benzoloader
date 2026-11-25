@@ -209,6 +209,7 @@ class DownloadService : Service() {
                 repository.updateStatusAndSpeed(id, DownloadStatus.COMPLETED, 0L)
                 val completedItem = repository.getDownload(id) ?: item
                 notificationHelper.showCompletedNotification(completedItem)
+                notificationHelper.showFinishedToast(completedItem.fileName)
                 if (settings.soundOnComplete) {
                     notificationHelper.playSound(R.raw.done)
                 }
@@ -253,7 +254,7 @@ class DownloadService : Service() {
                 notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnError, settings.vibrateErrorMs))
             } else {
                 repository.updateStatusAndSpeed(id, DownloadStatus.COMPLETED, 0L)
-                (repository.getDownload(id) ?: item).let { notificationHelper.showCompletedNotification(it) }
+                (repository.getDownload(id) ?: item).let { notificationHelper.showCompletedNotification(it); notificationHelper.showFinishedToast(it.fileName) }
                 if (settings.soundOnComplete) notificationHelper.playSound(R.raw.done)
                 notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateSuccessMs))
                 if (exitIfFinished(justCompleted = true)) return@launch

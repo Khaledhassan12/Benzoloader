@@ -69,6 +69,7 @@
     <string name="status_connecting">جار الاتصال...</string>
     <string name="status_downloading">جار التحميل</string>
     <string name="status_paused">متوقف مؤقتاً</string>
+    <string name="toast_downloaded">تم تحميل %1$s</string>
     <string name="status_completed">مكتمل</string>
     <string name="status_error">خطأ</string>
 

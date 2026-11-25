@@ -224,6 +224,13 @@ class NotificationHelper(private val context: Context) {
         }
     }
 
+    /** Short on-screen message when a download finishes (Video 8 shows one). Plain system toast: the reference toast carries the app icon, ours does not yet. */
+    fun showFinishedToast(fileName: String) {
+        android.os.Handler(android.os.Looper.getMainLooper()).post {
+            android.widget.Toast.makeText(context, context.getString(R.string.toast_downloaded, fileName), android.widget.Toast.LENGTH_SHORT).show()
+        }
+    }
+
     fun playSound(rawResId: Int) {
         try {
             val mediaPlayer = MediaPlayer.create(context, rawResId)
