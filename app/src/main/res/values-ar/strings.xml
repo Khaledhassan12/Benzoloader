@@ -302,5 +302,7 @@
     <string name="pref_list_bottom">إضافة التحميلات الجديدة في آخر القائمة</string>
     <string name="sum_list_bottom">يسري عند فتح القائمة المرة الجاية. ترتيب البدء من الخيار اللي فوقه</string>
     <string name="pref_quick_add">إضافة الروابط من التطبيقات التانية من غير فتح المحرر</string>
-    <string name="sum_quick_add">بتشتغل مع الروابط اللي بتفتحها أو بتشاركها للتطبيق. التحميل بيبدأ علطول. لو في مشكلة في المجلد المحرر بيفتح مع رسالة</string>
+    <string name="sum_quick_add">بتشتغل مع الروابط اللي بتفتحها أو بتشاركها للتطبيق. لو في مشكلة في المجلد المحرر بيفتح مع رسالة</string>
+    <string name="pref_quick_add_start">ابدأ التحميل بعد الإضافة</string>
+    <string name="sum_quick_add_start">لو مقفول: بتتضاف للطابور وقواعد الطابور هي اللي تحدد وقت البدء</string>
 </resources>

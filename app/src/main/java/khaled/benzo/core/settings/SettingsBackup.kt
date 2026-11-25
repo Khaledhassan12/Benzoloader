@@ -45,6 +45,7 @@ object SettingsBackup {
         "torrent_dht" to Spec.Bool,
         "newest_first" to Spec.Bool,
         "quick_add_links" to Spec.Bool,
+        "quick_add_start" to Spec.Bool,
         "list_add_to_bottom" to Spec.Bool,
         "torrent_fixed_port" to Spec.Bool,
         "torrent_port" to Spec.IntRange(1024, 65535, 1),

@@ -65,7 +65,7 @@ class EditorActivity : AppCompatActivity() {
             // The folder check inside submitDownload still runs; a problem shows the usual dialog on this screen.
             val external = intent.action == Intent.ACTION_VIEW || intent.action == Intent.ACTION_SEND
             if (autoAdd && external && viewModel.settingsRepository.quickAddLinks) {
-                binding.root.post { submitDownload(startNow = true) }
+                binding.root.post { submitDownload(startNow = viewModel.settingsRepository.quickAddStart) }
             }
         }
     }

@@ -22,6 +22,7 @@ class SettingsActivity : AppCompatActivity() {
         loadCurrentSettings()
         showOnlyRequestedSection()
         bindDependents(binding.switchTorrentSeed, binding.txtSeedRatio, binding.sliderSeedRatio, binding.txtSeedMinutes, binding.sliderSeedMinutes)
+        bindDependents(binding.switchQuickAdd, binding.switchQuickAddStart)
         bindDependents(binding.switchCatalog, binding.catalogCategoryList)
         bindDependents(binding.switchSchedule, binding.btnScheduleStart, binding.btnScheduleStop)
     }
@@ -201,6 +202,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
         binding.switchNewestFirst.isChecked = repo.newestFirst
         binding.switchQuickAdd.isChecked = repo.quickAddLinks
+        binding.switchQuickAddStart.isChecked = repo.quickAddStart
         binding.switchListBottom.isChecked = repo.listAddToBottom
         binding.sliderMinThread.value = repo.minThreadKb.toFloat()
         binding.sliderVibSuccess.value = repo.vibrateSuccessMs.toFloat()
@@ -228,6 +230,7 @@ class SettingsActivity : AppCompatActivity() {
         val repo = khaled.benzo.data.repository.SettingsRepository(this)
         repo.newestFirst = binding.switchNewestFirst.isChecked
         repo.quickAddLinks = binding.switchQuickAdd.isChecked
+        repo.quickAddStart = binding.switchQuickAddStart.isChecked
         repo.listAddToBottom = binding.switchListBottom.isChecked
         repo.minThreadKb = binding.sliderMinThread.value.toInt()
         repo.vibrateSuccessMs = binding.sliderVibSuccess.value.toInt()

@@ -302,5 +302,7 @@
     <string name="pref_list_bottom">Add new downloads to the bottom of the list</string>
     <string name="sum_list_bottom">Takes effect next time the list opens. Start order is the switch above</string>
     <string name="pref_quick_add">Add links from other apps without opening the editor</string>
-    <string name="sum_quick_add">Applies to links you open or share to the app. Starts the download at once. If the folder has a problem, the editor opens with a message</string>
+    <string name="sum_quick_add">Applies to links you open or share to the app. If the folder has a problem, the editor opens with a message</string>
+    <string name="pref_quick_add_start">Start them after adding</string>
+    <string name="sum_quick_add_start">Off: they go to the queue and the queue rules decide when they start</string>
 </resources>
