@@ -123,8 +123,16 @@ class NotificationHelper(private val context: Context) {
             0
         }
 
+        val remainingText = if (aggregateSpeed > 0L && totalBytes > totalDownloaded) {
+            val sec = (totalBytes - totalDownloaded) / aggregateSpeed
+            String.format(java.util.Locale.US, "%02d:%02d", sec / 60, sec % 60)
+        } else null
         val contentText = if (totalBytes > 0) {
-            "${SpeedTracker.formatSize(totalDownloaded)} / ${SpeedTracker.formatSize(totalBytes)} · $speedText"
+            listOfNotNull(
+                "${SpeedTracker.formatSize(totalDownloaded)} / ${SpeedTracker.formatSize(totalBytes)}",
+                speedText,
+                remainingText
+            ).joinToString(" · ")
         } else {
             speedText
         }
@@ -134,6 +142,7 @@ class NotificationHelper(private val context: Context) {
             .setContentTitle(title)
             .setContentText(contentText)
             .setContentIntent(mainPendingIntent)
+            .setSubText(context.getString(R.string.notif_queue_count, activeTasks.size))
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setVisibility(

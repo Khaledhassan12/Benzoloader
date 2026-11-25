@@ -379,4 +379,5 @@
     <string name="top_perm_title">مطلوب إذن</string>
     <string name="top_perm_msg">لعرض شريط التقدم فوق التطبيقات الأخرى، فعّل «العرض فوق التطبيقات الأخرى» لـ Benzoloader في الشاشة التالية. يظهر الشريط فقط أثناء وجود تحميل شغّال.</string>
     <string name="top_perm_open">فتح الإعدادات</string>
+    <string name="notif_queue_count">الطابور %1$d</string>
 </resources>

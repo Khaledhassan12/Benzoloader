@@ -379,4 +379,5 @@
     <string name="top_perm_title">Permission needed</string>
     <string name="top_perm_msg">To draw the progress strip over other apps, allow "Display over other apps" for Benzoloader on the next screen. The strip only appears while a download is running.</string>
     <string name="top_perm_open">Open settings</string>
+    <string name="notif_queue_count">Queue %1$d</string>
 </resources>
