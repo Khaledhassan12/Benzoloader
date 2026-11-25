@@ -100,6 +100,8 @@ class TorrentEngine(context: Context? = null) {
 
     private fun handle(infoHash: String) = session.find(Sha1Hash(infoHash))
 
+    fun hasTorrent(infoHash: String): Boolean = session.isRunning && handle(infoHash)?.isValid == true
+
     fun pauseTorrent(infoHash: String) { handle(infoHash)?.takeIf { it.isValid }?.pause() }
     fun resumeTorrent(infoHash: String) { handle(infoHash)?.takeIf { it.isValid }?.resume() }
 

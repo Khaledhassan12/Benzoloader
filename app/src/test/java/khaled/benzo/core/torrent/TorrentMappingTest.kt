@@ -38,3 +38,15 @@ class TorrentMappingTest {
         assertEquals("DOWNLOADING", TorrentMapping.stateName("DOWNLOADING", false, false))
     }
 }
+
+class TorrentPriorityStoreTest {
+    @org.junit.Test fun roundTrip() {
+        val enc = TorrentMapping.encodePriorities(listOf(0, 1, 7, 99, -2))
+        org.junit.Assert.assertEquals("0,1,7,7,0", enc)
+        org.junit.Assert.assertEquals(listOf(0, 1, 7, 7, 0), TorrentMapping.decodePriorities(enc))
+    }
+    @org.junit.Test fun badInputIsNull() {
+        org.junit.Assert.assertNull(TorrentMapping.decodePriorities("a,b"))
+        org.junit.Assert.assertNull(TorrentMapping.decodePriorities(null))
+    }
+}

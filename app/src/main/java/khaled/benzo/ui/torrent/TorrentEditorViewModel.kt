@@ -84,9 +84,35 @@ class TorrentEditorViewModel(application: Application) : AndroidViewModel(applic
                     val files = _torrentFiles.value
                     val prios = TorrentMapping.effectivePriorities(files.map { it.isSelected }, files.map { it.priority })
                     val bytes = torrentBytes
-                    if (bytes != null) torrentEngine.addTorrentBytes(bytes, File(savePath), prios)
-                    else if (TorrentMapping.isMagnet(source)) torrentEngine.addMagnet(source, File(savePath))
-                    else null
+                    val ctx = getApplication<Application>()
+                    val hash: String?
+                    var url = source
+                    if (bytes != null) {
+                        hash = com.frostwire.jlibtorrent.TorrentInfo.bdecode(bytes).infoHash().toHex()
+                        val dir = File(ctx.filesDir, "torrents").apply { mkdirs() }
+                        File(dir, "$hash.torrent").writeBytes(bytes)
+                        File(dir, "$hash.prio").writeText(TorrentMapping.encodePriorities(prios))
+                        url = File(dir, "$hash.torrent").absolutePath
+                    } else {
+                        hash = TorrentMapping.magnetInfoHash(source)
+                    }
+                    if (hash != null) {
+                        val wanted = files.filter { it.isSelected }.sumOf { it.size }
+                        khaled.benzo.data.repository.DownloadRepository(ctx).insertDownload(
+                            khaled.benzo.data.model.DownloadItem(
+                                url = url,
+                                fileName = _name.value.ifBlank { hash },
+                                savePath = savePath,
+                                totalBytes = if (files.isEmpty()) -1L else wanted,
+                                category = khaled.benzo.data.model.FileCategory.TORRENT,
+                                isTorrent = true,
+                                torrentInfoHash = hash
+                            )
+                        )
+                        ctx.startService(android.content.Intent(ctx, khaled.benzo.service.DownloadService::class.java)
+                            .setAction(khaled.benzo.service.DownloadService.ACTION_PROCESS_QUEUE))
+                    }
+                    hash
                 } catch (e: Exception) {
                     null
                 }

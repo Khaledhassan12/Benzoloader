@@ -54,4 +54,12 @@ object TorrentMapping {
         engineState == "DOWNLOADING" || engineState == "ALLOCATING" -> "DOWNLOADING"
         else -> "UNKNOWN"
     }
+
+    /** Stored next to the .torrent so the service can re-apply file choices after a restart. */
+    fun encodePriorities(p: List<Int>): String = p.joinToString(",") { clampPriority(it).toString() }
+
+    fun decodePriorities(s: String?): List<Int>? {
+        if (s.isNullOrBlank()) return null
+        return try { s.split(",").map { clampPriority(it.trim().toInt()) } } catch (e: NumberFormatException) { null }
+    }
 }

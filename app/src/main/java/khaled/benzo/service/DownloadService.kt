@@ -136,6 +136,7 @@ class DownloadService : Service() {
     private suspend fun requeueTask(id: Long) {
         activeJobs.remove(id)?.cancel()
         activeItems.remove(id)
+        torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.instance.pauseTorrent(it) }
         repository.updateStatusAndSpeed(id, DownloadStatus.QUEUED, 0L)
         if (activeJobs.isEmpty()) wakeLockManager.release()
     }
@@ -147,6 +148,8 @@ class DownloadService : Service() {
         wakeLockManager.acquire()
         repository.updateStatusAndSpeed(id, DownloadStatus.RUNNING, 0L)
         activeItems[id] = item.copy(status = DownloadStatus.RUNNING)
+
+        if (item.isTorrent) { startTorrentTask(item); return }
 
         val job = serviceScope.launch {
             val existingChunks = repository.getChunks(id)
@@ -199,6 +202,69 @@ class DownloadService : Service() {
         updateNotification()
     }
 
+    /** Drives one torrent through the libtorrent session and mirrors real stats into its download row. */
+    private suspend fun startTorrentTask(item: DownloadItem) {
+        val id = item.id
+        val hash = item.torrentInfoHash
+        if (hash == null) {
+            activeItems.remove(id)
+            repository.updateStatusAndSpeed(id, DownloadStatus.ERROR, 0L)
+            return
+        }
+        val job = serviceScope.launch {
+            var failed = false
+            try {
+                val engine = khaled.benzo.core.torrent.TorrentEngine.instance
+                if (engine.hasTorrent(hash)) {
+                    engine.resumeTorrent(hash)
+                } else {
+                    val dir = java.io.File(item.savePath)
+                    val tdir = java.io.File(filesDir, "torrents")
+                    val tf = java.io.File(tdir, "$hash.torrent")
+                    if (tf.exists()) {
+                        val prios = khaled.benzo.core.torrent.TorrentMapping
+                            .decodePriorities(java.io.File(tdir, "$hash.prio").takeIf { it.exists() }?.readText())
+                        engine.addTorrentFile(tf, dir, prios)
+                    } else if (khaled.benzo.core.torrent.TorrentMapping.isMagnet(item.url)) {
+                        if (engine.addMagnet(item.url, dir) == null) failed = true
+                    } else failed = true
+                }
+                while (!failed && isActive) {
+                    val st = engine.getStats(hash)
+                    if (st == null) { failed = true; break }
+                    repository.updateProgress(id, st.downloaded, st.downloadSpeed)
+                    activeItems[id] = item.copy(downloadedBytes = st.downloaded, speed = st.downloadSpeed,
+                        totalBytes = if (st.total > 0) st.total else item.totalBytes, status = DownloadStatus.RUNNING)
+                    updateNotification()
+                    if (st.isFinished) break
+                    delay(1000)
+                }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                failed = true
+            }
+            activeJobs.remove(id)
+            activeItems.remove(id)
+            if (failed) {
+                repository.updateStatusAndSpeed(id, DownloadStatus.ERROR, 0L)
+                notificationHelper.playSound(R.raw.error)
+            } else {
+                repository.updateStatusAndSpeed(id, DownloadStatus.COMPLETED, 0L)
+                (repository.getDownload(id) ?: item).let { notificationHelper.showCompletedNotification(it) }
+                if (settings.soundOnComplete) notificationHelper.playSound(R.raw.done)
+            }
+            if (activeJobs.isEmpty()) wakeLockManager.release()
+            updateNotification()
+        }
+        activeJobs[id] = job
+        updateNotification()
+    }
+
+    private fun torrentHashOf(id: Long): String? =
+        runCatching { kotlinx.coroutines.runBlocking { repository.getDownload(id) } }.getOrNull()
+            ?.takeIf { it.isTorrent }?.torrentInfoHash
+
     /** Editor fields (user agent, referer, cookies) must really reach the request. Never logged. */
     private fun buildHeaders(item: DownloadItem): Map<String, String> = buildMap {
         item.userAgent?.takeIf { it.isNotBlank() }?.let { put("User-Agent", it) }
@@ -211,6 +277,7 @@ class DownloadService : Service() {
         job?.cancel()
         activeItems.remove(id)
         serviceScope.launch {
+            torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.instance.pauseTorrent(it) }
             repository.updateStatusAndSpeed(id, DownloadStatus.PAUSED, 0L)
             updateNotification()
         }
@@ -224,6 +291,7 @@ class DownloadService : Service() {
         job?.cancel()
         activeItems.remove(id)
         serviceScope.launch {
+            torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.instance.removeTorrent(it, false) }
             repository.deleteDownload(id)
             updateNotification()
         }
