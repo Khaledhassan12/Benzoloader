@@ -157,6 +157,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getInt(KEY_VIB_SUCCESS, 150).coerceIn(50, 1000)
         set(value) = prefs.edit().putInt(KEY_VIB_SUCCESS, value.coerceIn(50, 1000)).apply()
 
+    /** Separate from the completion switch: a failure vibrates only when the user turns this on. Default OFF. */
+    var vibrateOnError: Boolean
+        get() = prefs.getBoolean(KEY_VIB_ERROR_ON, false)
+        set(value) = prefs.edit().putBoolean(KEY_VIB_ERROR_ON, value).apply()
+
     var vibrateErrorMs: Int
         get() = prefs.getInt(KEY_VIB_ERROR, 300).coerceIn(50, 1000)
         set(value) = prefs.edit().putInt(KEY_VIB_ERROR, value.coerceIn(50, 1000)).apply()
@@ -240,7 +245,7 @@ class SettingsRepository(context: Context) {
         KEY_PAUSE_AFTER_ERROR to pauseAfterError, KEY_AUTO_RESUME to autoResume,
         KEY_NOTIF_LOCK to notifOnLockScreen, KEY_NOTIF_PAUSE_ALL to notifPauseAllButton,
         KEY_KEEP_SCREEN to keepScreenOn, KEY_CLEAR_FINISHED to clearFinishedOnStart,
-        KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes, KEY_TORRENT_DHT to torrentDht, KEY_TORRENT_CONNECTIONS to torrentConnections, KEY_NEWEST_FIRST to newestFirst, KEY_MIN_THREAD_KB to minThreadKb, KEY_VIB_SUCCESS to vibrateSuccessMs, KEY_VIB_ERROR to vibrateErrorMs, KEY_DEFAULT_UA to defaultUserAgent, KEY_TORRENT_FIXED_PORT to torrentFixedPort, KEY_TORRENT_PORT to torrentPort, KEY_TORRENT_ANON to torrentAnonymous,
+        KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes, KEY_TORRENT_DHT to torrentDht, KEY_TORRENT_CONNECTIONS to torrentConnections, KEY_NEWEST_FIRST to newestFirst, KEY_MIN_THREAD_KB to minThreadKb, KEY_VIB_SUCCESS to vibrateSuccessMs, KEY_VIB_ERROR to vibrateErrorMs, KEY_VIB_ERROR_ON to vibrateOnError, KEY_DEFAULT_UA to defaultUserAgent, KEY_TORRENT_FIXED_PORT to torrentFixedPort, KEY_TORRENT_PORT to torrentPort, KEY_TORRENT_ANON to torrentAnonymous,
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor,
         KEY_DOWNLOAD_PATH to defaultDownloadPath
     )
@@ -294,6 +299,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_NEWEST_FIRST = "newest_first"
         private const val KEY_VIB_SUCCESS = "vibrate_success_ms"
         private const val KEY_VIB_ERROR = "vibrate_error_ms"
+        private const val KEY_VIB_ERROR_ON = "vibrate_on_error"
         private const val KEY_MIN_THREAD_KB = "min_thread_kb"
         private const val KEY_DEFAULT_UA = "default_user_agent"
         private const val KEY_TORRENT_FIXED_PORT = "torrent_fixed_port"

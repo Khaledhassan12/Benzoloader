@@ -288,4 +288,5 @@
     <string name="row_vib_success">اهتزاز عند النجاح</string>
     <string name="row_vib_error">اهتزاز عند الخطأ</string>
     <string name="val_ms">%1$d مللي ثانية</string>
+    <string name="pref_vibrate_on_error">اهتزاز عند فشل التحميل</string>
 </resources>

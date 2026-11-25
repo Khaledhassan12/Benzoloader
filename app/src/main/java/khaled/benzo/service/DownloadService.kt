@@ -218,7 +218,7 @@ class DownloadService : Service() {
                 val failedStatus = khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError)
                 repository.updateStatusAndSpeed(id, failedStatus, 0L)
                 notificationHelper.playSound(R.raw.error)
-                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateErrorMs))
+                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnError, settings.vibrateErrorMs))
                 autoResume.onFailure(id, failedStatus, result.exceptionOrNull())
             }
 
@@ -249,7 +249,7 @@ class DownloadService : Service() {
             if (!ok) {
                 repository.updateStatusAndSpeed(id, khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError), 0L)
                 notificationHelper.playSound(R.raw.error)
-                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateErrorMs))
+                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnError, settings.vibrateErrorMs))
             } else {
                 repository.updateStatusAndSpeed(id, DownloadStatus.COMPLETED, 0L)
                 (repository.getDownload(id) ?: item).let { notificationHelper.showCompletedNotification(it) }
