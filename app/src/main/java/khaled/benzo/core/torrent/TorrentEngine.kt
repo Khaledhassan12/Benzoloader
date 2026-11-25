@@ -138,6 +138,22 @@ class TorrentEngine(context: Context? = null) {
         return true
     }
 
+    /** Tracker addresses of a torrent in the live session, or null when it is not there. */
+    fun trackers(infoHash: String): List<String>? {
+        val h = handle(infoHash)?.takeIf { it.isValid } ?: return null
+        return h.trackers().map { it.url() }
+    }
+
+    /**
+     * Makes the torrent's tracker list exactly [urls] (already checked by TrackerPolicy), keeping the order as tiers.
+     * Lives in the running session only: the stored torrent data is not changed, so it is not remembered after a restart.
+     */
+    fun replaceTrackers(infoHash: String, urls: List<String>): Boolean {
+        val h = handle(infoHash)?.takeIf { it.isValid } ?: return false
+        h.replaceTrackers(urls.mapIndexed { i, u -> com.frostwire.jlibtorrent.AnnounceEntry(u).also { it.tier(i.toShort()) } })
+        return true
+    }
+
     fun pauseTorrent(infoHash: String) { handle(infoHash)?.takeIf { it.isValid }?.pause() }
     fun resumeTorrent(infoHash: String) { handle(infoHash)?.takeIf { it.isValid }?.resume() }
 
