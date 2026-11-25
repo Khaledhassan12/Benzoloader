@@ -42,42 +42,40 @@ class DownloadAdapter(
 
         fun bind(item: DownloadItem) {
             binding.txtFileName.text = item.fileName
-            binding.txtStatusSubtitle.text = "${khaled.benzo.ui.common.StatusText.of(binding.root.context, item.status, waiting[item.id])} · ${item.parts} parts · ${item.url}"
+            binding.txtStatusSubtitle.text = "${khaled.benzo.ui.common.StatusText.of(binding.root.context, item.status, waiting[item.id])}"
 
             // Progress calculation
             val percent = if (item.totalBytes > 0) {
                 ((item.downloadedBytes.toDouble() / item.totalBytes.toDouble()) * 100).toInt()
             } else 0
 
-            binding.progressBar.progress = percent
-            binding.txtSizes.text = String.format(
-                Locale.US,
-                "%s / %s (%d%%)",
-                formatBytes(item.downloadedBytes),
-                if (item.totalBytes > 0) formatBytes(item.totalBytes) else "?",
-                percent
+            binding.progressBar.progress = if (item.status == DownloadStatus.COMPLETED) 100 else percent
+            binding.progressBar.progressDrawable = androidx.core.content.ContextCompat.getDrawable(
+                binding.root.context,
+                if (item.status == DownloadStatus.COMPLETED) R.drawable.bar_done else R.drawable.bar_running
             )
-
-            binding.txtSpeed.text = if (item.status == DownloadStatus.RUNNING) {
-                String.format(Locale.US, "%s/s", formatBytes(item.speed))
+            binding.progressBar.isIndeterminate = false
+            val total = if (item.totalBytes > 0) formatBytes(item.totalBytes) else "?"
+            binding.txtSizes.text = if (item.status == DownloadStatus.COMPLETED) total
+                else formatBytes(item.downloadedBytes) + " / " + total
+            val running = item.status == DownloadStatus.RUNNING
+            binding.txtSpeed.text = if (running) String.format(Locale.US, "%s/s", formatBytes(item.speed)) else ""
+            // remaining time from aggregate bytes and current speed only
+            binding.txtEta.text = if (running && item.speed > 0 && item.totalBytes > 0) {
+                val seconds = (item.totalBytes - item.downloadedBytes).coerceAtLeast(0) / item.speed
+                String.format(Locale.US, "%02d:%02d", seconds / 60, seconds % 60)
+            } else if (item.status == DownloadStatus.COMPLETED && item.completedDate > 0) {
+                android.text.format.DateFormat.format("yyyy-MM-dd HH:mm", item.completedDate).toString()
             } else ""
 
-            binding.txtEta.text = if (item.status == DownloadStatus.RUNNING && item.speed > 0 && item.totalBytes > 0) {
-                val remainingBytes = item.totalBytes - item.downloadedBytes
-                val seconds = remainingBytes / item.speed
-                String.format(Locale.US, "ETA: %02d:%02d", seconds / 60, seconds % 60)
-            } else ""
-
-            // Status icon for control button
-            val controlRes = when (item.status) {
+            binding.imgFileIcon.setImageResource(when (item.status) {
                 DownloadStatus.RUNNING -> R.drawable.stat_pause
                 DownloadStatus.COMPLETED -> R.drawable.stat_success
                 else -> R.drawable.stat_start
-            }
-            binding.btnControl.setImageResource(controlRes)
+            })
+            binding.imgFileIcon.setOnClickListener { onControlClick(item) }
 
             binding.root.setOnClickListener { onItemClick(item) }
-            binding.btnControl.setOnClickListener { onControlClick(item) }
             binding.btnItemMenu.setOnClickListener { v -> onMenuClick(item, v) }
         }
 

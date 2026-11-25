@@ -1,138 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="4dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
-    app:strokeColor="@color/divider"
-    app:strokeWidth="1dp">
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imgFileIcon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:contentDescription="@null"
+            android:src="@drawable/stat_start" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <!-- File Category Icon -->
-            <ImageView
-                android:id="@+id/imgFileIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:contentDescription="@null"
-                android:src="@drawable/stat_card"
-                app:tint="?attr/colorPrimary" />
-
-            <!-- Title & Info -->
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/txtFileName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:ellipsize="middle"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                tools:text="file-name.ext" />
 
-                <TextView
-                    android:id="@+id/txtFileName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="middle"
-                    android:maxLines="1"
-                    android:textAppearance="?attr/textAppearanceTitleMedium"
-                    android:textStyle="bold"
-                    tools:text="Ubuntu-24.04-desktop-amd64.iso" />
-
-                <TextView
-                    android:id="@+id/txtStatusSubtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textColor="?android:textColorSecondary"
-                    tools:text="Downloading · 4 parts · https://releases.ubuntu.com" />
-
-            </LinearLayout>
-
-            <!-- Control Button (Pause/Resume) -->
-            <ImageButton
-                android:id="@+id/btnControl"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@null"
-                android:scaleType="centerInside"
-                android:src="@drawable/stat_pause"
-                app:tint="?attr/colorPrimary" />
-
-            <!-- Overflow Menu -->
-            <ImageButton
-                android:id="@+id/btnItemMenu"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@null"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_more_vert"
-                app:tint="?android:textColorSecondary" />
-
+            <TextView
+                android:id="@+id/txtStatusSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?android:textColorSecondary"
+                tools:text="Downloading" />
         </LinearLayout>
 
-        <!-- Progress Bar -->
+        <ImageButton
+            android:id="@+id/btnItemMenu"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_more_vert"
+            app:tint="?android:textColorSecondary" />
+    </LinearLayout>
+
+    <!-- One bar; the texts sit on it. Values are real aggregate bytes only. -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:layout_marginTop="6dp">
+
         <ProgressBar
             android:id="@+id/progressBar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="6dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="match_parent"
             android:max="100"
             android:progress="45"
-            android:progressDrawable="@drawable/back_progress" />
+            android:progressDrawable="@drawable/bar_running" />
 
-        <!-- Metrics Row: Size, Speed, ETA, Percentage -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingHorizontal="6dp">
 
             <TextView
                 android:id="@+id/txtSizes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textStyle="bold"
-                tools:text="45.2 MB / 120.0 MB (37%)" />
+                android:maxLines="1"
+                android:textSize="12sp"
+                tools:text="24.7M / 112M" />
 
             <TextView
                 android:id="@+id/txtSpeed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold"
-                tools:text="2.4 MB/s" />
+                android:maxLines="1"
+                android:textSize="12sp"
+                tools:text="3.2MB/s" />
 
             <TextView
                 android:id="@+id/txtEta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="?android:textColorSecondary"
-                tools:text="ETA: 00:31" />
-
+                android:layout_marginStart="10dp"
+                android:maxLines="1"
+                android:textSize="12sp"
+                tools:text="00:22" />
         </LinearLayout>
-
-    </LinearLayout>
-
-</com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</LinearLayout>
