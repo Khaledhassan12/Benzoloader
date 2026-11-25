@@ -113,6 +113,16 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_CLEAR_FINISHED, false)
         set(value) = prefs.edit().putBoolean(KEY_CLEAR_FINISHED, value).apply()
 
+    /** Download torrent pieces in order. Off by default. Applied when a torrent starts or resumes in this app. */
+    var torrentSequential: Boolean
+        get() = prefs.getBoolean(KEY_TORRENT_SEQ, false)
+        set(value) = prefs.edit().putBoolean(KEY_TORRENT_SEQ, value).apply()
+
+    /** Keep uploading a finished torrent. On by default: the app never stopped seeding before this setting existed. */
+    var torrentSeedAfterFinish: Boolean
+        get() = prefs.getBoolean(KEY_TORRENT_SEED, true)
+        set(value) = prefs.edit().putBoolean(KEY_TORRENT_SEED, value).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -138,6 +148,8 @@ class SettingsRepository(context: Context) {
         private const val KEY_ERROR_RETRIES = "error_retries"
         private const val KEY_PAUSE_AFTER_ERROR = "pause_after_error"
         private const val KEY_AUTO_RESUME = "auto_resume"
+        private const val KEY_TORRENT_SEQ = "torrent_sequential"
+        private const val KEY_TORRENT_SEED = "torrent_seed_after_finish"
         private const val KEY_KEEP_SCREEN = "keep_screen_on"
         private const val KEY_CLEAR_FINISHED = "clear_finished_on_start"
         private const val KEY_NOTIF_LOCK = "notif_lock_screen"

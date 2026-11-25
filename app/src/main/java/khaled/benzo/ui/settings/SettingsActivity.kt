@@ -73,6 +73,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchNotifPauseAll.isChecked = repo.notifPauseAllButton
         binding.switchKeepScreenOn.isChecked = repo.keepScreenOn
         binding.switchClearFinished.isChecked = repo.clearFinishedOnStart
+        binding.switchTorrentSequential.isChecked = repo.torrentSequential
+        binding.switchTorrentSeed.isChecked = repo.torrentSeedAfterFinish
     }
 
     private fun saveAndFinish() {
@@ -95,7 +97,9 @@ class SettingsActivity : AppCompatActivity() {
             notifLockScreen = binding.switchNotifLockScreen.isChecked,
             notifPauseAll = binding.switchNotifPauseAll.isChecked,
             keepScreenOn = binding.switchKeepScreenOn.isChecked,
-            clearFinished = binding.switchClearFinished.isChecked
+            clearFinished = binding.switchClearFinished.isChecked,
+            torrentSequential = binding.switchTorrentSequential.isChecked,
+            torrentSeed = binding.switchTorrentSeed.isChecked
         )
         finish()
     }

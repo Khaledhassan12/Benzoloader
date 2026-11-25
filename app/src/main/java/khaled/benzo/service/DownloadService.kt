@@ -49,7 +49,7 @@ class DownloadService : Service() {
         limiter = TokenBucketLimiter(settings.speedLimitBytesPerSec)
         deviceConditions = DeviceConditions(this, settings)
         httpRunner = HttpTaskRunner(repository, downloadEngine, limiter)
-        torrentRunner = TorrentTaskRunner(repository, filesDir)
+        torrentRunner = TorrentTaskRunner(repository, filesDir, { settings.torrentSequential }, { settings.torrentSeedAfterFinish })
         autoResume = AutoResumeScheduler(serviceScope, repository, settings)
         ScheduleManager.rearm(this)
 

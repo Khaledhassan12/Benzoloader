@@ -284,6 +284,20 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/pref_clear_finished" />
 
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchTorrentSequential"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/pref_torrent_sequential" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchTorrentSeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/pref_torrent_seed" />
+
         </LinearLayout>
 
     </LinearLayout>

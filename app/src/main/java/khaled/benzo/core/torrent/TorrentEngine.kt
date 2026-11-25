@@ -102,6 +102,13 @@ class TorrentEngine(context: Context? = null) {
 
     fun hasTorrent(infoHash: String): Boolean = session.isRunning && handle(infoHash)?.isValid == true
 
+    /** Turns sequential download on or off for a torrent the session knows. Returns false when the session has no such torrent yet. */
+    fun setSequential(infoHash: String, sequential: Boolean): Boolean {
+        val h = handle(infoHash)?.takeIf { it.isValid } ?: return false
+        if (sequential) h.setFlags(TORRENT_SEQUENTIAL) else h.unsetFlags(TORRENT_SEQUENTIAL)
+        return true
+    }
+
     fun pauseTorrent(infoHash: String) { handle(infoHash)?.takeIf { it.isValid }?.pause() }
     fun resumeTorrent(infoHash: String) { handle(infoHash)?.takeIf { it.isValid }?.resume() }
 
@@ -168,6 +175,7 @@ class TorrentEngine(context: Context? = null) {
         /** Why torrents are unavailable (null when they work). Shown instead of crashing. */
         fun unavailableReason(): String? { capability.engineOrNull(); return capability.diagnostic() }
         private val SESSION_DELETE_FILES: remove_flags_t = com.frostwire.jlibtorrent.SessionHandle.DELETE_FILES
+        private val TORRENT_SEQUENTIAL = com.frostwire.jlibtorrent.TorrentFlags.SEQUENTIAL_DOWNLOAD
         private val PAUSED_FLAG = com.frostwire.jlibtorrent.TorrentFlags.PAUSED
     }
 }

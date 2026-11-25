@@ -27,7 +27,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         notifLockScreen: Boolean,
         notifPauseAll: Boolean,
         keepScreenOn: Boolean,
-        clearFinished: Boolean
+        clearFinished: Boolean,
+        torrentSequential: Boolean,
+        torrentSeed: Boolean
     ) {
         repository.maxConcurrentDownloads = maxDownloads
         repository.defaultPartsCount = defaultThreads
@@ -48,6 +50,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         repository.notifPauseAllButton = notifPauseAll
         repository.keepScreenOn = keepScreenOn
         repository.clearFinishedOnStart = clearFinished
+        repository.torrentSequential = torrentSequential
+        repository.torrentSeedAfterFinish = torrentSeed
         khaled.benzo.service.ScheduleManager.rearm(getApplication())
     }
 }

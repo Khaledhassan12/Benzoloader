@@ -55,3 +55,8 @@ State words: **done-tested** (JVM tests passed), **done-compiled** (built, no te
 3. Encrypt cookies and headers at rest (Android Keystore, AES-GCM) with a pure wrapper interface so the logic is testable.
 4. Images and "Other" categories, configurable folder names.
 5. Auto-resume toggle and automation settings that map to existing service behaviour.
+
+## Torrent options, written-unbuilt (added after fd59931)
+- Sequential download: Settings switch (off by default), applied to a torrent when it starts or resumes in this app, using libtorrent's sequential flag (confirmed to exist in the jlibtorrent 1.2.0.18 jar with javap). Not applied to a torrent already running when the switch changes.
+- Keep uploading after finish: Settings switch, ON by default because the app never stopped seeding before. When off, the torrent is paused as soon as it finishes. Seeding limits (ratio, time), the per-torrent seeding count, trackers, DHT switches, connection limits and resume data are NOT done.
+- Found by reading: the runner treated "torrent not in the session yet" right after adding as a failure, but jlibtorrent adds asynchronously. A new pure StartGrace (3 tests written, not run) now lets it wait up to 20 polls (about 20 s) before failing. Never run on a device, so whether the failure really happened is unverified.
