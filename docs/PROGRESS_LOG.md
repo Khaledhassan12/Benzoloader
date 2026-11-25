@@ -112,6 +112,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 ## Batch history (newest first)
 | Commit | Time (25 Nov, Cairo) | Change | State |
 |---|---|---|---|
+| `2260b7b` | 17:30 | Disabling a container row now disables its child rows (Cataloging category rows) | WRITTEN, NOT RENDERED |
 | `8d66a24` | 17:29 | If-Range on resumed requests | WRITTEN, TESTS WRITTEN |
 | `2b5c204` | 17:25 | Tracker edit dialog on the Properties screen | WRITTEN |
 | `176eebb` | 17:25 | Tracker policy and engine accessors | WRITTEN, TESTS WRITTEN |
