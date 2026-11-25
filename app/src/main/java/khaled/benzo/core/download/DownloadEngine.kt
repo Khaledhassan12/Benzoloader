@@ -136,7 +136,8 @@ class DownloadEngine(
         // 2. Progress accounting (atomic; workers run on several threads)
         val downloaded = java.util.concurrent.atomic.AtomicLong(chunks.sumOf { it.downloadedSize })
         val speedTracker = SpeedTracker()
-        val snapshot = { chunks.map { it.copy() } }
+        // Saved progress is the flushed position, never the live one that may still sit in the OS cache.
+        val snapshot = { chunks.map { it.copy(currentByte = it.persistedByte()) } }
 
         try {
             coroutineScope {

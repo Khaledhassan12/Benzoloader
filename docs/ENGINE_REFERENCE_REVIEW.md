@@ -26,7 +26,8 @@ Scope of this file: README and documentation pages only. It is not a code-level 
 - Unknown length: single chunk path exists (length -1).
 - Final length verification before completing (DownloadEngine, "Verification failed").
 - Chunks persisted in Room (ChunkEntity) with byte positions.
-- Added (written, unbuilt): chunk workers flush file data (channel.force) every 8 MB and when a chunk stops, so saved progress cannot run far ahead of the disk after a power loss or system crash (before, nothing was ever flushed explicitly). Also: a magnet torrent keeps its metadata as a .torrent file once the session has it.
+- Added (written, unbuilt, UNVERIFIED): chunk workers call FileChannel.force every 8 MB and when a chunk stops, and the database now saves the last flushed position of each chunk (DownloadChunk.durableByte) instead of the live one. Intended effect: saved progress is never ahead of a successful flush. NOT proven: that force() makes the bytes durable on every device and file system, that a recovered file has no hole (the file is preallocated with setLength, so its length says nothing about which ranges are complete), or that process kill is safe in every ordering. Recovery does not reconcile the saved chunks against the file contents, and there are no failure-injection tests yet. Treat all durability claims as unverified until such tests run.
+- Added (written, unbuilt): a magnet torrent keeps its metadata as a .torrent file once the session has it. This is NOT fast-resume.
 - Not present: If-Range on resume requests (the validator check before resume exists); checksum verification when a trusted checksum is offered; libtorrent fast-resume data (jlibtorrent has TorrentHandle.saveResumeData and SaveResumeDataAlert, and libtorrent.write_resume_data_buf; not wired, so a restarted torrent re-checks its files).
 
 ## Torrent side

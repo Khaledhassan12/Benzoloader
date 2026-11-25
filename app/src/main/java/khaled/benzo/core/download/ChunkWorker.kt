@@ -142,11 +142,11 @@ class ChunkWorker(
                         unsynced += read
                         // Progress is saved in the database while the bytes may still sit in the OS cache. After a power loss
                         // or system crash the database could be ahead of the disk, so flush regularly. A killed app is safe either way.
-                        if (unsynced >= SYNC_EVERY_BYTES) { channel.force(false); unsynced = 0L }
+                        if (unsynced >= SYNC_EVERY_BYTES) { channel.force(false); chunk.durableByte = pos; unsynced = 0L }
                         onProgress(chunk, read)
                     }
                     } finally {
-                        if (unsynced > 0L) runCatching { channel.force(false) } // also on pause, cancel and failure
+                        if (unsynced > 0L) runCatching { channel.force(false); chunk.durableByte = chunk.currentByte } // also on pause, cancel and failure
                     }
                 }
             }
