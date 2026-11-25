@@ -6,6 +6,15 @@ import org.junit.Test
 class ResumePolicyTest {
     private fun v(e: String?, m: String?, l: Long) = Validator(e, m, l)
 
+    @Test fun ifRangeUsesStrongEtag() =
+        assertEquals("\"a\"", ResumePolicy.withIfRange(emptyMap(), v("\"a\"", "Wed, 01 Jan 2025 00:00:00 GMT", 10))["If-Range"])
+    @Test fun ifRangeFallsBackToDate() =
+        assertEquals("Wed, 01 Jan 2025 00:00:00 GMT", ResumePolicy.withIfRange(emptyMap(), v("W/\"w\"", "Wed, 01 Jan 2025 00:00:00 GMT", 10))["If-Range"])
+    @Test fun ifRangeSkippedWithoutValidatorOrWhenPresent() {
+        assertTrue(ResumePolicy.withIfRange(emptyMap(), null).isEmpty())
+        assertTrue(ResumePolicy.withIfRange(emptyMap(), v("W/\"w\"", null, 10)).isEmpty())
+        assertEquals("x", ResumePolicy.withIfRange(mapOf("if-range" to "x"), v("\"a\"", null, 10))["if-range"])
+    }
     @Test fun sameEtagResumes() = assertTrue(ResumePolicy.canResume(v("\"a\"", null, 10), v("\"a\"", null, 10)))
     @Test fun differentEtagRestarts() = assertFalse(ResumePolicy.canResume(v("\"a\"", null, 10), v("\"b\"", null, 10)))
     @Test fun differentLengthRestarts() = assertFalse(ResumePolicy.canResume(v("\"a\"", null, 10), v("\"a\"", null, 11)))

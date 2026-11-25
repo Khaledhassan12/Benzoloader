@@ -30,8 +30,9 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | Default user agent setting (fallback only) | WRITTEN, TESTS WRITTEN |
 | Auto-resume after transient errors (opt-in), Retry-After handling | WRITTEN, TESTS WRITTEN |
 | Fast-resume for torrents | NOT STARTED |
-| If-Range check on HTTP resume | NOT STARTED (next) |
-| Proxy, per-connection profiles, multi-threading mode, smart download | NOT STARTED. Smart download and proxy need a definition from the owner |
+| If-Range on resumed ranged requests (changed file makes the engine restart clean) | WRITTEN, TESTS WRITTEN. Restart path unverified until a failure-injection test runs |
+| Smart download (spec 3.4: a configurable speed-management system covering parallel connections, network changes, scheduling and recovery; must be tested, not assumed) | NOT STARTED. My next action: design it from that list and test it |
+| Proxy support (spec phase 6), per-connection profiles, multi-threading mode | NOT STARTED. My next action |
 
 ### Queue and service
 | Item | State |
@@ -59,7 +60,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | Folder validation before start | WRITTEN |
 | Optional all-files access request (GitHub variant only) | WRITTEN |
 | `github` / `play` build variants | WRITTEN |
-| Play storage writer | NOT STARTED, OPEN |
+| Play storage writer | NOT STARTED. Needs a build-variant gate before any Play use |
 
 ### Notifications
 | Item | State |
@@ -75,8 +76,8 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | WebView, media detection | BUILT |
 | Tabs (in memory), history, bookmarks dialogs | WRITTEN, TESTS WRITTEN (tab model) |
 | Standalone bookmarks and history screens, desktop mode, clear cache | NOT STARTED |
-| Tab race | OPEN |
-| Ad blocking | OPEN (owner has not decided). The app contains no advertising |
+| Tab race | OPEN: needs a fix and a test. My next action |
+| Browser ad blocking | NOT STARTED, undecided. The owner ruled out advertising inside the app (nothing found in the audited source); browser ad blocking is a different, optional feature and has not been requested |
 
 ### Interface
 | Item | State |
@@ -89,27 +90,29 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | Dependent rows fade with their switch | WRITTEN, NOT RENDERED |
 | Pause-after-error and clear-finished as value rows | NOT STARTED (they are still switches) |
 | Top window overlay, Data screen, side panel with graph | NOT STARTED |
-| Main list, editor and properties screens match the reference | NOT CHECKED. No reference captures exist for them |
+| Main list | PARTIAL reference: the empty Queue shell capture was supplied and its bottom bar is written. No populated-row captures were supplied, so row layout is not matched |
+| Editor and properties screens | NOT CHECKED. No captures of them were supplied |
 
 ### Data and security
 | Item | State |
 |---|---|
 | Settings export, import and reset (settings only) | WRITTEN, TESTS WRITTEN |
 | Cookies, headers and site passwords sealed with Keystore-backed AES-GCM | WRITTEN, TESTS WRITTEN. Device behaviour unverified |
-| `allowBackup` policy | OPEN (left as it was) |
-| Secrets inside URLs | OPEN |
-| Old ad-named files and mp3s in `res/raw` | OPEN. Origin unknown, not touched |
+| `allowBackup` | Left as it was (true). Backup policy not decided; I must propose one with the tradeoff |
+| Secrets inside URLs | NOT STARTED. Audit and handling to be designed by me |
+| Old ad-named files and mp3s in `res/raw` | Origin unknown, not touched. Provenance check is pending |
 
 ### Release
 | Item | State |
 |---|---|
 | Dependency upgrades (staged plan) | NOT STARTED. Plan in `DEPENDENCY_REVIEW.md` |
 | CI build and APK artifact | NOT STARTED (final stage). Signing and artifact retention to be reported at handoff |
-| Arabic review by a native speaker | OPEN |
+| Arabic wording review by a native speaker | NOT DONE. Strings are my own wording; no reviewer arranged yet |
 
 ## Batch history (newest first)
 | Commit | Time (25 Nov, Cairo) | Change | State |
 |---|---|---|---|
+| `(this batch)` | 17:29 | If-Range on resumed requests | WRITTEN, TESTS WRITTEN |
 | `2b5c204` | 17:25 | Tracker edit dialog on the Properties screen | WRITTEN |
 | `176eebb` | 17:25 | Tracker policy and engine accessors | WRITTEN, TESTS WRITTEN |
 | `0485df4` | 17:24 | Notes: notification and vibration API review | docs |
@@ -133,10 +136,18 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 3. HTTP and torrent durability claims are unverified until tests that inject failures are run.
 4. Success vibration is newly active for installs that never chose it.
 
-## Next implementation steps
-1. If-Range / validator check on HTTP resume.
-2. Whole-diff static review of the written code.
-3. Remaining Notifications rows, remaining Downloading rows, Data and Interface rows where a real feature exists.
-4. Final stage: dependency upgrades, CI build, APK artifact.
+## Remaining scope, in order of work
+Implementation comes first. The one build happens at the end, after all of this.
+1. HTTP integrity: failure-injection tests written for resume, flush and If-Range paths.
+2. Torrent: fast-resume and restart restore, random-port range, NAT-PMP/UPnP/LSD/uTP, encryption mode, per-torrent limits, tracker persistence.
+3. Storage: Play-variant storage writer behind a build-variant gate; editing the folder of an Error item.
+4. Network: smart download, proxy, per-connection profiles, multi-threading mode, user-agent presets.
+5. Browser: tab race fix, standalone bookmarks and history screens, desktop mode, pop-up tabs, clear cache, address-bar position.
+6. Interface: custom colour picker, manual light/dark switch, value rows for pause-after-error and clear-finished, Top window, Data screen, side panel with graph, remaining Interface rows.
+7. Notifications: intercept and total-finish vibration, per-event sound choice, clear on close.
+8. Automation: add to bottom or top of list, after-finishing action, auto-open pages, auto-add without editor.
+9. Security and data: backup policy proposal, secrets in URLs, provenance check of `res/raw` files, access-test cleanup.
+10. Whole-diff static review of all written code.
+11. Final stage: dependency and library upgrades (staged plan), edge-to-edge, Arabic review, then one CI build, fix its errors, then run the tests and publish the APK as an artifact (signing and retention reported at handoff).
 
 Related files: `SPEC_COVERAGE.md` (item by item), `FEATURE_STATUS.md`, `UI_PARITY_PLAN.md`, `ENGINE_REFERENCE_REVIEW.md`, `STORAGE_DESIGN.md`, `DEPENDENCY_REVIEW.md`.

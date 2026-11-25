@@ -22,6 +22,16 @@ data class Validator(val etag: String?, val lastModified: String?, val length: L
 
 object ResumePolicy {
     /**
+     * Adds If-Range (RFC 9110, section 13.1.5) built from the stored validator: the strong ETag when there is one, otherwise the
+     * stored Last-Modified date. Nothing is added when there is nothing usable, or when the request already has an If-Range.
+     */
+    fun withIfRange(headers: Map<String, String>, stored: Validator?): Map<String, String> {
+        if (stored == null || !stored.usable || headers.keys.any { it.equals("If-Range", ignoreCase = true) }) return headers
+        val value = stored.strongEtag() ?: stored.lastModified?.trim()?.takeIf { it.isNotEmpty() } ?: return headers
+        return headers + ("If-Range" to value)
+    }
+
+    /**
      * Whether it is safe to continue with the saved chunks. Unknown or unverifiable cases return true so a flaky
      * check never throws away progress; only a positive mismatch restarts the download.
      */

@@ -84,9 +84,12 @@ class DownloadEngine(
         // 1. Determine chunks (resume from persisted ones when present)
         var knownTotal = item.totalBytes
         val metaFile = File(targetFile.path + ".bzmeta")
+        // On a resume, every ranged request also carries If-Range: if the file changed, the server answers 200 and the engine restarts clean.
+        var chunkHeaders = headers
         // Resuming: make sure the file on the server is still the one we started. A positive mismatch restarts clean.
         if (existingChunks.isNotEmpty() && !forceSingle) {
             val stored = Validator.parse(runCatching { metaFile.readText() }.getOrNull())
+            chunkHeaders = ResumePolicy.withIfRange(headers, stored)
             val current = try {
                 checkServer(item.url, headers).validator
             } catch (e: kotlinx.coroutines.CancellationException) {
@@ -156,7 +159,7 @@ class DownloadEngine(
                         async {
                             ChunkWorker(
                                 client = client, url = item.url, chunk = chunk, outputFile = targetFile,
-                                limiter = limiter, headers = headers, wholeFile = wholeFile, maxRetries = maxRetries.coerceIn(0, 20),
+                                limiter = limiter, headers = chunkHeaders, wholeFile = wholeFile, maxRetries = maxRetries.coerceIn(0, 20),
                                 onProgress = { _, bytes ->
                                     downloaded.addAndGet(bytes.toLong())
                                     speedTracker.recordBytes(bytes.toLong())
