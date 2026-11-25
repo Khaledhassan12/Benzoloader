@@ -264,4 +264,16 @@
     <string name="sum_torrent_anonymous">بيخفي بيانات التعريف عن الأقران والتراكرز، وبعض الميزات بتتعطل</string>
     <string name="pref_newest_first">الأحدث يبدأ أولاً</string>
     <string name="sum_newest_first">لو مقفول: التحميلات المنتظرة بتبدأ بترتيب إضافتها</string>
+    <string name="row_max_downloads">التحميلات المتزامنة</string>
+    <string name="row_threads">الخيوط لكل تحميل</string>
+    <string name="row_retries">إعادة المحاولة بعد الخطأ</string>
+    <string name="row_speed">حد السرعة</string>
+    <string name="row_battery">الإيقاف عند البطارية المنخفضة</string>
+    <string name="row_seed_ratio">إيقاف المشاركة عند نسبة المشاركة</string>
+    <string name="row_seed_time">إيقاف المشاركة بعد</string>
+    <string name="row_connections">حد الاتصالات</string>
+    <string name="val_count">%1$d</string>
+    <string name="val_threads">%1$d خيوط</string>
+    <string name="val_kbps">%1$d KB/s</string>
+    <string name="val_percent">%1$d%%</string>
 </resources>

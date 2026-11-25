@@ -55,40 +55,45 @@ class SettingsActivity : AppCompatActivity() {
         binding.btnScheduleStop.text = getString(khaled.benzo.R.string.pref_schedule_stop, fmt(stopMinute))
     }
 
-    private fun updateSeedLabels() {
-        val tenths = binding.sliderSeedRatio.value.toInt()
-        val mins = binding.sliderSeedMinutes.value.toInt()
-        binding.txtSeedRatio.text = getString(khaled.benzo.R.string.pref_seed_ratio) + ": " +
-            if (tenths == 0) getString(khaled.benzo.R.string.pref_unlimited) else "%d.%d".format(tenths / 10, tenths % 10)
-        binding.txtSeedMinutes.text = getString(khaled.benzo.R.string.pref_seed_minutes) + ": " +
-            if (mins == 0) getString(khaled.benzo.R.string.pref_unlimited) else "%d:%02d".format(mins / 60, mins % 60)
-    }
+    private fun updateSeedLabels() = refreshValueRows()
 
-    private fun updateSpeedLabel() {
-        val v = binding.sliderSpeedLimit.value.toInt()
-        binding.txtSpeedLimit.text = if (v == 0) getString(khaled.benzo.R.string.pref_speed_limit) + ": " +
-            getString(khaled.benzo.R.string.pref_speed_unlimited)
-        else getString(khaled.benzo.R.string.pref_speed_limit_value, v)
-    }
+    private fun updateSpeedLabel() = refreshValueRows()
 
     private fun pickTime(current: Int, onPicked: (Int) -> Unit) {
         android.app.TimePickerDialog(this, { _, h, m -> onPicked(h * 60 + m) },
             current / 60, current % 60, true).show()
     }
 
-    private fun updateConnectionsLabel() {
-        val v = binding.sliderTorrentConnections.value.toInt()
-        binding.txtTorrentConnections.text = getString(R.string.pref_torrent_connections) + ": " +
-            if (v == 0) getString(R.string.pref_torrent_connections_default) else v.toString()
-    }
+    private fun updateConnectionsLabel() = refreshValueRows()
 
-    private fun updateBatteryLabel() {
-        val t = binding.sliderBattery.value.toInt()
-        binding.txtBatteryThreshold.text = getString(R.string.pref_battery_threshold_fmt, t, khaled.benzo.core.queue.QueuePolicy.restartBelowOrAt(t) + 1)
+    private fun updateBatteryLabel() = refreshValueRows()
+
+    private var valueRows: List<ValueRow> = emptyList()
+    private fun refreshValueRows() = valueRows.forEach { it.refresh() }
+
+    private fun setupValueRows() {
+        val g = { id: Int -> getString(id) }
+        val R = khaled.benzo.R.string
+        valueRows = listOf(
+            ValueRow(this, binding.txtMaxDownloads, binding.sliderMaxDownloads, g(R.row_max_downloads), { getString(R.val_count, it) }),
+            ValueRow(this, binding.txtDefaultThreads, binding.sliderDefaultThreads, g(R.row_threads), { getString(R.val_threads, it) }),
+            ValueRow(this, binding.txtErrorRetries, binding.sliderErrorRetries, g(R.row_retries), { getString(R.val_count, it) }),
+            ValueRow(this, binding.txtSpeedLimit, binding.sliderSpeedLimit, g(R.row_speed),
+                { if (it == 0) g(R.pref_speed_unlimited) else getString(R.val_kbps, it) }),
+            ValueRow(this, binding.txtBatteryThreshold, binding.sliderBattery, g(R.row_battery), { getString(R.val_percent, it) },
+                { getString(R.pref_battery_threshold_fmt, it, khaled.benzo.core.queue.QueuePolicy.restartBelowOrAt(it) + 1) }),
+            ValueRow(this, binding.txtSeedRatio, binding.sliderSeedRatio, g(R.row_seed_ratio),
+                { if (it == 0) g(R.pref_unlimited) else "%d.%d".format(it / 10, it % 10) }),
+            ValueRow(this, binding.txtSeedMinutes, binding.sliderSeedMinutes, g(R.row_seed_time),
+                { if (it == 0) g(R.pref_unlimited) else "%d:%02d".format(it / 60, it % 60) }),
+            ValueRow(this, binding.txtTorrentConnections, binding.sliderTorrentConnections, g(R.row_connections),
+                { if (it == 0) g(R.pref_torrent_connections_default) else it.toString() })
+        )
     }
 
     private fun loadCurrentSettings() {
         val repo = viewModel.repository
+        setupValueRows()
         binding.sliderMaxDownloads.value = repo.maxConcurrentDownloads.toFloat()
         binding.sliderDefaultThreads.value = repo.defaultPartsCount.toFloat()
         binding.switchWifiOnly.isChecked = repo.isWifiOnly
