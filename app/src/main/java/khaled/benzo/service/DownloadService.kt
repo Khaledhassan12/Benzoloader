@@ -166,7 +166,7 @@ class DownloadService : Service() {
                 item = item,
                 existingChunks = existingChunks,
                 limiter = limiter,
-                headers = buildHeaders(item),
+                headers = khaled.benzo.core.download.RequestHeaders.from(item),
                 onChunkCreated = { chunks ->
                     repository.deleteChunks(id)
                     repository.saveChunks(chunks)
@@ -273,13 +273,6 @@ class DownloadService : Service() {
     private fun torrentHashOf(id: Long): String? =
         runCatching { kotlinx.coroutines.runBlocking { repository.getDownload(id) } }.getOrNull()
             ?.takeIf { it.isTorrent }?.torrentInfoHash
-
-    /** Editor fields (user agent, referer, cookies) must really reach the request. Never logged. */
-    private fun buildHeaders(item: DownloadItem): Map<String, String> = buildMap {
-        item.userAgent?.takeIf { it.isNotBlank() }?.let { put("User-Agent", it) }
-        item.referer?.takeIf { it.isNotBlank() }?.let { put("Referer", it) }
-        item.cookies?.takeIf { it.isNotBlank() }?.let { put("Cookie", it) }
-    }
 
     private fun pauseTask(id: Long) {
         val job = activeJobs.remove(id)

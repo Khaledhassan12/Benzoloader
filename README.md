@@ -67,10 +67,13 @@ Benzoloader/
         │       ├── BenzoApp.kt
         │       ├── core/
         │       │   ├── catalog/   CatalogPolicy
+        │       │   ├── data/      ListTransfer (txt format), ListImporter
         │       │   ├── download/  DownloadEngine, ChunkWorker,
         │       │   │              TokenBucketLimiter, SpeedTracker,
-        │       │   │              ResumePolicy
-        │       │   ├── queue/     QueuePolicy
+        │       │   │              ResumePolicy, RequestHeaders
+        │       │   ├── files/     FileNaming
+        │       │   ├── queue/     QueuePolicy, ListLogic
+        │       │   ├── security/  SecretCodec, Secrets, KeystoreKey
         │       │   ├── torrent/   TorrentEngine, TorrentMapping
         │       │   └── sniffer/   MediaSniffer, DetectedMedia
         │       ├── service/       DownloadService, DeviceConditions,
@@ -82,11 +85,13 @@ Benzoloader/
         │       │   ├── model/     DownloadItem, FileCategory, TorrentItem...
         │       │   └── repository/ DownloadRepository, SettingsRepository
         │       ├── provider/      BenzoFileProvider
-        │       └── ui/            main, editor, browser, torrent, site,
+        │       └── ui/            main (incl. ListFileActions), editor, browser, torrent, site,
         │                          settings, props, common
         └── test/                  QueuePolicyTest, DownloadEngineTest,
                                    TorrentMappingTest, ResumePolicyTest,
-                                   CatalogPolicyTest, FileNamingTest
+                                   CatalogPolicyTest, FileNamingTest,
+                                   ListTransferTest, SecretsTest,
+                                   RequestHeadersTest
 ```
 
 ## 📚 Libraries and what they do

@@ -164,33 +164,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val exportLauncher = registerForActivityResult(
-        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/plain")
-    ) { uri ->
-        if (uri != null) {
-            val text = viewModel.exportText()
-            val ok = runCatching {
-                contentResolver.openOutputStream(uri)?.use { it.write(text.toByteArray(Charsets.UTF_8)) } != null
-            }.getOrDefault(false)
-            android.widget.Toast.makeText(this, if (ok) R.string.list_export_done else R.string.list_transfer_failed, android.widget.Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private val importLauncher = registerForActivityResult(
-        androidx.activity.result.contract.ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        if (uri != null) {
-            val text = runCatching {
-                contentResolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) }
-            }.getOrNull()
-            if (text == null) {
-                android.widget.Toast.makeText(this, R.string.list_transfer_failed, android.widget.Toast.LENGTH_LONG).show()
-            } else {
-                viewModel.importText(text) { added, skipped ->
-                    android.widget.Toast.makeText(this, getString(R.string.list_import_done, added, skipped), android.widget.Toast.LENGTH_LONG).show()
-                }
-            }
-        }
+    private val listFiles = ListFileActions(this, { viewModel.exportText() }) { text, report ->
+        viewModel.importText(text, report)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -212,8 +187,8 @@ class MainActivity : AppCompatActivity() {
             R.id.sort_by_size -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.SIZE); true }
             R.id.sort_by_date -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.TIME); true }
             R.id.sort_by_type -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.CATEGORY); true }
-            R.id.action_export_list -> { exportLauncher.launch("benzoloader-list.txt"); true }
-            R.id.action_import_list -> { importLauncher.launch(arrayOf("text/plain", "text/*")); true }
+            R.id.action_export_list -> { listFiles.exportList(); true }
+            R.id.action_import_list -> { listFiles.importList(); true }
             R.id.action_browser -> {
                 startActivity(Intent(this, BrowserActivity::class.java))
                 true

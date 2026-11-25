@@ -95,36 +95,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /** Text of the current list (what the user sees, after filters). Contains no cookies or headers. */
     fun exportText(): String = khaled.benzo.core.data.ListTransfer.format(downloads.value)
 
-    /** Adds imported URLs as paused downloads (the user starts them). Returns the number added. */
+    /** Adds imported URLs as paused downloads (the user starts them). */
     fun importText(text: String, onDone: (added: Int, skipped: Int) -> Unit) {
         viewModelScope.launch {
-            val settings = khaled.benzo.data.repository.SettingsRepository(getApplication())
-            val root = settings.defaultDownloadPath.ifEmpty {
-                android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).absolutePath
-            }
-            val dao = khaled.benzo.data.db.BenzoDatabase.getInstance(getApplication()).downloadDao()
-            val existing = dao.getAllOnce()
-            val knownUrls = existing.map { it.url }.toMutableSet()
-            val taken = existing.map { it.savePath to it.fileName }.toMutableSet()
-            var added = 0
-            val entries = khaled.benzo.core.data.ListTransfer.parse(text)
-            for (e in entries) {
-                if (e.url in knownUrls) continue
-                val raw = khaled.benzo.core.data.ListTransfer.nameFor(e)
-                val category = FileCategory.fromExtension(raw)
-                val folder = khaled.benzo.core.catalog.CatalogPolicy.targetFolder(root, root, category, settings.catalogEnabled)
-                val name = khaled.benzo.core.files.FileNaming.uniqueName(raw) { c ->
-                    (folder to c) in taken || java.io.File(folder, c).exists()
-                }
-                taken.add(folder to name); knownUrls.add(e.url)
-                repository.insertDownload(DownloadItem(
-                    url = e.url, fileName = name, savePath = folder,
-                    status = khaled.benzo.data.model.DownloadStatus.PAUSED,
-                    category = category, threadsCount = settings.defaultThreadsCount,
-                    isWifiOnly = settings.isWifiOnly))
-                added++
-            }
-            onDone(added, entries.size - added)
+            val r = khaled.benzo.core.data.ListImporter(getApplication(), repository).importText(text)
+            onDone(r.added, r.skipped)
         }
     }
 }
