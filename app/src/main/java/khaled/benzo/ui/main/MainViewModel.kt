@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = DownloadRepository(application)
-    private val _state = MutableStateFlow(ListState(ascending = khaled.benzo.data.repository.SettingsRepository(application).listAddToBottom))
+    private val _state = MutableStateFlow(khaled.benzo.data.repository.SettingsRepository(application).listAddToBottom.let { ListState(ascending = it, addToBottom = it) })
     private val _selectedCategory = MutableStateFlow<FileCategory?>(FileCategory.ALL)
 
     val downloads: StateFlow<List<DownloadItem>> = MutableStateFlow<List<DownloadItem>>(emptyList())
@@ -54,6 +54,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _selectedCategory.value = null
         _state.update { it.withStatus(filter) }
     }
+
+    /** Re-reads the stored display-order setting; called when the screen comes back from Settings. */
+    fun setAddToBottom(bottom: Boolean) = _state.update { it.withAddToBottom(bottom) }
 
     fun setQuery(query: String) = _state.update { it.withQuery(query) }
 

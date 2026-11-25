@@ -39,7 +39,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 |---|---|
 | Max simultaneous downloads, queue policy | BUILT+TESTED |
 | Newest-first start order (start priority only; not list insertion order) | WRITTEN, TESTS WRITTEN |
-| List display order: add new downloads to bottom (`list_add_to_bottom`, default off = top). Initial list sort only; applies when the list screen is created; picking another sort key and back resets to newest on top | WRITTEN, UNBUILT |
+| List display order: add new downloads to bottom (`list_add_to_bottom`, default off = top). Display order only. Applied at list creation, on return from Settings, and when the time sort is picked again; 2 tests written, not run | WRITTEN, TESTS WRITTEN, UNBUILT |
 | Queue wait reasons in the list | WRITTEN |
 | Battery threshold with hysteresis | WRITTEN, TESTS WRITTEN |
 | Scheduler (start/stop times) | WRITTEN |

@@ -8,8 +8,15 @@ data class ListState(
     val type: FileCategory? = null,
     val query: String = "",
     val sort: SortKey = SortKey.TIME,
-    val ascending: Boolean = false
+    val ascending: Boolean = false,
+    /** Display order of new downloads: false = newest on top, true = newest at the bottom. Not the queue start order. */
+    val addToBottom: Boolean = false
 ) {
+    /** Applies the stored display-order choice. Only the time sort follows it, and only while the user has not flipped it by hand. */
+    fun withAddToBottom(bottom: Boolean): ListState =
+        if (bottom == addToBottom) this
+        else copy(addToBottom = bottom, ascending = if (sort == SortKey.TIME) bottom else ascending)
+
     /** Drawer entries: ALL and the status entries set a status filter, the others filter by file type. */
     fun withCategory(category: FileCategory?): ListState = when (category) {
         null, FileCategory.ALL -> copy(status = StatusFilter.ALL, type = null)
@@ -26,7 +33,7 @@ data class ListState(
     /** Picking the active sort key again flips the direction; a new key starts in its natural direction. */
     fun withSort(key: SortKey): ListState =
         if (sort == key) copy(ascending = !ascending)
-        else copy(sort = key, ascending = key == SortKey.NAME || key == SortKey.CATEGORY)
+        else copy(sort = key, ascending = key == SortKey.NAME || key == SortKey.CATEGORY || (key == SortKey.TIME && addToBottom))
 
     /** Applies filters, search, sort and the file-type filter to the full list. */
     fun apply(all: List<khaled.benzo.data.model.DownloadItem>): List<khaled.benzo.data.model.DownloadItem> =

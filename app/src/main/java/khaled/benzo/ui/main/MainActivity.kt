@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         applyBottomBar()
+        viewModel.setAddToBottom(khaled.benzo.data.repository.SettingsRepository(this).listAddToBottom)
         // Applied on every return to the screen so a change in Settings takes effect without a restart.
         if (khaled.benzo.data.repository.SettingsRepository(this).keepScreenOn) {
             window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

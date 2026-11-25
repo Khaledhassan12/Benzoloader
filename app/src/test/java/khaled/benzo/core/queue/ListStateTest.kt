@@ -49,4 +49,25 @@ class ListStateTest {
         assertFalse(bySize.ascending)
         assertEquals(listOf(300L, 200L, 100L, 50L), bySize.apply(items).map { it.totalBytes })
     }
+
+    // Written, not run.
+    @Test fun timeSortFollowsAddToBottomChoice() {
+        val top = ListState().apply(items).map { it.id }
+        assertEquals(listOf(4L, 3L, 2L, 1L), top)
+        val bottom = ListState().withAddToBottom(true)
+        assertEquals(listOf(1L, 2L, 3L, 4L), bottom.apply(items).map { it.id })
+        // Leaving the time sort and coming back keeps the stored choice.
+        val back = bottom.withSort(SortKey.NAME).withSort(SortKey.TIME)
+        assertTrue(back.ascending)
+        assertEquals(listOf(1L, 2L, 3L, 4L), back.apply(items).map { it.id })
+        // Switching the setting back restores newest on top.
+        assertEquals(listOf(4L, 3L, 2L, 1L), back.withAddToBottom(false).apply(items).map { it.id })
+    }
+
+    @Test fun addToBottomDoesNotTouchOtherSorts() {
+        val byName = ListState().withSort(SortKey.NAME)
+        assertTrue(byName.withAddToBottom(true).ascending)
+        val bySize = ListState().withSort(SortKey.SIZE)
+        assertFalse(bySize.withAddToBottom(true).ascending)
+    }
 }
