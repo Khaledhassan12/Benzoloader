@@ -28,6 +28,10 @@ class EditorActivity : AppCompatActivity() {
         setupDefaultFields()
         setupListeners()
         handleIncomingIntent(autoAdd = savedInstanceState == null)
+        // Video 8: a short sound plays when the Editor opens (matches the add sound by length and envelope; INFERRED, not an exact-audio claim).
+        if (savedInstanceState == null && khaled.benzo.data.repository.SettingsRepository(this).soundOnComplete) {
+            khaled.benzo.service.NotificationHelper(this).playSound(khaled.benzo.R.raw.add)
+        }
     }
 
     private fun setupDefaultFields() {
