@@ -76,7 +76,8 @@ Benzoloader/
         │       │   ├── queue/     QueuePolicy, ListLogic
         │       │   ├── security/  SecretCodec, Secrets, KeystoreKey,
         │       │   │              SecretsMigration(+Runner), CredentialRepair
-        │       │   ├── torrent/   TorrentEngine, TorrentMapping
+        │       │   ├── torrent/   TorrentEngine, TorrentMapping,
+        │       │   │              TorrentSourcePolicy
         │       │   └── sniffer/   MediaSniffer, DetectedMedia
         │       ├── service/       DownloadService, DeviceConditions,
         │       │                  ScheduleManager, NotificationHelper,
@@ -92,6 +93,7 @@ Benzoloader/
         └── test/                  QueuePolicyTest, DownloadEngineTest,
                                    TorrentMappingTest, ResumePolicyTest,
                                    CatalogPolicyTest, FileNamingTest,
+                                   TorrentSourcePolicyTest,
                                    ListTransferTest, SecretsTest, SecretsMigrationTest, CredentialRepairTest,
                                    RequestHeadersTest
 ```

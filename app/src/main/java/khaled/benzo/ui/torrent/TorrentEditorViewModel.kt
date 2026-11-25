@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import khaled.benzo.core.torrent.TorrentEngine
 import khaled.benzo.core.torrent.TorrentMapping
+import khaled.benzo.core.torrent.TorrentSourcePolicy
 import khaled.benzo.data.model.TorrentFileEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,15 +62,31 @@ class TorrentEditorViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    /** Reads a .torrent from another app's intent. See [TorrentSourcePolicy] for what is allowed and why. */
     private fun readBytes(s: String): ByteArray? {
         val ctx = getApplication<Application>()
-        val uri = Uri.parse(s)
-        return when (uri.scheme) {
-            "content" -> ctx.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-            "file" -> uri.path?.let { File(it).readBytes() }
-            null -> File(s).takeIf { it.exists() }?.readBytes()
+        val bytes = when (TorrentSourcePolicy.classify(s)) {
+            TorrentSourcePolicy.Kind.CONTENT ->
+                ctx.contentResolver.openInputStream(Uri.parse(s.trim()))?.use { TorrentSourcePolicy.readLimited(it) }
+            TorrentSourcePolicy.Kind.FILE -> {
+                val raw = s.trim()
+                val path = if (raw.startsWith("/")) raw else Uri.parse(raw).path
+                val file = path?.let { File(it) }?.takeIf { it.isFile }
+                val canonical = file?.canonicalPath
+                if (canonical != null && fileAllowed(ctx, canonical)) file.inputStream().use { TorrentSourcePolicy.readLimited(it) } else null
+            }
             else -> null
         }
+        return bytes?.takeIf { TorrentSourcePolicy.looksLikeTorrent(it) }
+    }
+
+    private fun fileAllowed(ctx: Application, canonical: String): Boolean {
+        val shared = android.os.Environment.getExternalStorageDirectory().canonicalPath
+        val denied = listOfNotNull(
+            ctx.dataDir.canonicalPath,
+            ctx.getExternalFilesDir(null)?.parentFile?.canonicalPath // .../Android/data/<package>
+        )
+        return TorrentSourcePolicy.isFileAllowed(canonical, listOf(shared), denied)
     }
 
     fun setSelected(index: Int, selected: Boolean) {

@@ -16,6 +16,8 @@ No script from them was run, nothing was installed, and no UI framework change w
 - EditorActivity: external links pre-fill the form only when they are http or https; `onNewIntent` handles a link shared while the singleTask editor is open (it was dropped before).
 - DownloadService: no `runBlocking` on the main thread in `onTimeout`; `torrentHashOf` is now a suspend function.
 
+- Torrent editor sources (TorrentSourcePolicy, 5 tests written, not run): magnet and content:// stay allowed. file:// and plain paths must resolve (canonical path) into shared storage and not into the app's own data. Reads are capped at 8 MiB and the bytes must look like a bencoded dictionary. Previously any readable path was read without a size limit. No normal share/open flow is removed. Limit: a .torrent behind an http link is still not supported.
+
 ## Audited, no change needed
 - Every PendingIntent uses FLAG_IMMUTABLE.
 - Non-launcher components are not exported, except the boot receiver, which checks its action.
@@ -23,5 +25,4 @@ No script from them was run, nothing was installed, and no UI framework change w
 
 ## Found, not changed
 - targetSdk 36 enforces edge-to-edge. Only the main screen sets fitsSystemWindows. Other screens (editor dialog, settings, browser, torrent, props) are not checked and need a layout check at the final build.
-- The torrent editor accepts file:// and content:// from other apps. It only reads the file as a torrent. Not changed, since it needs a decision on which sources to allow.
 - Permissions skill not applied in detail yet.
