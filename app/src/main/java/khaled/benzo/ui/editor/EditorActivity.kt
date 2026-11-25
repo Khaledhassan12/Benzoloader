@@ -219,7 +219,7 @@ class EditorActivity : AppCompatActivity() {
             referer = binding.edtReferer.text.toString().ifEmpty { null },
             cookies = binding.edtCookies.text.toString().ifEmpty { null },
             startNow = startNow,
-            category = pickedCategory,
+            pickedCategory = pickedCategory,
             onError = { Toast.makeText(this, R.string.secrets_save_failed, Toast.LENGTH_LONG).show() }
         ) { downloadId ->
             if (startNow) {

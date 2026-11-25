@@ -25,12 +25,12 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
         referer: String?,
         cookies: String?,
         startNow: Boolean,
-        category: FileCategory? = null,
+        pickedCategory: FileCategory? = null,
         onError: () -> Unit = {},
         onComplete: (Long) -> Unit
     ) {
         viewModelScope.launch {
-            val category = category ?: FileCategory.fromExtension(fileName)
+            val category = pickedCategory ?: FileCategory.fromExtension(fileName)
             val root = settingsRepository.defaultDownloadPath.ifEmpty {
                 android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).absolutePath
             }
