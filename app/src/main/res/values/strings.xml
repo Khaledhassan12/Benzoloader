@@ -175,4 +175,10 @@
     <string name="notif_permission_settings">Notifications are off for this app, so download progress is hidden. You can turn them on in the app settings.</string>
     <string name="notif_open_settings">Open settings</string>
     <string name="pref_auto_resume">Resume by itself after a failure (up to 3 times, with a delay)</string>
+    <string name="action_export_settings">Export settings (.txt)</string>
+    <string name="action_import_settings">Import settings (.txt)</string>
+    <string name="settings_export_done">Settings exported. The file has app settings only: no downloads, cookies, headers or passwords. It includes the download folder path.</string>
+    <string name="settings_import_done">Settings restored: %1$d. Skipped: %2$d.</string>
+    <string name="settings_import_not_settings">This is not a Benzoloader settings file, or it has no valid settings.</string>
+    <string name="settings_import_folder_skipped">The saved download folder is not available on this device, so the current one was kept.</string>
 </resources>

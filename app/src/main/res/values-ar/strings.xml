@@ -175,4 +175,10 @@
     <string name="notif_permission_settings">الإشعارات مقفولة للتطبيق، فتقدم التحميل مخفي. تقدر تفتحها من إعدادات التطبيق.</string>
     <string name="notif_open_settings">فتح الإعدادات</string>
     <string name="pref_auto_resume">استكمال تلقائي بعد الفشل (لحد 3 مرات، مع مهلة)</string>
+    <string name="action_export_settings">تصدير الإعدادات (.txt)</string>
+    <string name="action_import_settings">استيراد الإعدادات (.txt)</string>
+    <string name="settings_export_done">تم تصدير الإعدادات. الملف يحتوي على إعدادات التطبيق فقط: بدون تحميلات أو كوكيز أو رؤوس أو كلمات مرور. ويشمل مسار مجلد التحميل.</string>
+    <string name="settings_import_done">تم استرجاع الإعدادات: %1$d. تم تخطي: %2$d.</string>
+    <string name="settings_import_not_settings">هذا ليس ملف إعدادات Benzoloader، أو لا يحتوي على إعدادات صالحة.</string>
+    <string name="settings_import_folder_skipped">مجلد التحميل المحفوظ غير متاح على هذا الجهاز، فتم الاحتفاظ بالمجلد الحالي.</string>
 </resources>

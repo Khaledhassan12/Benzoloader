@@ -207,6 +207,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.importText(text, report)
     }
 
+    private val settingsFiles = SettingsFileActions(this, { khaled.benzo.data.repository.SettingsRepository(this) }) { recreate() }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         val searchView = menu?.findItem(R.id.action_search)?.actionView as? androidx.appcompat.widget.SearchView
@@ -228,6 +230,8 @@ class MainActivity : AppCompatActivity() {
             R.id.sort_by_type -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.CATEGORY); true }
             R.id.action_export_list -> { listFiles.exportList(); true }
             R.id.action_import_list -> { listFiles.importList(); true }
+            R.id.action_export_settings -> { settingsFiles.exportSettings(); true }
+            R.id.action_import_settings -> { settingsFiles.importSettings(); true }
             R.id.action_browser -> {
                 startActivity(Intent(this, BrowserActivity::class.java))
                 true

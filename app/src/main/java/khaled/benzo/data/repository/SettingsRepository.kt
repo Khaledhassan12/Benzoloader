@@ -136,6 +136,43 @@ class SettingsRepository(context: Context) {
         get() = prefs.getString(KEY_DOWNLOAD_PATH, "") ?: ""
         set(value) = prefs.edit().putString(KEY_DOWNLOAD_PATH, value).apply()
 
+    /** Current effective value of every setting that the settings backup knows (see SettingsBackup.specs). */
+    fun backupValues(): Map<String, Any?> = mapOf(
+        KEY_MAX_CONCURRENT to maxConcurrentDownloads, KEY_DEFAULT_THREADS to defaultThreadsCount,
+        KEY_WIFI_ONLY to isWifiOnly, KEY_SPEED_LIMIT to speedLimitBytesPerSec,
+        KEY_BATTERY_THRESHOLD to batteryThresholdPercent, KEY_STOP_ON_UNPLUG to stopOnChargerUnplug,
+        KEY_SOUND_COMPLETE to soundOnComplete, KEY_VIBRATE_COMPLETE to vibrateOnComplete,
+        KEY_SCHEDULE_ENABLED to scheduleEnabled, KEY_SCHEDULE_START to scheduleStartMinute,
+        KEY_SCHEDULE_STOP to scheduleStopMinute, KEY_CATALOG to catalogEnabled,
+        KEY_CATALOG_NAMES to catalogFolderNames.encode(), KEY_ERROR_RETRIES to errorRetries,
+        KEY_PAUSE_AFTER_ERROR to pauseAfterError, KEY_AUTO_RESUME to autoResume,
+        KEY_NOTIF_LOCK to notifOnLockScreen, KEY_NOTIF_PAUSE_ALL to notifPauseAllButton,
+        KEY_KEEP_SCREEN to keepScreenOn, KEY_CLEAR_FINISHED to clearFinishedOnStart,
+        KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish,
+        KEY_BROWSER_HISTORY to browserHistory, KEY_DARK_MODE to isDarkMode,
+        KEY_DOWNLOAD_PATH to defaultDownloadPath
+    )
+
+    /**
+     * Writes already validated backup values in one commit. The download folder is applied only when
+     * [folderUsable] accepts it (it may not exist on a new install); returns true when it was left unchanged for that reason.
+     */
+    fun applyBackup(values: Map<String, Any>, folderUsable: (String) -> Boolean): Boolean {
+        val e = prefs.edit()
+        var pathSkipped = false
+        for ((key, v) in values) {
+            when (v) {
+                is Boolean -> e.putBoolean(key, v)
+                is Int -> e.putInt(key, v)
+                is Long -> e.putLong(key, v)
+                is String -> if (key == KEY_DOWNLOAD_PATH && v.isNotEmpty() && !folderUsable(v)) pathSkipped = true
+                             else e.putString(key, v)
+            }
+        }
+        e.apply()
+        return pathSkipped
+    }
+
     companion object {
         private const val KEY_MAX_CONCURRENT = "max_concurrent"
         private const val KEY_DEFAULT_THREADS = "default_threads"

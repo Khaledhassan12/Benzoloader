@@ -74,3 +74,5 @@ Bug found by reading and fixed: the encrypt call passed its own IV, which the Ke
 ## Open policy and verification items (stated as unresolved)
 - allowBackup is true because that is the existing state of the project. Nobody has decided or approved a cloud-backup policy. Consequence if it stays: a restored database holds sealed values without their Keystore key, so cookies, headers and site secrets show the re-enter status. Decision open.
 - Database 1 to 2 (history table): the migration is hand-written and the real version-1 schema was never exported. At the first build the real v1 schema must be generated and the upgrade path from an actual v1 database validated (MigrationTestHelper plus a real upgrade). Absence of the JSON does not mean the migration is compatible.
+- Settings export/import is a different thing from allowBackup: it is a file the user saves and imports by hand. It does not cover the database or credentials. After a reinstall the download folder is restored only if that folder exists and is writable.
+- Browser tabs: only the pure TabList (open/select/close/serialize, 13 tests written, not run) exists. No tabs UI yet.
