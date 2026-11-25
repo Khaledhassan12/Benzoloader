@@ -209,6 +209,20 @@ class MainActivity : AppCompatActivity() {
 
     private val settingsFiles = SettingsFileActions(this, { khaled.benzo.data.repository.SettingsRepository(this) }) { recreate() }
 
+    /** Settings only: downloads, history, bookmarks and saved logins stay as they are. */
+    private fun confirmResetSettings() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setMessage(R.string.reset_settings_confirm)
+            .setPositiveButton(R.string.reset_settings_do) { _, _ ->
+                khaled.benzo.data.repository.SettingsRepository(this).resetToDefaults()
+                khaled.benzo.service.ScheduleManager.rearm(this)
+                android.widget.Toast.makeText(this, R.string.reset_settings_done, android.widget.Toast.LENGTH_LONG).show()
+                recreate()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         val searchView = menu?.findItem(R.id.action_search)?.actionView as? androidx.appcompat.widget.SearchView
@@ -232,6 +246,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_import_list -> { listFiles.importList(); true }
             R.id.action_export_settings -> { settingsFiles.exportSettings(); true }
             R.id.action_import_settings -> { settingsFiles.importSettings(); true }
+            R.id.action_reset_settings -> { confirmResetSettings(); true }
             R.id.action_browser -> {
                 startActivity(Intent(this, BrowserActivity::class.java))
                 true

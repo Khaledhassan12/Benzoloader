@@ -102,12 +102,6 @@ class DownloadService : Service() {
             DownloadActionReceiver.ACTION_EXIT_APP -> {
                 stopAllAndExit()
             }
-            ACTION_PAUSE_ALL_BATTERY -> {
-                serviceScope.launch {
-                    repository.pauseAll()
-                    activeJobs.keys.toList().forEach { pauseTask(it) }
-                }
-            }
             DownloadActionReceiver.ACTION_PAUSE_ALL -> {
                 // Queued downloads are paused too: otherwise the queue would start them the moment the running ones stop.
                 serviceScope.launch {
@@ -329,6 +323,5 @@ class DownloadService : Service() {
     companion object {
         const val ACTION_START_DOWNLOAD = "khaled.benzo.ACTION_START_DOWNLOAD"
         const val ACTION_PROCESS_QUEUE = "khaled.benzo.ACTION_PROCESS_QUEUE"
-        const val ACTION_PAUSE_ALL_BATTERY = "khaled.benzo.ACTION_PAUSE_ALL_BATTERY"
     }
 }

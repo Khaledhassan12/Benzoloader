@@ -161,6 +161,9 @@ class SettingsRepository(context: Context) {
         get() = prefs.getString(KEY_DOWNLOAD_PATH, "") ?: ""
         set(value) = prefs.edit().putString(KEY_DOWNLOAD_PATH, value).apply()
 
+    /** Puts every setting back to its default (the preferences file is emptied: settings, saved tabs, the declined flag). Downloads, history, bookmarks and credentials are not touched. */
+    fun resetToDefaults() { prefs.edit().clear().apply() }
+
     /** Current effective value of every setting that the settings backup knows (see SettingsBackup.specs). */
     fun backupValues(): Map<String, Any?> = mapOf(
         KEY_MAX_CONCURRENT to maxConcurrentDownloads, KEY_DEFAULT_THREADS to defaultThreadsCount,
