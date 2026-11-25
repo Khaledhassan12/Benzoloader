@@ -209,4 +209,7 @@
     <string name="allfiles_state_on">الوصول للملفات: مسموح (اضغط للمراجعة)</string>
     <string name="allfiles_state_off">الوصول للملفات: غير مسموح (اضغط للمراجعة)</string>
     <string name="folder_dialog_allow_access">السماح بالوصول لكل الملفات</string>
+    <string name="folder_dialog_allow_storage">السماح بصلاحية التخزين</string>
+    <string name="legacy_storage_why">في أندرويد 10 وأقدم، التطبيق محتاج صلاحية التخزين عشان يحفظ التحميلات في المجلد اللي اخترته.</string>
+    <string name="legacy_storage_settings">صلاحية التخزين اترفضت. تقدر تسمح بيها من إعدادات التطبيق.</string>
 </resources>

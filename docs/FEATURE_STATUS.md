@@ -1,7 +1,7 @@
 # Benzoloader feature status
 
 Status of each feature from the project specification. Only what was run is marked "tested".
-Last updated on branch feature/engine-hardening. Tests: `./gradlew :app:testDebugUnitTest` (JVM, local mock HTTP server).
+Last updated on branch feature/engine-hardening. Tests: `./gradlew :app:testGithubDebugUnitTest` (JVM, local mock HTTP server).
 
 | Area | Implemented | Tested | Notes |
 |---|---|---|---|

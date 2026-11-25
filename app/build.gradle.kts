@@ -26,6 +26,14 @@ android {
         }
     }
 
+    // Two distributions of the same app. "github" (APK) declares the optional all-files access and shows its request.
+    // "play" declares nothing broad and shows no such request. Build one with, for example, assembleGithubDebug or assemblePlayDebug.
+    flavorDimensions += "distribution"
+    productFlavors {
+        create("github") { dimension = "distribution" }
+        create("play") { dimension = "distribution" }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false

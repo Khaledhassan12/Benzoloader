@@ -209,4 +209,7 @@
     <string name="allfiles_state_on">Files access: allowed (tap to review)</string>
     <string name="allfiles_state_off">Files access: not allowed (tap to review)</string>
     <string name="folder_dialog_allow_access">Allow access to all files</string>
+    <string name="folder_dialog_allow_storage">Allow storage permission</string>
+    <string name="legacy_storage_why">On Android 10 and older, the app needs the storage permission to save downloads to the folder you chose.</string>
+    <string name="legacy_storage_settings">The storage permission was denied. You can allow it in the app settings.</string>
 </resources>

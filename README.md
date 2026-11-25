@@ -149,8 +149,8 @@ QueuePolicy  -> decides which rows may run now
 Requirements: JDK 17, Android SDK platform 36, Gradle through the wrapper.
 
 ```
-./gradlew :app:assembleDebug          # APK in app/build/outputs/apk/debug/ (about 43 MB with 4 native ABIs)
-./gradlew :app:testDebugUnitTest      # JVM unit tests
+./gradlew :app:assembleGithubDebug    # GitHub APK (assemblePlayDebug for the Play variant); output under app/build/outputs/apk/ (about 43 MB with 4 native ABIs)
+./gradlew :app:testGithubDebugUnitTest # JVM unit tests (the same tests run for the play variant)
 ```
 
 Set `sdk.dir` in `local.properties` or `ANDROID_HOME`.

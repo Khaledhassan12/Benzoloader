@@ -117,12 +117,20 @@ class EditorActivity : AppCompatActivity() {
     }
 
     private var folderChecked = false
+    private var pendingStartNow = false
+
+    /** Android 8 to 10: ask for the storage permission, then continue the add the user started. */
+    private val legacyStorage = khaled.benzo.ui.common.LegacyStoragePermissionFlow(this) { submitDownload(pendingStartNow) }
 
     private fun showFolderProblem(verdict: khaled.benzo.core.storage.FolderCheck.Verdict, startNow: Boolean) {
         val appFolder = getExternalFilesDir(null)?.absolutePath
         val offerAccess = khaled.benzo.ui.common.AllFilesAccess.shouldOfferInDialog(this)
         val labels = ArrayList<String>()
         val actions = ArrayList<() -> Unit>()
+        if (legacyStorage.offerInDialog()) {
+            labels.add(getString(R.string.folder_dialog_allow_storage))
+            actions.add { pendingStartNow = startNow; legacyStorage.start() }
+        }
         if (offerAccess) {
             labels.add(getString(R.string.folder_dialog_allow_access))
             actions.add { khaled.benzo.ui.common.AllFilesAccess.explainAndRequest(this) }
