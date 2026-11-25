@@ -10,7 +10,8 @@ import khaled.benzo.data.repository.DownloadRepository
 class HttpTaskRunner(
     private val repository: DownloadRepository,
     private val engine: DownloadEngine,
-    private val limiter: TokenBucketLimiter
+    private val limiter: TokenBucketLimiter,
+    private val defaultUserAgent: () -> String = { "" }
 ) {
     suspend fun run(item: DownloadItem, onProgress: suspend (downloadedBytes: Long, speed: Long) -> Unit): Result<Unit> {
         val id = item.id
@@ -18,7 +19,7 @@ class HttpTaskRunner(
             item = item,
             existingChunks = repository.getChunks(id),
             limiter = limiter,
-            headers = RequestHeaders.from(item),
+            headers = RequestHeaders.from(item, defaultUserAgent()),
             onChunkCreated = { chunks ->
                 repository.deleteChunks(id)
                 repository.saveChunks(chunks)

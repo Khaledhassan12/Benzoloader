@@ -49,7 +49,7 @@ class DownloadService : Service() {
         downloadEngine = DownloadEngine()
         limiter = TokenBucketLimiter(settings.speedLimitBytesPerSec)
         deviceConditions = DeviceConditions(this, settings)
-        httpRunner = HttpTaskRunner(repository, downloadEngine, limiter)
+        httpRunner = HttpTaskRunner(repository, downloadEngine, limiter) { khaled.benzo.data.repository.SettingsRepository(this).defaultUserAgent }
         torrentRunner = TorrentTaskRunner(repository, filesDir, { settings.torrentSequential }, { settings.torrentSeedAfterFinish }) { seedingMonitor.watch(it) }
         seedingMonitor = khaled.benzo.core.torrent.SeedingMonitor({ settings.seedRatioTenths }, { settings.seedMinutes }, { h ->
             khaled.benzo.core.torrent.TorrentEngine.orNull()?.getStats(h)?.let { khaled.benzo.core.torrent.SeedingMonitor.Snapshot(it.uploaded, it.total, it.seedingSeconds) }
@@ -194,6 +194,7 @@ class DownloadService : Service() {
 
         if (item.isTorrent) { startTorrentTask(item); return }
         downloadEngine.maxRetries = settings.errorRetries
+        downloadEngine.minChunkBytes = settings.minThreadKb * 1024L
 
         val job = serviceScope.launch {
             val result = httpRunner.run(item) { downloadedBytes, speed ->

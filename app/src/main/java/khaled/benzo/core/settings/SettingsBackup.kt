@@ -47,6 +47,8 @@ object SettingsBackup {
         "torrent_fixed_port" to Spec.Bool,
         "torrent_port" to Spec.IntRange(1024, 65535, 1),
         "torrent_anonymous" to Spec.Bool,
+        "min_thread_kb" to Spec.IntRange(128, 4096, 128),
+        "default_user_agent" to Spec.Text(300) { s -> s.none { it.code < 32 || it.code > 126 } },
         "torrent_connections" to Spec.IntRange(50, 1000, 50, zeroOk = true),
         "browser_history" to Spec.Bool,
         "browser_save_tabs" to Spec.Bool,

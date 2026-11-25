@@ -83,6 +83,41 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    private var userAgentValue: String = ""
+
+    /** Title plus the current value (or "Default") in the accent colour; tapping opens a text dialog. Saved with the rest on exit. */
+    private fun showUserAgentRow(value: String) {
+        userAgentValue = value
+        val row = binding.txtUserAgent
+        val title = getString(khaled.benzo.R.string.row_user_agent)
+        val shown = value.ifBlank { getString(khaled.benzo.R.string.val_default) }
+        val b = android.text.SpannableStringBuilder(title).append('\n')
+        val start = b.length
+        b.append(shown)
+        b.setSpan(android.text.style.ForegroundColorSpan(com.google.android.material.color.MaterialColors.getColor(row, com.google.android.material.R.attr.colorPrimary)), start, b.length, 0)
+        row.text = b
+        val d = resources.displayMetrics.density
+        row.minHeight = (72 * d).toInt(); row.gravity = android.view.Gravity.CENTER_VERTICAL
+        row.setPadding((20 * d).toInt(), (12 * d).toInt(), (20 * d).toInt(), (12 * d).toInt())
+        row.isClickable = true
+        row.setOnClickListener {
+            val edit = android.widget.EditText(this).apply { setText(userAgentValue); hint = getString(khaled.benzo.R.string.val_default); setSingleLine() }
+            val pad = (24 * d).toInt()
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(title)
+                .setMessage(getString(khaled.benzo.R.string.sum_user_agent))
+                .setView(android.widget.FrameLayout(this).apply { setPadding(pad, 0, pad, 0); addView(edit) })
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    val t = edit.text.toString().trim()
+                    if (t.all { it.code in 32..126 }) showUserAgentRow(t)
+                    else android.widget.Toast.makeText(this, khaled.benzo.R.string.ua_invalid, android.widget.Toast.LENGTH_LONG).show()
+                }
+                .setNeutralButton(khaled.benzo.R.string.val_default) { _, _ -> showUserAgentRow("") }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
+    }
+
     private var valueRows: List<ValueRow> = emptyList()
     private fun refreshValueRows() = valueRows.forEach { it.refresh() }
 
@@ -92,6 +127,7 @@ class SettingsActivity : AppCompatActivity() {
         valueRows = listOf(
             ValueRow(this, binding.txtMaxDownloads, binding.sliderMaxDownloads, g(R.row_max_downloads), { getString(R.val_count, it) }),
             ValueRow(this, binding.txtDefaultThreads, binding.sliderDefaultThreads, g(R.row_threads), { getString(R.val_threads, it) }),
+            ValueRow(this, binding.txtMinThread, binding.sliderMinThread, g(R.row_min_thread), { if (it >= 1024) "%.1f MB".format(it / 1024f) else "$it KB" }),
             ValueRow(this, binding.txtErrorRetries, binding.sliderErrorRetries, g(R.row_retries), { getString(R.val_count, it) }),
             ValueRow(this, binding.txtSpeedLimit, binding.sliderSpeedLimit, g(R.row_speed),
                 { if (it == 0) g(R.pref_speed_unlimited) else getString(R.val_kbps, it) }),
@@ -149,6 +185,8 @@ class SettingsActivity : AppCompatActivity() {
         }
         binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
         binding.switchNewestFirst.isChecked = repo.newestFirst
+        binding.sliderMinThread.value = repo.minThreadKb.toFloat()
+        showUserAgentRow(repo.defaultUserAgent)
         binding.switchTorrentFixedPort.isChecked = repo.torrentFixedPort
         binding.switchTorrentAnonymous.isChecked = repo.torrentAnonymous
         binding.editTorrentPort.setText(repo.torrentPort.toString())
@@ -168,6 +206,8 @@ class SettingsActivity : AppCompatActivity() {
     private fun saveAndFinish() {
         val repo = khaled.benzo.data.repository.SettingsRepository(this)
         repo.newestFirst = binding.switchNewestFirst.isChecked
+        repo.minThreadKb = binding.sliderMinThread.value.toInt()
+        repo.defaultUserAgent = userAgentValue
         repo.torrentFixedPort = binding.switchTorrentFixedPort.isChecked
         repo.torrentAnonymous = binding.switchTorrentAnonymous.isChecked
         // An empty or out-of-range port keeps the previous saved port.

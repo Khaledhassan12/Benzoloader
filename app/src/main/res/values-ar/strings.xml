@@ -280,4 +280,9 @@
     <string name="cat_extensions">الامتدادات</string>
     <string name="cat_extensions_other">أي نوع ملف غير موجود في التصنيفات الأخرى</string>
     <string name="cat_folder_for_files">مجلد الملفات</string>
+    <string name="row_min_thread">أقل حجم للجزء</string>
+    <string name="row_user_agent">معرّف المتصفح (User agent)</string>
+    <string name="val_default">افتراضي</string>
+    <string name="sum_user_agent">يُرسل مع التحميلات التي ليس لها معرّف خاص بها. حروف وأرقام ورموز عادية فقط، واتركه على الافتراضي لاستخدام معرّف العميل نفسه.</string>
+    <string name="ua_invalid">مسموح بحروف ASCII العادية فقط</string>
 </resources>

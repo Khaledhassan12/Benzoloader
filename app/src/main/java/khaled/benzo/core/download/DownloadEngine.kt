@@ -23,6 +23,9 @@ class DownloadEngine(
     /** Retries per part before the download fails (set from Settings by the service). */
     @Volatile var maxRetries: Int = 4
 
+    /** Smallest part size in bytes (set from Settings by the service). */
+    @Volatile var minChunkBytes: Long = ChunkPlanner.MIN_CHUNK_BYTES
+
     data class ServerFileInfo(
         val contentLength: Long,
         val supportsRange: Boolean,
@@ -110,7 +113,7 @@ class DownloadEngine(
             val totalSize = if (serverInfo.contentLength > 0) serverInfo.contentLength else item.totalBytes
             knownTotal = totalSize
             val partsCount = if (forceSingle) 1
-                else ChunkPlanner.partsFor(totalSize, item.threadsCount, serverInfo.supportsRange)
+                else ChunkPlanner.partsFor(totalSize, item.threadsCount, serverInfo.supportsRange, minChunkBytes)
             serverInfo.validator?.takeIf { it.usable }?.let { runCatching { metaFile.writeText(it.copy(length = totalSize).serialize()) } }
 
             if (totalSize > 0) {

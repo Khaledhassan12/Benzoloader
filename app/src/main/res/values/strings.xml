@@ -280,4 +280,9 @@
     <string name="cat_extensions">Extensions</string>
     <string name="cat_extensions_other">Any file type not listed in the other categories</string>
     <string name="cat_folder_for_files">Folder for files</string>
+    <string name="row_min_thread">Minimum part size</string>
+    <string name="row_user_agent">User agent</string>
+    <string name="val_default">Default</string>
+    <string name="sum_user_agent">Sent with downloads that have no user agent of their own. Letters, digits and symbols only; leave it on Default to use the client\'s own.</string>
+    <string name="ua_invalid">Only plain ASCII characters are allowed</string>
 </resources>

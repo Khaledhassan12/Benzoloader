@@ -74,6 +74,18 @@ class DownloadEngineTest {
             onChunksSnapshot = { s -> store?.apply { clear(); addAll(s) } },
             onProgress = { _, _ -> })
 
+    @Test fun minChunkDecidesPartCount() {
+        assertEquals(4, ChunkPlanner.partsFor(8L * 1024 * 1024, 16, true, 2L * 1024 * 1024))
+        assertEquals(16, ChunkPlanner.partsFor(8L * 1024 * 1024, 16, true, 128L * 1024))
+    }
+
+    @Test fun settingsUserAgentIsOnlyAFallback() {
+        val own = item("/x", 1).copy(userAgent = "Mine/1")
+        assertEquals("Mine/1", khaled.benzo.core.download.RequestHeaders.from(own, "Global/2")["User-Agent"])
+        assertEquals("Global/2", khaled.benzo.core.download.RequestHeaders.from(own.copy(userAgent = null), "Global/2")["User-Agent"])
+        assertEquals(null, khaled.benzo.core.download.RequestHeaders.from(own.copy(userAgent = null))["User-Agent"])
+    }
+
     @Test fun singleConnectionDownloadIsByteExact() = runBlocking {
         assertTrue(run(item("/range", 1)).isSuccess)
         assertEquals(sha(data), sha(File(dir, "out.bin").readBytes()))
