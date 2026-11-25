@@ -149,6 +149,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         lifecycleScope.launch {
+            khaled.benzo.service.QueueWaitState.reasons.collect { adapter.setWaiting(it) }
+        }
+        lifecycleScope.launch {
             viewModel.downloads.collectLatest { list ->
                 adapter.submitList(list)
                 binding.layoutEmptyState.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE

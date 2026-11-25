@@ -81,4 +81,16 @@ class QueuePolicyTest {
         assertEquals(listOf(2L, 1L, 3L, 4L, 5L), ListLogic.apply(items, StatusFilter.ALL, "", SortKey.NAME, true).map { it.id })
         assertEquals(listOf(2L, 5L, 4L, 1L, 3L), ListLogic.apply(items, StatusFilter.ALL, "", SortKey.SIZE, false).map { it.id })
     }
+
+    @Test fun queuedItemWaitsUntilAboveThresholdPlusMargin() {
+        val low = ok.copy(lowBatteryThreshold = 15, charging = false)
+        assertEquals(BlockReason.LOW_BATTERY, QueuePolicy.blockReason(it(1), low.copy(batteryPercent = 20)))
+        assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), low.copy(batteryPercent = 21)))
+    }
+
+    @Test fun runningItemStopsOnlyAtThreshold() {
+        val low = ok.copy(lowBatteryThreshold = 15, charging = false)
+        assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1, st = DownloadStatus.RUNNING), low.copy(batteryPercent = 16)))
+        assertEquals(BlockReason.LOW_BATTERY, QueuePolicy.blockReason(it(1, st = DownloadStatus.RUNNING), low.copy(batteryPercent = 15)))
+    }
 }

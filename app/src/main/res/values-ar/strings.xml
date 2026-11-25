@@ -216,4 +216,10 @@
     <string name="reset_settings_confirm">ترجّع كل الإعدادات لقيمها الافتراضية؟ تحميلاتك وسجل المتصفح والمفضلة وبيانات الدخول المحفوظة مش هتتأثر. التابات المحفوظة هتتمسح لأن "إبقاء التابات مفتوحة" هيرجع مقفول. لو عايز تحتفظ بإعداداتك الحالية، صدّرها الأول.</string>
     <string name="reset_settings_do">إعادة ضبط</string>
     <string name="reset_settings_done">تمت إعادة ضبط الإعدادات.</string>
+    <string name="wait_no_network">في انتظار الشبكة</string>
+    <string name="wait_wifi">في انتظار الواي فاي</string>
+    <string name="wait_battery">في الانتظار: البطارية ضعيفة</string>
+    <string name="wait_charger">في انتظار الشاحن</string>
+    <string name="wait_schedule">في انتظار الجدولة</string>
+    <string name="wait_slot">في انتظار مكان فاضي</string>
 </resources>

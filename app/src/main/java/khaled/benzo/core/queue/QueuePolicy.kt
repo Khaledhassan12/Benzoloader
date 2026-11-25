@@ -46,13 +46,20 @@ object QueuePolicy {
     fun blockReason(item: DownloadItem, c: Conditions): BlockReason = when {
         !c.networkAvailable -> BlockReason.NO_NETWORK
         (item.isWifiOnly || c.globalWifiOnly) && !c.onWifi -> BlockReason.WAITING_FOR_WIFI
-        c.lowBatteryThreshold > 0 && !c.charging && c.batteryPercent in 0..c.lowBatteryThreshold -> BlockReason.LOW_BATTERY
+        c.lowBatteryThreshold > 0 && !c.charging && c.batteryPercent in 0..lowBatteryLimit(item, c) -> BlockReason.LOW_BATTERY
         c.requireCharging && !c.charging -> BlockReason.NOT_CHARGING
         c.scheduleWindow != null && !c.scheduleWindow.contains(c.minuteOfDay) -> BlockReason.OUTSIDE_SCHEDULE
         c.scheduleStartMillis != null && c.nowMillis < c.scheduleStartMillis -> BlockReason.NOT_YET_SCHEDULED
         c.activeCount >= c.maxConcurrent -> BlockReason.CONCURRENCY_LIMIT
         else -> BlockReason.NONE
     }
+
+    /** Points above the threshold a waiting item needs before it starts again, so a download paused at the threshold does not restart and stop every percent. */
+    const val LOW_BATTERY_RESUME_MARGIN = 5
+
+    /** A running item stops at the threshold; a queued one starts again only above threshold + margin. */
+    internal fun lowBatteryLimit(item: DownloadItem, c: Conditions): Int =
+        if (item.status == DownloadStatus.QUEUED) c.lowBatteryThreshold + LOW_BATTERY_RESUME_MARGIN else c.lowBatteryThreshold
 
     /** Next queued items to start, oldest first, respecting every rule and the concurrency limit. */
     fun nextToStart(queued: List<DownloadItem>, c: Conditions): List<DownloadItem> {

@@ -18,6 +18,12 @@ class DownloadAdapter(
     private val onMenuClick: (DownloadItem, View) -> Unit
 ) : ListAdapter<DownloadItem, DownloadAdapter.ViewHolder>(DiffCallback) {
 
+    private var waiting: Map<Long, khaled.benzo.core.queue.BlockReason> = emptyMap()
+
+    /** New reasons for queued items: only the rows that are visible need a redraw. */
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
+    fun setWaiting(map: Map<Long, khaled.benzo.core.queue.BlockReason>) { if (map != waiting) { waiting = map; notifyDataSetChanged() } }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemDownloadBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -36,7 +42,7 @@ class DownloadAdapter(
 
         fun bind(item: DownloadItem) {
             binding.txtFileName.text = item.fileName
-            binding.txtStatusSubtitle.text = "${item.status.name} · ${item.parts} parts · ${item.url}"
+            binding.txtStatusSubtitle.text = "${khaled.benzo.ui.common.StatusText.of(binding.root.context, item.status, waiting[item.id])} · ${item.parts} parts · ${item.url}"
 
             // Progress calculation
             val percent = if (item.totalBytes > 0) {
