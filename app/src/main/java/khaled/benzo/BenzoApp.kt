@@ -8,6 +8,7 @@ class BenzoApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        khaled.benzo.core.security.Secrets.install(khaled.benzo.core.security.KeystoreKey.codec())
 
         // Initialize notification channels
         val notificationHelper = NotificationHelper(this)

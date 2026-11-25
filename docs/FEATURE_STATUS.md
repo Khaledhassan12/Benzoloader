@@ -28,3 +28,5 @@ Added on refactor, written while builds were paused (NOT compiled, NOT run): ETa
 
 Known gaps: secure storage for cookies/headers,
 instrumented (device) tests, UI match against the reference screens.
+
+| Encryption of cookies, headers, site passwords at rest | written, not compiled | pure part unit-tested? no: SecretsTest written, not run | Keystore path never run on a device; allowBackup is true, so a restored database reads sealed values as empty |

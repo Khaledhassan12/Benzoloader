@@ -27,7 +27,7 @@ class SiteManagerViewModel(application: Application) : AndroidViewModel(applicat
 
     fun addSite(domain: String, username: String, pass: String) {
         viewModelScope.launch {
-            siteDao.insertSite(SiteEntity(domain = domain, username = username, password = pass))
+            siteDao.insertSite(SiteEntity.fromModel(SiteProfile(domain = domain, username = username, password = pass)))
             loadSites()
         }
     }

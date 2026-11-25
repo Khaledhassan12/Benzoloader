@@ -33,7 +33,7 @@ State words: **done-tested** (JVM tests passed), **done-compiled** (built, no te
 | 12.7 | Interface | partial | dark mode key exists; widget, single list, swap menus, colored icons missing |
 | 12.8 | Browser settings | missing | BookmarkEntity/BookmarkDao exist but nothing in the browser reads or writes them; no history storage; no options panel |
 | 12.9 | Data (backup, import/export txt) | written-unbuilt | export/import of URL lists as .txt (pure parser and formatter with unit tests, written not run; two menu actions through the system file picker). Export carries no cookies, headers, referer or user-agent, but URLs are kept unchanged and may hold tokens or user:password; the file header and the toast warn about this (not secret-free). Imports are added paused, http/https only, URLs already in the list (any status) skipped. Missing: full backup/restore of settings and database |
-| 13 | Profiles and site manager | done-compiled | cookies/headers stored unencrypted: see 20 |
+| 13 | Profiles and site manager | written-unbuilt | cookies, headers, site passwords and site cookies now sealed with AES-256-GCM (Android Keystore key) when written and opened when read; legacy plaintext rows still readable and re-sealed on next write; no bulk migration; engine does not use site profiles yet |
 | 14 | Notifications | done-compiled | progress, speed, completion; command buttons missing |
 | 15 | UI reconstruction | partial | no pixel match was attempted; reference screens only partly covered by evidence (open gaps F1 to F9 in the inventory) |
 | 17 | Database | partial | downloads, chunks, torrents, bookmarks table (declared, no caller), sites exist; no history table, no headers table, no migrations |

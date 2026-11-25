@@ -14,10 +14,18 @@ data class SiteEntity(
     @ColumnInfo(name = "user_agent") val userAgent: String? = null,
     @ColumnInfo(name = "custom_cookies") val customCookies: String? = null
 ) {
-    fun toModel(): SiteProfile = SiteProfile(id, domain, username, password, userAgent, customCookies)
+    fun toModel(): SiteProfile = SiteProfile(
+        id, domain, username,
+        khaled.benzo.core.security.Secrets.open(password), userAgent,
+        khaled.benzo.core.security.Secrets.open(customCookies)
+    )
 
     companion object {
         fun fromModel(model: SiteProfile): SiteEntity =
-            SiteEntity(model.id, model.domain, model.username, model.password, model.userAgent, model.customCookies)
+            SiteEntity(
+                model.id, model.domain, model.username,
+                khaled.benzo.core.security.Secrets.seal(model.password), model.userAgent,
+                khaled.benzo.core.security.Secrets.seal(model.customCookies)
+            )
     }
 }
