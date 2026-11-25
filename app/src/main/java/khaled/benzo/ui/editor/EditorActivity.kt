@@ -116,6 +116,25 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
+    private var folderChecked = false
+
+    private fun showFolderProblem(verdict: khaled.benzo.core.storage.FolderCheck.Verdict, startNow: Boolean) {
+        val appFolder = getExternalFilesDir(null)?.absolutePath
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.folder_dialog_title)
+            .setMessage(getString(khaled.benzo.ui.common.FolderMessages.res(verdict)) +
+                if (appFolder != null) "\n\n" + getString(R.string.folder_dialog_app_folder_note) else "")
+            .setNegativeButton(android.R.string.cancel, null)
+            .setNeutralButton(R.string.folder_dialog_add_anyway) { _, _ -> folderChecked = true; submitDownload(startNow) }
+        if (appFolder != null) {
+            builder.setPositiveButton(R.string.folder_dialog_use_app_folder) { _, _ ->
+                binding.edtPath.setText(appFolder)
+                Toast.makeText(this, R.string.folder_app_folder_selected, Toast.LENGTH_LONG).show()
+            }
+        }
+        builder.show()
+    }
+
     private fun submitDownload(startNow: Boolean) {
         val url = binding.edtUrl.text.toString().trim()
         var fileName = binding.edtFileName.text.toString().trim()
@@ -129,6 +148,16 @@ class EditorActivity : AppCompatActivity() {
         if (fileName.isEmpty()) {
             fileName = "download_" + System.currentTimeMillis()
         }
+
+        // Check the folder as chosen. Nothing is changed unless the user picks the app folder in the dialog.
+        if (!folderChecked) {
+            val verdict = khaled.benzo.core.storage.FolderCheck.check(savePath, khaled.benzo.core.storage.AndroidFolderFs())
+            if (verdict != khaled.benzo.core.storage.FolderCheck.Verdict.OK) {
+                showFolderProblem(verdict, startNow)
+                return
+            }
+        }
+        folderChecked = false
 
         viewModel.addDownload(
             url = url,

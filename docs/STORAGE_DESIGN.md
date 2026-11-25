@@ -32,3 +32,11 @@ Declared: MANAGE_EXTERNAL_STORAGE (no limit), READ up to API 32, WRITE up to API
 - Approve the all-files request flow for the GitHub variant (not approved yet).
 - When Play comes: apply for the special access with a justification, or use the reduced storage mode.
 - Android 10 behaviour (legacy flag or app-specific fallback).
+
+## Implemented slice (written, not built, not run; 25 Nov 2026 15:41)
+- core/storage/FolderCheck (pure, 9 tests written not run) + AndroidFolderFs (probe file created and removed at once) + ui/common/FolderMessages.
+- Editor: before a download is added, the chosen folder is checked. On failure a dialog explains the problem and offers Cancel, Add anyway, or "Use the app folder". The app folder is only ever an explicit choice; the dialog states that uninstalling removes files saved there and that other apps and Downloads do not show them. Nothing is moved and no saved destination is changed silently.
+- Service: before a download starts, the same check runs on its saved folder. If it fails, the item goes to Error with the reason, the folder is untouched, and no automatic retry loop starts.
+- Android 10: requestLegacyExternalStorage is NOT added. The documentation fetched says the flag is ignored once an app targets 11+ and describes it as a compatibility opt-out for older-model apps; the supported route at target 36 is to stay on scoped storage and use the checks above. Not verified on an Android 10 device.
+- Not done: a way to edit the folder of an existing item that went to Error (today: fix access and resume, or delete and add again); Play-variant storage; the GitHub all-files request flow (held, awaiting the owner's answer).
+

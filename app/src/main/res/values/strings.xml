@@ -191,4 +191,13 @@
     <string name="pref_seed_ratio">Torrents: stop seeding at share ratio</string>
     <string name="pref_seed_minutes">Torrents: stop seeding after (hours:minutes)</string>
     <string name="pref_unlimited">no limit</string>
+    <string name="folder_problem_not_writable">The app cannot write to this folder. The folder is unchanged and the download was not moved. Choose another folder, or allow the app access to it.</string>
+    <string name="folder_problem_not_a_folder">This path is a file, not a folder. Choose another folder.</string>
+    <string name="folder_problem_empty">No download folder is set.</string>
+    <string name="folder_problem_not_absolute">The folder path is not valid. Choose a folder with the folder picker.</string>
+    <string name="folder_dialog_title">The download folder is not writable</string>
+    <string name="folder_dialog_add_anyway">Add anyway</string>
+    <string name="folder_dialog_use_app_folder">Use the app folder</string>
+    <string name="folder_dialog_app_folder_note">The app folder is private to Benzoloader. Files saved there are deleted when the app is uninstalled, and other apps and the Downloads folder do not show them. Nothing is moved: only this download uses it, and you can still change it.</string>
+    <string name="folder_app_folder_selected">Folder set to the app folder. Press Add or Start again to continue.</string>
 </resources>

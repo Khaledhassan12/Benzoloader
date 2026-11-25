@@ -177,6 +177,15 @@ class DownloadService : Service() {
             return
         }
 
+        // The chosen folder is never changed here. If it cannot take files, the download stops with a clear reason.
+        val verdict = khaled.benzo.core.storage.FolderCheck.check(item.savePath, khaled.benzo.core.storage.AndroidFolderFs())
+        if (verdict != khaled.benzo.core.storage.FolderCheck.Verdict.OK) {
+            repository.updateDownload(item.copy(status = DownloadStatus.ERROR, speed = 0L,
+                errorMessage = getString(khaled.benzo.ui.common.FolderMessages.res(verdict))))
+            updateNotification()
+            return
+        }
+
         wakeLockManager.acquire()
         repository.updateStatusAndSpeed(id, DownloadStatus.RUNNING, 0L)
         activeItems[id] = item.copy(status = DownloadStatus.RUNNING)

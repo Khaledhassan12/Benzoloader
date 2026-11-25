@@ -191,4 +191,13 @@
     <string name="pref_seed_ratio">التورنت: أوقف المشاركة عند نسبة رفع</string>
     <string name="pref_seed_minutes">التورنت: أوقف المشاركة بعد (ساعات:دقائق)</string>
     <string name="pref_unlimited">بدون حد</string>
+    <string name="folder_problem_not_writable">التطبيق مش قادر يكتب في المجلد ده. المجلد زي ما هو والتحميل ما اتنقلش. اختار مجلد تاني، أو اسمح للتطبيق بالوصول ليه.</string>
+    <string name="folder_problem_not_a_folder">المسار ده ملف مش مجلد. اختار مجلد تاني.</string>
+    <string name="folder_problem_empty">مفيش مجلد تحميل متحدد.</string>
+    <string name="folder_problem_not_absolute">مسار المجلد مش صحيح. اختار مجلد من منتقي المجلدات.</string>
+    <string name="folder_dialog_title">مجلد التحميل مش قابل للكتابة</string>
+    <string name="folder_dialog_add_anyway">أضف على أي حال</string>
+    <string name="folder_dialog_use_app_folder">استخدم مجلد التطبيق</string>
+    <string name="folder_dialog_app_folder_note">مجلد التطبيق خاص ببينزولودر. الملفات اللي فيه بتتمسح لما التطبيق يتحذف، ومش بتظهر في تطبيقات تانية ولا في مجلد التحميلات. مفيش حاجة بتتنقل: التحميل ده بس هيستخدمه، وتقدر تغيّره.</string>
+    <string name="folder_app_folder_selected">اتضبط المجلد على مجلد التطبيق. اضغط إضافة أو بدء تاني للمتابعة.</string>
 </resources>
