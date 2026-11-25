@@ -82,7 +82,8 @@ Benzoloader/
         │       │   └── sniffer/   MediaSniffer, DetectedMedia
         │       ├── service/       DownloadService, DeviceConditions,
         │       │                  ScheduleManager, NotificationHelper,
-        │       │                  WakeLockManager
+        │       │                  WakeLockManager, HttpTaskRunner,
+        │       │                  TorrentTaskRunner, AutoResumeScheduler
         │       ├── receiver/      boot, schedule, notification actions
         │       ├── data/
         │       │   ├── db/        Room entities, DAOs, Migrations

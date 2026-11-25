@@ -32,6 +32,9 @@ class DownloadService : Service() {
     private lateinit var downloadEngine: DownloadEngine
     private lateinit var limiter: TokenBucketLimiter
     private lateinit var deviceConditions: DeviceConditions
+    private lateinit var httpRunner: HttpTaskRunner
+    private lateinit var torrentRunner: TorrentTaskRunner
+    private lateinit var autoResume: AutoResumeScheduler
 
     private val activeJobs = ConcurrentHashMap<Long, Job>()
     private val activeItems = ConcurrentHashMap<Long, DownloadItem>()
@@ -45,6 +48,9 @@ class DownloadService : Service() {
         downloadEngine = DownloadEngine()
         limiter = TokenBucketLimiter(settings.speedLimitBytesPerSec)
         deviceConditions = DeviceConditions(this, settings)
+        httpRunner = HttpTaskRunner(repository, downloadEngine, limiter)
+        torrentRunner = TorrentTaskRunner(repository, filesDir)
+        autoResume = AutoResumeScheduler(serviceScope, repository, settings)
         ScheduleManager.rearm(this)
 
         val initialNotif = notificationHelper.buildForegroundNotification(emptyList(), 0L)
@@ -139,27 +145,6 @@ class DownloadService : Service() {
         updateNotification()
     }
 
-    private val autoResumeAttempts = mutableMapOf<Long, Int>()
-
-    /**
-     * Auto-resume: after a failure that may pass, put the download back in the queue after a growing delay.
-     * It only acts if the row still has the status the failure gave it (the user did not touch it meanwhile).
-     */
-    private fun scheduleAutoResume(id: Long, failedStatus: DownloadStatus, failure: Throwable?) {
-        // With "pause after error" the failed row is Paused, which a user pause also produces: the two cannot be told
-        // apart, so that setting wins and nothing is resumed automatically.
-        if (failedStatus != DownloadStatus.ERROR) return
-        val attempts = autoResumeAttempts[id] ?: 0
-        if (!khaled.benzo.core.queue.AutoResumePolicy.shouldResume(settings.autoResume, attempts, failure)) return
-        autoResumeAttempts[id] = attempts + 1
-        serviceScope.launch {
-            delay(khaled.benzo.core.queue.AutoResumePolicy.delayMs(attempts, failure))
-            if (repository.getDownload(id)?.status == failedStatus) {
-                repository.updateStatusAndSpeed(id, DownloadStatus.QUEUED, 0L)
-            }
-        }
-    }
-
     /** Stops the transfer but keeps it in the queue so it resumes by itself when conditions allow. Progress is already saved. */
     private suspend fun requeueTask(id: Long) {
         activeJobs.remove(id)?.cancel()
@@ -188,30 +173,10 @@ class DownloadService : Service() {
         downloadEngine.maxRetries = settings.errorRetries
 
         val job = serviceScope.launch {
-            val existingChunks = repository.getChunks(id)
-            val result = downloadEngine.runDownload(
-                item = item,
-                existingChunks = existingChunks,
-                limiter = limiter,
-                headers = khaled.benzo.core.download.RequestHeaders.from(item),
-                onChunkCreated = { chunks ->
-                    repository.deleteChunks(id)
-                    repository.saveChunks(chunks)
-                    repository.getChunks(id)
-                },
-                onChunksSnapshot = { chunks ->
-                    repository.saveChunks(chunks)
-                },
-                onProgress = { downloadedBytes, speed ->
-                    repository.updateProgress(id, downloadedBytes, speed)
-                    activeItems[id] = item.copy(
-                        downloadedBytes = downloadedBytes,
-                        speed = speed,
-                        status = DownloadStatus.RUNNING
-                    )
-                    updateNotification()
-                }
-            )
+            val result = httpRunner.run(item) { downloadedBytes, speed ->
+                activeItems[id] = item.copy(downloadedBytes = downloadedBytes, speed = speed, status = DownloadStatus.RUNNING)
+                updateNotification()
+            }
 
             activeJobs.remove(id)
             activeItems.remove(id)
@@ -223,12 +188,12 @@ class DownloadService : Service() {
                 if (settings.soundOnComplete) {
                     notificationHelper.playSound(R.raw.done)
                 }
-                autoResumeAttempts.remove(id)
+                autoResume.onSuccess(id)
             } else {
                 val failedStatus = khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError)
                 repository.updateStatusAndSpeed(id, failedStatus, 0L)
                 notificationHelper.playSound(R.raw.error)
-                scheduleAutoResume(id, failedStatus, result.exceptionOrNull())
+                autoResume.onFailure(id, failedStatus, result.exceptionOrNull())
             }
 
             if (activeJobs.isEmpty()) {
@@ -241,51 +206,21 @@ class DownloadService : Service() {
         updateNotification()
     }
 
-    /** Drives one torrent through the libtorrent session and mirrors real stats into its download row. */
     private suspend fun startTorrentTask(item: DownloadItem) {
         val id = item.id
-        val hash = item.torrentInfoHash
-        if (hash == null) {
+        if (item.torrentInfoHash == null) {
             activeItems.remove(id)
             repository.updateStatusAndSpeed(id, khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError), 0L)
             return
         }
         val job = serviceScope.launch {
-            var failed = false
-            try {
-                val engine = khaled.benzo.core.torrent.TorrentEngine.instance
-                if (engine.hasTorrent(hash)) {
-                    engine.resumeTorrent(hash)
-                } else {
-                    val dir = java.io.File(item.savePath)
-                    val tdir = java.io.File(filesDir, "torrents")
-                    val tf = java.io.File(tdir, "$hash.torrent")
-                    if (tf.exists()) {
-                        val prios = khaled.benzo.core.torrent.TorrentMapping
-                            .decodePriorities(java.io.File(tdir, "$hash.prio").takeIf { it.exists() }?.readText())
-                        engine.addTorrentFile(tf, dir, prios)
-                    } else if (khaled.benzo.core.torrent.TorrentMapping.isMagnet(item.url)) {
-                        if (engine.addMagnet(item.url, dir) == null) failed = true
-                    } else failed = true
-                }
-                while (!failed && isActive) {
-                    val st = engine.getStats(hash)
-                    if (st == null) { failed = true; break }
-                    repository.updateProgress(id, st.downloaded, st.downloadSpeed)
-                    activeItems[id] = item.copy(downloadedBytes = st.downloaded, speed = st.downloadSpeed,
-                        totalBytes = if (st.total > 0) st.total else item.totalBytes, status = DownloadStatus.RUNNING)
-                    updateNotification()
-                    if (st.isFinished) break
-                    delay(1000)
-                }
-            } catch (e: kotlinx.coroutines.CancellationException) {
-                throw e
-            } catch (e: Throwable) {
-                failed = true
+            val ok = torrentRunner.run(item) { running ->
+                activeItems[id] = running
+                updateNotification()
             }
             activeJobs.remove(id)
             activeItems.remove(id)
-            if (failed) {
+            if (!ok) {
                 repository.updateStatusAndSpeed(id, khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError), 0L)
                 notificationHelper.playSound(R.raw.error)
             } else {
