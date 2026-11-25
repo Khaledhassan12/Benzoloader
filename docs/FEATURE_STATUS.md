@@ -17,7 +17,7 @@ Last updated on branch feature/engine-hardening. Tests: `./gradlew :app:testDebu
 | Free-space check before download | yes | no | |
 | Foreground service, queue, notifications | existing code | no | |
 | Scheduler, Wi-Fi only, battery stop | existing code | no | |
-| Browser, tabs, history, bookmarks, sniffer | existing code | no | |
+| Browser (single WebView, sniffer) | compiled at fd59931 | no | tabs, history, bookmarks UI are not implemented; bookmark table has no caller |
 | Torrent engine (jlibtorrent 1.2.0.18) | code present, compiled, APK packages matching native libs for 4 ABIs; pure helpers unit-tested (8 tests) | no | Original TorrentEngine was a stub returning fabricated numbers; replaced with a real session-backed engine. Editor loads real metadata. DownloadService now runs torrents (download row with isTorrent, engine stats mirrored each second, pause/requeue/cancel hooks); compiled only, never run. Never run on a device; no speed measurements. |
 | Editor user-agent / referer / cookie reach requests | yes (service now passes them) | yes (engine receives headers) | not encrypted at rest yet |
 | Folder savePath + safe file names | yes | yes | Editor stores a folder; engine used it as a file path before |

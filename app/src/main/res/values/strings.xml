@@ -42,7 +42,7 @@
 
     <!-- Editor Screen -->
     <string name="editor_title">New Download</string>
-    <string name="editor_url_hint">Download URL (http, https, ftp)</string>
+    <string name="editor_url_hint">Download URL (http or https)</string>
     <string name="editor_file_name">File Name</string>
     <string name="editor_save_path">Save Location</string>
     <string name="editor_threads">Download Threads (Segments)</string>
@@ -104,7 +104,7 @@
     <string name="pref_network">Network</string>
     <string name="pref_wifi_only">Download on Wi-Fi only</string>
     <string name="pref_power">Power &amp; Battery</string>
-    <string name="pref_battery_threshold">Stop if battery below (%)</string>
+    <string name="pref_battery_threshold">Stop at or below battery level (%)</string>
     <string name="pref_stop_on_unplug">Stop when charger disconnected</string>
     <string name="pref_appearance">Appearance</string>
     <string name="pref_dark_theme">Dark Theme</string>
@@ -134,4 +134,6 @@
     <string name="pref_catalog">Sort downloads into folders by type</string>
     <string name="pref_error_retries">Retries per part on errors (0-10)</string>
     <string name="pref_pause_after_error">Pause (keep progress) when a download fails</string>
+    <string name="nav_paused">Paused</string>
+    <string name="nav_failed">Failed</string>
 </resources>

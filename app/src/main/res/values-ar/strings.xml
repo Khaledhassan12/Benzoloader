@@ -42,7 +42,7 @@
 
     <!-- شاشة المحرر -->
     <string name="editor_title">تحميل جديد</string>
-    <string name="editor_url_hint">رابط التحميل (http, https, ftp)</string>
+    <string name="editor_url_hint">رابط التحميل (http أو https)</string>
     <string name="editor_file_name">اسم الملف</string>
     <string name="editor_save_path">مكان الحفظ</string>
     <string name="editor_threads">عدد أجزاء التنزيل (الخيوط)</string>
@@ -104,7 +104,7 @@
     <string name="pref_network">الشبكة والاتصال</string>
     <string name="pref_wifi_only">التحميل عبر واي فاي فقط</string>
     <string name="pref_power">إدارة الطاقة والبطارية</string>
-    <string name="pref_battery_threshold">إيقاف التحميل إذا قلت البطارية عن (%)</string>
+    <string name="pref_battery_threshold">إيقاف التحميل عند وصول البطارية إلى النسبة المحددة أو أقل (%)</string>
     <string name="pref_stop_on_unplug">إيقاف عند فصل الشاحن</string>
     <string name="pref_appearance">المظهر والواجهة</string>
     <string name="pref_dark_theme">الوضع المظلم</string>
@@ -129,9 +129,11 @@
     <string name="pref_schedule_start">وقت البدء: %1$s</string>
     <string name="pref_schedule_stop">وقت الإيقاف: %1$s</string>
     <string name="pref_speed_limit_value">حد السرعة: %1$d KB/s</string>
-    <string name="notif_resume_title">في تحميلات منتظرة</string>
-    <string name="notif_resume_text">%1$d تحميل في الطابور. اضغط للاستكمال.</string>
+    <string name="notif_resume_title">تحميلات بانتظار الاستئناف</string>
+    <string name="notif_resume_text">عدد التحميلات في قائمة الانتظار: %1$d. اضغط للاستئناف.</string>
     <string name="pref_catalog">ترتيب التحميلات في مجلدات حسب النوع</string>
-    <string name="pref_error_retries">عدد إعادة المحاولة عند الأخطاء (0-10)</string>
+    <string name="pref_error_retries">عدد مرات إعادة المحاولة عند الخطأ (0-10)</string>
     <string name="pref_pause_after_error">إيقاف مؤقت مع حفظ التقدم عند فشل التحميل</string>
+    <string name="nav_paused">متوقفة مؤقتًا</string>
+    <string name="nav_failed">فاشلة</string>
 </resources>

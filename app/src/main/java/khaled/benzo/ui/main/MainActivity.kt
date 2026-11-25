@@ -62,6 +62,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_downloading -> viewModel.setCategory(FileCategory.DOWNLOADING)
                 R.id.nav_completed -> viewModel.setCategory(FileCategory.COMPLETED)
                 R.id.nav_queued -> viewModel.setCategory(FileCategory.QUEUED)
+                R.id.nav_paused -> viewModel.setStatusFilter(khaled.benzo.core.queue.StatusFilter.PAUSED)
+                R.id.nav_failed -> viewModel.setStatusFilter(khaled.benzo.core.queue.StatusFilter.FAILED)
                 R.id.nav_video -> viewModel.setCategory(FileCategory.VIDEO)
                 R.id.nav_music -> viewModel.setCategory(FileCategory.AUDIO)
                 R.id.nav_documents -> viewModel.setCategory(FileCategory.DOCUMENTS)
@@ -164,11 +166,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        val searchView = menu?.findItem(R.id.action_search)?.actionView as? androidx.appcompat.widget.SearchView
+        searchView?.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = true
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.setQuery(newText.orEmpty())
+                return true
+            }
+        })
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.sort_by_name -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.NAME); true }
+            R.id.sort_by_size -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.SIZE); true }
+            R.id.sort_by_date -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.TIME); true }
+            R.id.sort_by_type -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.CATEGORY); true }
             R.id.action_browser -> {
                 startActivity(Intent(this, BrowserActivity::class.java))
                 true

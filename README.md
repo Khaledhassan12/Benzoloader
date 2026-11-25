@@ -39,7 +39,7 @@ Per-feature detail: [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md). Coverage a
 | 📂 | Safe file names, free-space check, editor user-agent/referer/cookies sent | tested (names, headers); space check compiled only |
 | 🗂️ | Queue rules: max concurrent, Wi-Fi only, battery threshold, stop on unplug, schedule window (crosses midnight) | tested (policy); service wiring compiled only |
 | 🧲 | Torrent: `.torrent` or magnet, file selection, same queue as other downloads | compiled; later edits not built; never run |
-| 🌍 | In-app browser, media sniffer, bookmarks, site manager, per-site profiles | compiled only |
+| 🌍 | In-app browser (single page, no tabs/history yet), media sniffer, site manager, per-site profiles | compiled only |
 | ⚙️ | Settings: threads, concurrency, Wi-Fi only, battery, unplug, speed limit, schedule, sounds | newest items not built |
 | 🔔 | Foreground notification, completion sound | compiled only |
 | 🔄 | Boot / schedule recovery: "tap to resume" notification, resume on app open, exact alarm when permitted | not built; not run on a device |
@@ -95,7 +95,7 @@ Benzoloader/
 |---|---|---|
 | Kotlin + Coroutines | 2.2.10 / 1.8.1 | Language, async I/O, cancellation of downloads |
 | OkHttp | 4.12.0 | HTTP/HTTPS client for the download engine (`logging-interceptor` is declared as well) |
-| Room (+ KSP compiler) | 2.8.5 | Local database for downloads, chunk progress, torrents, bookmarks, sites |
+| Room (+ KSP compiler) | 2.8.5 | Local database for downloads, chunk progress, torrents, sites (a bookmarks table exists but is unused) |
 | jlibtorrent (FrostWire) | 1.2.0.18 | Java binding of libtorrent for the torrent engine |
 | `jlibtorrent-android-{arm64,arm,x86,x86_64}` | 1.2.0.18 | Native `.so` per ABI, same version as the Java API |
 | AndroidX (core, appcompat, lifecycle, activity, fragment, recyclerview, constraintlayout, drawerlayout, swiperefreshlayout, documentfile) | see `app/build.gradle.kts` | UI framework, ViewModels, lists, folder access |

@@ -18,6 +18,14 @@
             android:id="@+id/nav_queued"
             android:icon="@drawable/stat_pause"
             android:title="@string/nav_queued" />
+        <item
+            android:id="@+id/nav_paused"
+            android:icon="@drawable/stat_pause"
+            android:title="@string/nav_paused" />
+        <item
+            android:id="@+id/nav_failed"
+            android:icon="@drawable/stat_error"
+            android:title="@string/nav_failed" />
     </group>
 
     <item android:title="@string/editor_advanced">
