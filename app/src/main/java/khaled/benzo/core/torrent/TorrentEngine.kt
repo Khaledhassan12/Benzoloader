@@ -75,10 +75,12 @@ class TorrentEngine(context: Context? = null) {
     private var wantPort = 0
     private var wantAnonymous = false
     private var libraryListenDefault = ""
+    private var wantEncryption = 0
 
     /** Network settings. Applied at once when the session runs, otherwise right after it starts. Cheap to call repeatedly. */
-    fun configureNetwork(dht: Boolean, connectionsLimit: Int, fixedPort: Int, anonymous: Boolean) = synchronized(lock) {
-        if (dht == wantDht && connectionsLimit == wantConnections && fixedPort == wantPort && anonymous == wantAnonymous) return@synchronized
+    fun configureNetwork(dht: Boolean, connectionsLimit: Int, fixedPort: Int, anonymous: Boolean, encryption: Int = 0) = synchronized(lock) {
+        if (dht == wantDht && connectionsLimit == wantConnections && fixedPort == wantPort && anonymous == wantAnonymous && encryption == wantEncryption) return@synchronized
+        wantEncryption = encryption
         wantDht = dht; wantConnections = connectionsLimit; wantPort = fixedPort; wantAnonymous = anonymous
         if (session.isRunning) applyNetwork()
     }
@@ -88,6 +90,14 @@ class TorrentEngine(context: Context? = null) {
         pack.enableDht(wantDht)
         pack.connectionsLimit(TorrentNetworkPolicy.connectionsToApply(wantConnections, libraryConnectionsDefault))
         pack.anonymousMode(wantAnonymous)
+        // Policy for both directions. API names read from the jlibtorrent 1.2.0.18 classes, NOT compiled yet.
+        val policy = when (TorrentEncryption.fromIndex(wantEncryption)) {
+            TorrentEncryption.REQUIRE -> com.frostwire.jlibtorrent.swig.settings_pack.enc_policy.pe_forced
+            TorrentEncryption.DISABLE -> com.frostwire.jlibtorrent.swig.settings_pack.enc_policy.pe_disabled
+            TorrentEncryption.PREFER -> com.frostwire.jlibtorrent.swig.settings_pack.enc_policy.pe_enabled
+        }.swigValue()
+        pack.setInteger(com.frostwire.jlibtorrent.swig.settings_pack.int_types.out_enc_policy.swigValue(), policy)
+        pack.setInteger(com.frostwire.jlibtorrent.swig.settings_pack.int_types.in_enc_policy.swigValue(), policy)
         if (wantPort != 0) pack.listenInterfaces(TorrentNetworkPolicy.listenInterfaces(wantPort))
         else if (libraryListenDefault.isNotEmpty()) pack.listenInterfaces(libraryListenDefault)
         session.applySettings(pack)

@@ -66,6 +66,7 @@ object SettingsBackup {
         "theme_color" to Spec.IntRange(0, 4, 1),
         "theme_mode" to Spec.IntRange(0, 2, 1),
         "download_path" to Spec.Text(512) { isPlausiblePath(it) },
+        "torrent_encryption" to Spec.IntRange(0, 2),
         "top_window_enabled" to Spec.Bool,
         "top_window_stats" to Spec.IntRange(0, 63),
         "top_window_text_color" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
