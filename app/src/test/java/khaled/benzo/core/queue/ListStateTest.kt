@@ -90,5 +90,15 @@ class ListStateTest {
         assertEquals(listOf(50L, 100L, 200L, 300L), st.apply(items).map { it.totalBytes })
         assertEquals(listOf(300L, 200L, 100L, 50L), st.withSortDirection(SortKey.SIZE, false).apply(items).map { it.totalBytes })
     }
+
+    // Written, not run.
+    @Test fun customMarksFollowSortAndTime() {
+        assertFalse(ListState().sortIsCustom)
+        assertTrue(ListState().withSortDirection(SortKey.SIZE, false).sortIsCustom)
+        assertFalse(ListState().withAddToBottom(true).sortIsCustom)
+        assertTrue(ListState().withAddToBottom(true).withSortDirection(SortKey.TIME, false).sortIsCustom)
+        assertFalse(ListState().timeIsCustom)
+        assertTrue(ListState().withTime(TimeFilter.TODAY).timeIsCustom)
+    }
 }
 

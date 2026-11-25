@@ -17,7 +17,7 @@ import khaled.benzo.data.model.DownloadItem
 import khaled.benzo.data.model.FileCategory
 
 /**
- * The side panel with four collapsible sections: Category, Status, Time and Sorting. One section is open at a time. A row
+ * The side panel with four collapsible sections: Category, Status, Time and Sorting. Sections open and close independently (the video shows Status and Time open together). A row
  * shows its count only when the count is not zero. The selected row is a rounded pill in the accent colour.
  * Layout, order and behaviour follow the reference captures (docs/UI_PARITY_PLAN.md); the words are our own and rows have
  * no icons yet. Unrendered.
@@ -33,7 +33,7 @@ class FilterPanel(
 
     private enum class Section { CATEGORY, STATUS, TIME, SORTING }
 
-    private var open: Section? = Section.STATUS
+    private val open = mutableSetOf(Section.STATUS)
     private var state = ListState()
     private var items: List<DownloadItem> = emptyList()
     private var now = System.currentTimeMillis()
@@ -57,7 +57,7 @@ class FilterPanel(
             gravity = Gravity.CENTER_VERTICAL
             minimumHeight = dp(64)
             setPadding(dp(24), 0, dp(24), 0)
-            setOnClickListener { open = if (open == which) null else which; render(state, items, now) }
+            setOnClickListener { if (!open.add(which)) open.remove(which); render(state, items, now) }
         }
         header.addView(TextView(context).apply {
             setText(title); textSize = 16f
@@ -69,9 +69,9 @@ class FilterPanel(
                 setTextColor(accent()); setOnClickListener { onClear() }
             })
         }
-        header.addView(TextView(context).apply { text = if (open == which) "\u25B4" else "\u25BE"; textSize = 18f })
+        header.addView(TextView(context).apply { text = if (which in open) "\u25B4" else "\u25BE"; textSize = 18f })
         addView(header)
-        if (open == which) rows()
+        if (which in open) rows()
         addView(View(context).apply {
             setBackgroundColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOutlineVariant))
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, dp(1)).apply { setMargins(dp(24), 0, dp(24), 0) }
@@ -110,7 +110,10 @@ class FilterPanel(
             FileCategory.PROGRAM to R.string.nav_programs, FileCategory.VIDEO to R.string.nav_video, FileCategory.MUSIC to R.string.nav_music,
             FileCategory.IMAGE to R.string.nav_images, FileCategory.DOCUMENT to R.string.nav_documents, FileCategory.TORRENT to R.string.nav_torrent
         )
-        for ((cat, label) in list) row(context.getString(label), null, state.type == cat) { onType(cat) }
+        for ((cat, label) in list) {
+            val count = if (cat == null) items.size else items.count { it.category == cat }
+            row(context.getString(label), count, state.type == cat) { onType(cat) }
+        }
     }
 
     /** Stopped = paused, Running = connecting or running, Failed = error, Successful = completed. The Stopped mapping is inferred. */

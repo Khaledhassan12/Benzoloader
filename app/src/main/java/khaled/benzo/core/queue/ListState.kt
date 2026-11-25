@@ -19,6 +19,10 @@ data class ListState(
     fun withSortDirection(key: SortKey, ascending: Boolean): ListState = copy(sort = key, ascending = ascending)
     fun cleared(): ListState = copy(status = StatusFilter.ALL, type = null, time = TimeFilter.ALL)
 
+    /** Observed in the video: with a non-default sort or a time filter set, small marks appear next to the toolbar title. */
+    val sortIsCustom: Boolean get() = !(sort == SortKey.TIME && ascending == addToBottom)
+    val timeIsCustom: Boolean get() = time != TimeFilter.ALL
+
     fun withTime(filter: TimeFilter): ListState = copy(time = filter)
 
     /** Applies the stored display-order choice. Only the time sort follows it, and only while the user has not flipped it by hand. */

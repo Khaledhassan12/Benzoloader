@@ -75,6 +75,18 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var filterPanel: FilterPanel
 
+    private fun categoryTitle(c: FileCategory): String = getString(when (c) {
+        FileCategory.OTHER -> R.string.nav_other
+        FileCategory.ARCHIVE -> R.string.nav_archives
+        FileCategory.PROGRAM -> R.string.nav_programs
+        FileCategory.VIDEO -> R.string.nav_video
+        FileCategory.MUSIC -> R.string.nav_music
+        FileCategory.IMAGE -> R.string.nav_images
+        FileCategory.DOCUMENT -> R.string.nav_documents
+        FileCategory.TORRENT -> R.string.nav_torrent
+        else -> R.string.panel_all
+    })
+
     /** Builds the side panel and keeps it, the toolbar subtitle and the list in step with the list state. */
     private fun setupFilterPanel() {
         filterPanel = FilterPanel(
@@ -89,6 +101,10 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             kotlinx.coroutines.flow.combine(viewModel.listState, viewModel.allItems) { s, all -> s to all }.collect { (s, all) ->
                 filterPanel.render(s, all)
+                // Observed: the title is "All" or the chosen category; marks follow it for a custom sort or a time filter.
+                // The marks are text stand-ins; the reference uses small icons.
+                val base = s.type?.let { categoryTitle(it) } ?: getString(R.string.panel_all)
+                supportActionBar?.title = base + (if (s.sortIsCustom) " \u21C5" else "") + (if (s.timeIsCustom) " \u25F7" else "")
                 supportActionBar?.subtitle = when (s.status) {
                     khaled.benzo.core.queue.StatusFilter.ALL -> null
                     khaled.benzo.core.queue.StatusFilter.PAUSED -> getString(R.string.panel_stopped)
