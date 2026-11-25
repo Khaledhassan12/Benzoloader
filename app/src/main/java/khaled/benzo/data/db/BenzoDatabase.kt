@@ -14,7 +14,7 @@ import androidx.room.RoomDatabase
         BookmarkEntity::class
     ],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class BenzoDatabase : RoomDatabase() {
 
@@ -35,7 +35,7 @@ abstract class BenzoDatabase : RoomDatabase() {
                     BenzoDatabase::class.java,
                     "benzo_database.db"
                 )
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(*Migrations.ALL)
                     .build()
                 INSTANCE = instance
                 instance

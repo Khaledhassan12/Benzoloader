@@ -25,6 +25,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
         referer: String?,
         cookies: String?,
         startNow: Boolean,
+        onError: () -> Unit = {},
         onComplete: (Long) -> Unit
     ) {
         viewModelScope.launch {
@@ -60,8 +61,9 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
                 cookies = cookies
             )
 
-            val newId = repository.insertDownload(item)
-            onComplete(newId)
+            val newId = runCatching { repository.insertDownload(item) }.getOrNull()
+            // Saving can fail when the secure key store is unavailable. Report it, never store the cookies unencrypted.
+            if (newId == null) onError() else onComplete(newId)
         }
     }
 }

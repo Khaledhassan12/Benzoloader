@@ -74,7 +74,7 @@ Benzoloader/
         │       │   ├── files/     FileNaming
         │       │   ├── queue/     QueuePolicy, ListLogic
         │       │   ├── security/  SecretCodec, Secrets, KeystoreKey,
-        │       │   │              SecretsMigration(+Runner)
+        │       │   │              SecretsMigration(+Runner), CredentialRepair
         │       │   ├── torrent/   TorrentEngine, TorrentMapping
         │       │   └── sniffer/   MediaSniffer, DetectedMedia
         │       ├── service/       DownloadService, DeviceConditions,
@@ -82,7 +82,7 @@ Benzoloader/
         │       │                  WakeLockManager
         │       ├── receiver/      boot, schedule, notification actions
         │       ├── data/
-        │       │   ├── db/        Room entities and DAOs
+        │       │   ├── db/        Room entities, DAOs, Migrations
         │       │   ├── model/     DownloadItem, FileCategory, TorrentItem...
         │       │   └── repository/ DownloadRepository, SettingsRepository
         │       ├── provider/      BenzoFileProvider
@@ -91,7 +91,7 @@ Benzoloader/
         └── test/                  QueuePolicyTest, DownloadEngineTest,
                                    TorrentMappingTest, ResumePolicyTest,
                                    CatalogPolicyTest, FileNamingTest,
-                                   ListTransferTest, SecretsTest, SecretsMigrationTest,
+                                   ListTransferTest, SecretsTest, SecretsMigrationTest, CredentialRepairTest,
                                    RequestHeadersTest
 ```
 

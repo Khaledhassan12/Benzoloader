@@ -102,4 +102,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             onDone(r.added, r.skipped)
         }
     }
+
+    /** Saves re-entered credentials (or drops the unreadable ones) without touching progress. */
+    fun repairCredentials(id: Long, cookies: String?, headers: String?, discard: Boolean, onError: () -> Unit) {
+        viewModelScope.launch {
+            val item = repository.getDownload(id) ?: return@launch
+            val fixed = khaled.benzo.core.security.CredentialRepair.apply(item, cookies, headers, discard)
+            if (fixed == item) return@launch
+            runCatching { repository.updateDownload(fixed) }.onFailure { onError() }
+        }
+    }
 }

@@ -130,7 +130,8 @@ class EditorActivity : AppCompatActivity() {
             userAgent = binding.edtUserAgent.text.toString().ifEmpty { null },
             referer = binding.edtReferer.text.toString().ifEmpty { null },
             cookies = binding.edtCookies.text.toString().ifEmpty { null },
-            startNow = startNow
+            startNow = startNow,
+            onError = { Toast.makeText(this, R.string.secrets_save_failed, Toast.LENGTH_LONG).show() }
         ) { downloadId ->
             if (startNow) {
                 val serviceIntent = Intent(this, DownloadService::class.java).apply {

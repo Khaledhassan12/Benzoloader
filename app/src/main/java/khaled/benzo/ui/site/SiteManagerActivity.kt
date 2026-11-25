@@ -1,5 +1,6 @@
 package khaled.benzo.ui.site
 
+import khaled.benzo.R
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -44,15 +45,15 @@ class SiteManagerActivity : AppCompatActivity() {
         viewModel.loadSites()
     }
 
-    private fun showAddSiteDialog() {
+    private fun showAddSiteDialog(prefDomain: String = "", prefUser: String = "", prefPass: String = "") {
         val container = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(50, 20, 50, 20)
         }
 
-        val edtDomain = EditText(this).apply { hint = "Domain (e.g. example.com)" }
-        val edtUser = EditText(this).apply { hint = "Username" }
-        val edtPass = EditText(this).apply { hint = "Password" }
+        val edtDomain = EditText(this).apply { hint = "Domain (e.g. example.com)"; setText(prefDomain) }
+        val edtUser = EditText(this).apply { hint = "Username"; setText(prefUser) }
+        val edtPass = EditText(this).apply { hint = "Password"; setText(prefPass) }
 
         container.addView(edtDomain)
         container.addView(edtUser)
@@ -66,7 +67,11 @@ class SiteManagerActivity : AppCompatActivity() {
                 val user = edtUser.text.toString().trim()
                 val pass = edtPass.text.toString().trim()
                 if (domain.isNotEmpty()) {
-                    viewModel.addSite(domain, user, pass)
+                    viewModel.addSite(domain, user, pass) {
+                        // Could not store the password securely: say so and bring the form back with what was typed.
+                        android.widget.Toast.makeText(this, R.string.secrets_save_failed, android.widget.Toast.LENGTH_LONG).show()
+                        showAddSiteDialog(domain, user, pass)
+                    }
                 }
             }
             .setNegativeButton("Cancel", null)

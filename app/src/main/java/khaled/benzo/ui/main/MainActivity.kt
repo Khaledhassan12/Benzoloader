@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         adapter = DownloadAdapter(
             onItemClick = { item ->
+                if (item.needsReentry) { showReentry(item); return@DownloadAdapter }
                 val intent = Intent(this, FilePropertiesActivity::class.java).apply {
                     putExtra("download_id", item.id)
                 }
@@ -97,6 +98,17 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerViewDownloads.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewDownloads.adapter = adapter
     }
+
+    private fun showReentry(item: DownloadItem) {
+        CredentialReentryDialog.show(
+            this, askCookies = item.rawCookies != null, askHeaders = item.rawHeaders != null,
+            onSave = { c, h -> viewModel.repairCredentials(item.id, c, h, false, ::reentryFailed) },
+            onDiscard = { viewModel.repairCredentials(item.id, null, null, true, ::reentryFailed) }
+        )
+    }
+
+    private fun reentryFailed() =
+        android.widget.Toast.makeText(this, R.string.secrets_save_failed, android.widget.Toast.LENGTH_LONG).show()
 
     private fun setupListeners() {
         binding.fabAdd.setOnClickListener {

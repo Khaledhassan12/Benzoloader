@@ -25,9 +25,12 @@ class SiteManagerViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun addSite(domain: String, username: String, pass: String) {
+    fun addSite(domain: String, username: String, pass: String, onError: () -> Unit = {}) {
         viewModelScope.launch {
-            siteDao.insertSite(SiteEntity.fromModel(SiteProfile(domain = domain, username = username, password = pass)))
+            val saved = runCatching {
+                siteDao.insertSite(SiteEntity.fromModel(SiteProfile(domain = domain, username = username, password = pass)))
+            }
+            if (saved.isFailure) onError()
             loadSites()
         }
     }

@@ -141,6 +141,13 @@
     <string name="list_export_done">List exported. Cookies and headers are not included, but links can contain private tokens. Share it with care.</string>
     <string name="list_import_done">Added %1$d, skipped %2$d</string>
     <string name="list_transfer_failed">Could not read or write the file</string>
-    <string name="secrets_reenter_download">Saved cookies or headers can no longer be read (the security key changed). Remove this download and add it again with the cookies or headers.</string>
+    <string name="secrets_reenter_download">Saved cookies or headers can no longer be read (the security key changed). Tap the download to enter them again; its progress is kept.</string>
     <string name="secrets_reenter_site">Saved password or cookies can no longer be read. Delete this site and add it again.</string>
+    <string name="secrets_save_failed">Could not save securely, so nothing was saved. Your input is kept. Try again.</string>
+    <string name="reenter_title">Saved credentials can\'t be read</string>
+    <string name="reenter_message">The security key changed. Enter the values again to continue from where the download stopped, or continue without them.</string>
+    <string name="reenter_cookies_hint">Cookies</string>
+    <string name="reenter_headers_hint">Extra headers (JSON)</string>
+    <string name="reenter_save">Save</string>
+    <string name="reenter_discard">Continue without them</string>
 </resources>

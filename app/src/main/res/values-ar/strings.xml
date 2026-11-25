@@ -141,6 +141,13 @@
     <string name="list_export_done">تم تصدير القائمة. الكوكيز والرؤوس غير مضمّنة، لكن الروابط قد تحتوي على رموز خاصة. شاركها بحذر.</string>
     <string name="list_import_done">تمت إضافة %1$d وتخطي %2$d</string>
     <string name="list_transfer_failed">تعذّرت قراءة الملف أو كتابته</string>
-    <string name="secrets_reenter_download">تعذّرت قراءة الكوكيز أو الرؤوس المحفوظة (تغيّر مفتاح الأمان). احذف هذا التحميل وأضفه من جديد مع الكوكيز أو الرؤوس.</string>
+    <string name="secrets_reenter_download">تعذّرت قراءة الكوكيز أو الرؤوس المحفوظة (تغيّر مفتاح الأمان). اضغط على التحميل لإدخالها من جديد، وتقدّمه محفوظ.</string>
     <string name="secrets_reenter_site">تعذّرت قراءة كلمة المرور أو الكوكيز المحفوظة. احذف هذا الموقع وأضفه من جديد.</string>
+    <string name="secrets_save_failed">تعذّر الحفظ بشكل آمن، لذلك لم يُحفظ شيء. بياناتك ما زالت مكتوبة. حاول مرة أخرى.</string>
+    <string name="reenter_title">تعذّرت قراءة البيانات المحفوظة</string>
+    <string name="reenter_message">تغيّر مفتاح الأمان. أدخل القيم من جديد لإكمال التحميل من حيث توقف، أو تابع بدونها.</string>
+    <string name="reenter_cookies_hint">الكوكيز</string>
+    <string name="reenter_headers_hint">رؤوس إضافية (JSON)</string>
+    <string name="reenter_save">حفظ</string>
+    <string name="reenter_discard">المتابعة بدونها</string>
 </resources>
