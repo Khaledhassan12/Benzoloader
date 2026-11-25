@@ -40,3 +40,7 @@ Found, not changed, decision open:
 - The manifest still requests READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE and MANAGE_EXTERNAL_STORAGE. The skill lists broad storage permissions as an over-privilege risk. A download manager that writes to user-chosen folders may need some of them, so I did not remove any without a device test. Needs a decision and a review of which API levels use which.
 Not applicable: Photo Picker, location, Binder caller verification, bound services (none in the app).
 
+
+## Notification/vibration review (5c83c48..931463b), read 25 Nov 17:24
+- android/skills tree listed via the GitHub API: the first 16 SKILL.md paths (agp-9-upgrade, camerax, cars, appfunctions, litert, mlkit, android-cli, identity, compose adaptive) include none for notifications or vibration; the listing was cut at 40 lines, so the remainder is unread. No skill applied to this code.
+- developer.android.com VibrationEffect.createOneShot(ms, DEFAULT_AMPLITUDE): exists from API 26 (minSdk 26 ok). VibratorManager.getDefaultVibrator: API 31, matching the SDK_INT >= 31 branch in NotificationHelper.vibrate. Exceptions from a missing vibrator are swallowed. Review result: code matches the documented API; behaviour on a device is unverified.
