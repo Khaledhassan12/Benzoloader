@@ -223,4 +223,4 @@
     <string name="wait_schedule">Waiting for schedule</string>
     <string name="wait_slot">Waiting for a free slot</string>
     <string name="pref_battery_threshold_fmt">Stop at or below %1$d%% battery. Waiting downloads start again at %2$d%% or more, or when charging (this also applies to a new download started between the two levels).</string>
-</resources>\n
+</resources>
