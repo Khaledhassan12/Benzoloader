@@ -35,6 +35,9 @@ interface DownloadDao {
     @Query("SELECT * FROM downloads WHERE category = :category ORDER BY created_date DESC")
     fun getDownloadsByCategoryFlow(category: String): Flow<List<DownloadEntity>>
 
+    @Query("SELECT * FROM downloads")
+    suspend fun getAllOnce(): List<DownloadEntity>
+
     @Query("SELECT * FROM downloads WHERE status IN (0, 1, 2) ORDER BY created_date ASC")
     suspend fun getPendingAndActiveDownloads(): List<DownloadEntity>
 

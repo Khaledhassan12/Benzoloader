@@ -103,7 +103,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).absolutePath
             }
             val dao = khaled.benzo.data.db.BenzoDatabase.getInstance(getApplication()).downloadDao()
-            val existing = dao.getPendingAndActiveDownloads()
+            val existing = dao.getAllOnce()
             val knownUrls = existing.map { it.url }.toMutableSet()
             val taken = existing.map { it.savePath to it.fileName }.toMutableSet()
             var added = 0
