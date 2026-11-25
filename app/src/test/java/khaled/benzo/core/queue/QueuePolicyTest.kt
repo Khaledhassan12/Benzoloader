@@ -93,4 +93,12 @@ class QueuePolicyTest {
         assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1, st = DownloadStatus.RUNNING), low.copy(batteryPercent = 16)))
         assertEquals(BlockReason.LOW_BATTERY, QueuePolicy.blockReason(it(1, st = DownloadStatus.RUNNING), low.copy(batteryPercent = 15)))
     }
+
+    @Test fun restartLevelIsCappedSoFullBatteryCanRestart() {
+        assertEquals(20, QueuePolicy.restartBelowOrAt(15))
+        assertEquals(99, QueuePolicy.restartBelowOrAt(96))
+        assertEquals(99, QueuePolicy.restartBelowOrAt(99))
+        val high = ok.copy(lowBatteryThreshold = 98, charging = false, batteryPercent = 100)
+        assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), high))
+    }
 }

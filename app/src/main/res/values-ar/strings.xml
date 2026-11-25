@@ -222,4 +222,5 @@
     <string name="wait_charger">في انتظار الشاحن</string>
     <string name="wait_schedule">في انتظار الجدولة</string>
     <string name="wait_slot">في انتظار مكان فاضي</string>
-</resources>
+    <string name="pref_battery_threshold_fmt">إيقاف التحميل عند %1$d%% بطارية أو أقل. التحميلات المنتظرة بتبدأ تاني عند %2$d%% أو أكتر، أو أثناء الشحن (ده بينطبق كمان على تحميل جديد بيبدأ بين المستويين).</string>
+</resources>\n

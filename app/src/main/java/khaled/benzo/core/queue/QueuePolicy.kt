@@ -59,7 +59,11 @@ object QueuePolicy {
 
     /** A running item stops at the threshold; a queued one starts again only above threshold + margin. */
     internal fun lowBatteryLimit(item: DownloadItem, c: Conditions): Int =
-        if (item.status == DownloadStatus.QUEUED) c.lowBatteryThreshold + LOW_BATTERY_RESUME_MARGIN else c.lowBatteryThreshold
+        if (item.status == DownloadStatus.QUEUED) restartBelowOrAt(c.lowBatteryThreshold) else c.lowBatteryThreshold
+
+    /** Highest level (inclusive) at which a queued item still waits. Capped at 99 so a full battery always lets an unplugged restart happen. A threshold of 100 or more stays as the user set it. */
+    fun restartBelowOrAt(threshold: Int): Int =
+        if (threshold >= 99) threshold else minOf(threshold + LOW_BATTERY_RESUME_MARGIN, 99)
 
     /** Next queued items to start, oldest first, respecting every rule and the concurrency limit. */
     fun nextToStart(queued: List<DownloadItem>, c: Conditions): List<DownloadItem> {

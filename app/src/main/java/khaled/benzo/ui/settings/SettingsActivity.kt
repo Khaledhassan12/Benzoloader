@@ -53,6 +53,11 @@ class SettingsActivity : AppCompatActivity() {
             current / 60, current % 60, true).show()
     }
 
+    private fun updateBatteryLabel() {
+        val t = binding.sliderBattery.value.toInt()
+        binding.txtBatteryThreshold.text = getString(R.string.pref_battery_threshold_fmt, t, khaled.benzo.core.queue.QueuePolicy.restartBelowOrAt(t) + 1)
+    }
+
     private fun loadCurrentSettings() {
         val repo = viewModel.repository
         binding.sliderMaxDownloads.value = repo.maxConcurrentDownloads.toFloat()
@@ -88,6 +93,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderSeedMinutes.value = repo.seedMinutes.toFloat()
         updateSeedLabels()
         binding.sliderSeedRatio.addOnChangeListener { _, _, _ -> updateSeedLabels() }
+        binding.sliderBattery.addOnChangeListener { _, _, _ -> updateBatteryLabel() }
+        updateBatteryLabel()
         binding.sliderSeedMinutes.addOnChangeListener { _, _, _ -> updateSeedLabels() }
         binding.switchBrowserHistory.isChecked = repo.browserHistory
         binding.switchBrowserSaveTabs.isChecked = repo.browserSaveTabs
