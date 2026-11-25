@@ -18,7 +18,8 @@ class ListFileActions(
         ActivityResultContracts.CreateDocument("text/plain")
     ) { uri ->
         if (uri != null) {
-            val text = exportText()
+            val text = prepared ?: exportText()
+            prepared = null
             val ok = runCatching {
                 activity.contentResolver.openOutputStream(uri)?.use { it.write(text.toByteArray(Charsets.UTF_8)) } != null
             }.getOrDefault(false)
@@ -40,8 +41,12 @@ class ListFileActions(
         }
     }
 
+    private var prepared: String? = null
+
     private fun toast(res: Int) = Toast.makeText(activity, res, Toast.LENGTH_LONG).show()
 
+    /** Exports already prepared text (the bundle chosen in the export dialog). */
+    fun exportPrepared(text: String) { prepared = text; exportLauncher.launch("benzoloader-export.txt") }
     fun exportList() = exportLauncher.launch("benzoloader-list.txt")
     fun importList() = importLauncher.launch(arrayOf("text/plain", "text/*"))
 }

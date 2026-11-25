@@ -158,6 +158,12 @@
     <string name="action_import_list">Import list (.txt)</string>
     <string name="list_export_done">List exported. Cookies and headers are not included, but links can contain private tokens. Share it with care.</string>
     <string name="list_import_done">Added %1$d, skipped %2$d</string>
+    <string name="export_dialog_title">Export list of downloads</string>
+    <string name="export_item_queue">Queue</string>
+    <string name="export_item_finished">Finished (%1$d)</string>
+    <string name="export_item_bookmarks">Bookmarks</string>
+    <string name="export_item_history">History</string>
+    <string name="export_ok_count">OK · %1$d</string>
     <string name="list_transfer_failed">Could not read or write the file</string>
     <string name="secrets_reenter_download">Saved cookies or headers can no longer be read (the security key changed). Tap the download to enter them again; its progress is kept.</string>
     <string name="secrets_reenter_site">Saved password or cookies can no longer be read. Delete this site and add it again.</string>

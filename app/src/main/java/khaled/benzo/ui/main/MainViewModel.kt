@@ -121,6 +121,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         added to skipped
     }
 
+    /** Same as [importText] but suspending, for bundle import. */
+    suspend fun importDownloadsText(text: String): Pair<Int, Int> {
+        val r = khaled.benzo.core.data.ListImporter(getApplication(), repository).importText(text)
+        return r.added to r.skipped
+    }
+
     /** Adds imported URLs as paused downloads (the user starts them). */
     fun importText(text: String, onDone: (added: Int, skipped: Int) -> Unit) {
         viewModelScope.launch {

@@ -158,6 +158,12 @@
     <string name="action_import_list">استيراد قائمة (.txt)</string>
     <string name="list_export_done">تم تصدير القائمة. الكوكيز والرؤوس غير مضمّنة، لكن الروابط قد تحتوي على رموز خاصة. شاركها بحذر.</string>
     <string name="list_import_done">تمت إضافة %1$d وتخطي %2$d</string>
+    <string name="export_dialog_title">تصدير قائمة التحميلات</string>
+    <string name="export_item_queue">قائمة الانتظار</string>
+    <string name="export_item_finished">المكتملة (%1$d)</string>
+    <string name="export_item_bookmarks">المفضلة</string>
+    <string name="export_item_history">السجل</string>
+    <string name="export_ok_count">موافق · %1$d</string>
     <string name="list_transfer_failed">تعذّرت قراءة الملف أو كتابته</string>
     <string name="secrets_reenter_download">تعذّرت قراءة الكوكيز أو الرؤوس المحفوظة (تغيّر مفتاح الأمان). اضغط على التحميل لإدخالها من جديد، وتقدّمه محفوظ.</string>
     <string name="secrets_reenter_site">تعذّرت قراءة كلمة المرور أو الكوكيز المحفوظة. احذف هذا الموقع وأضفه من جديد.</string>

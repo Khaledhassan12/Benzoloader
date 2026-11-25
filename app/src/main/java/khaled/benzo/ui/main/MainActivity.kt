@@ -318,7 +318,55 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val listFiles = ListFileActions(this, { viewModel.exportText() }) { text, report ->
-        viewModel.importText(text, report)
+        importAny(text, report)
+    }
+
+    /** Four real entries (queue, finished, bookmarks, history). Site manager and authorization are NOT offered yet: see docs/EXPORT_SECRETS_DESIGN.md. */
+    private fun showExportDialog() {
+        val all = viewModel.allItems.value.filter { !it.isTorrent }
+        val finished = all.count { it.status == khaled.benzo.data.model.DownloadStatus.COMPLETED }
+        val counts = mapOf(khaled.benzo.core.data.ExportItem.QUEUE to all.size - finished, khaled.benzo.core.data.ExportItem.FINISHED to finished)
+        val items = listOf(khaled.benzo.core.data.ExportItem.QUEUE, khaled.benzo.core.data.ExportItem.FINISHED, khaled.benzo.core.data.ExportItem.BOOKMARKS, khaled.benzo.core.data.ExportItem.HISTORY)
+        val labels = arrayOf(getString(R.string.export_item_queue), getString(R.string.export_item_finished, finished), getString(R.string.export_item_bookmarks), getString(R.string.export_item_history))
+        var sel = khaled.benzo.core.data.ExportSelection()
+        val checked = BooleanArray(items.size)
+        val dlg = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.export_dialog_title)
+            .setMultiChoiceItems(labels, checked) { d, i, on ->
+                checked[i] = on
+                sel = sel.toggle(items[i])
+                val ok = (d as androidx.appcompat.app.AlertDialog).getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+                ok.isEnabled = sel.okEnabled
+                val n = sel.okCount(counts)
+                ok.text = if (n > 0) getString(R.string.export_ok_count, n) else getString(android.R.string.ok)
+            }
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                val ticked = sel.writable()
+                lifecycleScope.launch {
+                    val parts = LinkedHashMap<String, String>()
+                    val dl = viewModel.allItems.value
+                    if (khaled.benzo.core.data.ExportItem.QUEUE in ticked) parts["queue"] = khaled.benzo.core.data.ListTransfer.format(dl.filter { it.status != khaled.benzo.data.model.DownloadStatus.COMPLETED })
+                    if (khaled.benzo.core.data.ExportItem.FINISHED in ticked) parts["finished"] = khaled.benzo.core.data.ListTransfer.format(dl.filter { it.status == khaled.benzo.data.model.DownloadStatus.COMPLETED })
+                    if (khaled.benzo.core.data.ExportItem.BOOKMARKS in ticked) parts["bookmarks"] = viewModel.exportBookmarksText()
+                    if (khaled.benzo.core.data.ExportItem.HISTORY in ticked) parts["history"] = viewModel.exportHistoryText()
+                    listFiles.exportPrepared(khaled.benzo.core.data.ExportBundle.join(parts))
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+        dlg.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).isEnabled = false
+    }
+
+    /** Plain list files go to the download importer. Bundles: queue and finished become paused downloads, bookmarks are added; history import is not built yet. */
+    private fun importAny(text: String, report: (added: Int, skipped: Int) -> Unit) {
+        val bundle = khaled.benzo.core.data.ExportBundle.split(text)
+        if (bundle == null) { viewModel.importText(text, report); return }
+        lifecycleScope.launch {
+            var added = 0; var skipped = 0
+            for (name in listOf("queue", "finished")) bundle[name]?.let { val (a, s) = viewModel.importDownloadsText(it); added += a; skipped += s }
+            bundle["bookmarks"]?.let { val (a, s) = viewModel.importBookmarksText(it); added += a; skipped += s }
+            report(added, skipped)
+        }
     }
 
     private val settingsFiles = SettingsFileActions(this, { khaled.benzo.data.repository.SettingsRepository(this) }) { recreate() }
@@ -361,7 +409,7 @@ class MainActivity : AppCompatActivity() {
             R.id.sort_by_size -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.SIZE); true }
             R.id.sort_by_date -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.TIME); true }
             R.id.sort_by_type -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.CATEGORY); true }
-            R.id.action_export_list -> { listFiles.exportList(); true }
+            R.id.action_export_list -> { showExportDialog(); true }
             R.id.action_import_list -> { listFiles.importList(); true }
             R.id.action_export_settings -> { settingsFiles.exportSettings(); true }
             R.id.action_import_settings -> { settingsFiles.importSettings(); true }
