@@ -96,7 +96,7 @@
             android:contentDescription="@string/action_add"
             app:backgroundTint="?attr/colorPrimary"
             app:srcCompat="@drawable/ic_add"
-            app:tint="#FFFFFF" />
+            app:tint="?attr/colorOnPrimary" />
 
     <LinearLayout
         android:id="@+id/bottomBar"
@@ -162,7 +162,7 @@
                 android:gravity="center"
                 android:minWidth="16dp"
                 android:paddingHorizontal="4dp"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/colorOnPrimary"
                 android:textSize="10sp"
                 android:visibility="gone" />
         </FrameLayout>
@@ -189,7 +189,7 @@
                 android:gravity="center"
                 android:minWidth="16dp"
                 android:paddingHorizontal="4dp"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/colorOnPrimary"
                 android:textSize="10sp"
                 android:visibility="gone" />
         </FrameLayout>

@@ -31,6 +31,6 @@
         android:layout_margin="16dp"
         android:contentDescription="@string/action_add"
         app:srcCompat="@drawable/ic_add"
-        app:tint="#FFFFFF" />
+        app:tint="?attr/colorOnPrimary" />
 
 </LinearLayout>
