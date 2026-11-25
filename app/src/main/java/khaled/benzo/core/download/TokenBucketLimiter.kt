@@ -15,8 +15,11 @@ class TokenBucketLimiter(private var maxBytesPerSecond: Long = 0L) {
         }
     }
 
-    suspend fun acquire(bytes: Int) {
+    suspend fun acquire(requested: Int) {
         if (maxBytesPerSecond <= 0L) return // Unlimited
+        // A request larger than one second of budget could never be satisfied (the bucket is capped at the limit),
+        // so charge at most the current limit; the delay below still paces the stream.
+        val bytes = minOf(requested.toLong(), maxBytesPerSecond.coerceAtLeast(1L)).toInt()
 
         while (true) {
             var waitMs = 0L

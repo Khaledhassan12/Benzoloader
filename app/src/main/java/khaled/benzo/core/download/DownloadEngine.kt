@@ -23,7 +23,8 @@ class DownloadEngine(
     data class ServerFileInfo(
         val contentLength: Long,
         val supportsRange: Boolean,
-        val suggestedFileName: String?
+        val suggestedFileName: String?,
+        val validator: Validator? = null
     )
 
     suspend fun checkServer(url: String, headers: Map<String, String>): ServerFileInfo =
@@ -54,7 +55,8 @@ class DownloadEngine(
                 }
 
                 val suggestedFileName = extractFileName(disposition, url)
-                ServerFileInfo(length, supportsRange, suggestedFileName)
+                ServerFileInfo(length, supportsRange, suggestedFileName,
+                    Validator(response.header("ETag"), response.header("Last-Modified"), length))
             }
         }
 
@@ -75,6 +77,23 @@ class DownloadEngine(
 
         // 1. Determine chunks (resume from persisted ones when present)
         var knownTotal = item.totalBytes
+        val metaFile = File(targetFile.path + ".bzmeta")
+        // Resuming: make sure the file on the server is still the one we started. A positive mismatch restarts clean.
+        if (existingChunks.isNotEmpty() && !forceSingle) {
+            val stored = Validator.parse(runCatching { metaFile.readText() }.getOrNull())
+            val current = try {
+                checkServer(item.url, headers).validator
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                null // offline or flaky: keep progress, the chunk workers retry on their own
+            }
+            if (!ResumePolicy.canResume(stored, current)) {
+                targetFile.delete()
+                metaFile.delete()
+                return@withContext runDownload(item, emptyList(), limiter, headers, onChunkCreated, onChunksSnapshot, onProgress, forceSingle)
+            }
+        }
         val chunks: List<DownloadChunk> = if (existingChunks.isNotEmpty() && !forceSingle) {
             existingChunks
         } else {
@@ -87,8 +106,9 @@ class DownloadEngine(
             }
             val totalSize = if (serverInfo.contentLength > 0) serverInfo.contentLength else item.totalBytes
             knownTotal = totalSize
-            val partsCount = if (!forceSingle && serverInfo.supportsRange && totalSize > 0)
-                item.threadsCount.coerceIn(1, 16) else 1
+            val partsCount = if (forceSingle) 1
+                else ChunkPlanner.partsFor(totalSize, item.threadsCount, serverInfo.supportsRange)
+            serverInfo.validator?.takeIf { it.usable }?.let { runCatching { metaFile.writeText(it.copy(length = totalSize).serialize()) } }
 
             if (totalSize > 0) {
                 val parent = targetFile.parentFile
@@ -99,17 +119,8 @@ class DownloadEngine(
             }
             if (forceSingle && targetFile.exists()) targetFile.delete()
 
-            val plan = mutableListOf<DownloadChunk>()
-            if (partsCount > 1 && totalSize > 0) {
-                val chunkSize = totalSize / partsCount
-                for (i in 0 until partsCount) {
-                    val start = i * chunkSize
-                    val end = if (i == partsCount - 1) totalSize - 1 else (start + chunkSize - 1)
-                    plan.add(DownloadChunk(downloadId = item.id, partIndex = i, startByte = start, currentByte = start, endByte = end))
-                }
-            } else {
-                plan.add(DownloadChunk(downloadId = item.id, partIndex = 0, startByte = 0L, currentByte = 0L,
-                    endByte = if (totalSize > 0) totalSize - 1 else -1L))
+            val plan = ChunkPlanner.ranges(totalSize, partsCount).mapIndexed { i, r ->
+                DownloadChunk(downloadId = item.id, partIndex = i, startByte = r.first, currentByte = r.first, endByte = r.last)
             }
             onChunkCreated(plan)
         }
@@ -174,6 +185,7 @@ class DownloadEngine(
         } else {
             RandomAccessFile(targetFile, "rw").use { it.setLength(written) }
         }
+        metaFile.delete()
         onProgress(written, 0L)
         Result.success(Unit)
     }

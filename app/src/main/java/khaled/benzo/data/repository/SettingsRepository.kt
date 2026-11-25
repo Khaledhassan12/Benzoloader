@@ -64,6 +64,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getInt(KEY_SCHEDULE_STOP, 0)
         set(value) = prefs.edit().putInt(KEY_SCHEDULE_STOP, value).apply()
 
+    /** Speed limit in KB/s for the settings screen; 0 = unlimited. Stored as bytes per second. */
+    var speedLimitKBps: Int
+        get() = (speedLimitBytesPerSec / 1024L).toInt()
+        set(value) { speedLimitBytesPerSec = value.coerceAtLeast(0) * 1024L }
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()

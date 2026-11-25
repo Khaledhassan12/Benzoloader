@@ -124,4 +124,9 @@
     <string name="toast_download_added">تمت إضافة التحميل بنجاح</string>
     <string name="toast_invalid_url">رابط غير صحيح</string>
     <string name="toast_permission_required">يلزم منح صلاحيات التخزين والإشعارات للعمل</string>
+    <string name="pref_schedule">الجدولة</string>
+    <string name="pref_schedule_enable">التحميل في وقت محدد فقط</string>
+    <string name="pref_schedule_start">وقت البدء: %1$s</string>
+    <string name="pref_schedule_stop">وقت الإيقاف: %1$s</string>
+    <string name="pref_speed_limit_value">حد السرعة: %1$d KB/s</string>
 </resources>

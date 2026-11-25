@@ -24,5 +24,7 @@ Last updated on branch feature/engine-hardening. Tests: `./gradlew :app:testDebu
 | Backup / import / export | not verified | no | |
 | Top window overlay, widget | not verified | no | |
 
-Known gaps: file-name sanitising on the Editor path, secure storage for cookies/headers, ETag/size change detection on resume,
+Added on refactor, written while builds were paused (NOT compiled, NOT run): ETag/Last-Modified/length check on resume, minimum chunk size, speed-limit fix for limits below the read size, live speed limit, Settings screen for speed limit and schedule, unplug toggle bound to the right setting. Unit tests for ResumePolicy/ChunkPlanner are written but not run.
+
+Known gaps: secure storage for cookies/headers,
 instrumented (device) tests, UI match against the reference screens.

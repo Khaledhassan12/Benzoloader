@@ -15,14 +15,23 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         batteryThreshold: Int,
         stopOnUnplug: Boolean,
         soundComplete: Boolean,
-        vibrateComplete: Boolean
+        vibrateComplete: Boolean,
+        speedLimitKBps: Int,
+        scheduleEnabled: Boolean,
+        scheduleStartMinute: Int,
+        scheduleStopMinute: Int
     ) {
         repository.maxConcurrentDownloads = maxDownloads
         repository.defaultPartsCount = defaultThreads
         repository.isWifiOnly = wifiOnly
         repository.batteryThresholdPercent = batteryThreshold
-        repository.pauseOnBatteryLow = stopOnUnplug
+        repository.stopOnChargerUnplug = stopOnUnplug
         repository.soundOnComplete = soundComplete
         repository.vibrateOnComplete = vibrateComplete
+        repository.speedLimitKBps = speedLimitKBps
+        repository.scheduleEnabled = scheduleEnabled
+        repository.scheduleStartMinute = scheduleStartMinute
+        repository.scheduleStopMinute = scheduleStopMinute
+        khaled.benzo.service.ScheduleManager.rearm(getApplication())
     }
 }

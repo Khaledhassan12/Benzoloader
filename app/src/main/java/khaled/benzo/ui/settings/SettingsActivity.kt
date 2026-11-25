@@ -22,13 +22,44 @@ class SettingsActivity : AppCompatActivity() {
         loadCurrentSettings()
     }
 
+    private var startMinute = 0
+    private var stopMinute = 0
+
+    private fun fmt(minute: Int) = "%02d:%02d".format(minute / 60, minute % 60)
+
+    private fun updateScheduleLabels() {
+        binding.btnScheduleStart.text = getString(khaled.benzo.R.string.pref_schedule_start, fmt(startMinute))
+        binding.btnScheduleStop.text = getString(khaled.benzo.R.string.pref_schedule_stop, fmt(stopMinute))
+    }
+
+    private fun updateSpeedLabel() {
+        val v = binding.sliderSpeedLimit.value.toInt()
+        binding.txtSpeedLimit.text = if (v == 0) getString(khaled.benzo.R.string.pref_speed_limit) + ": " +
+            getString(khaled.benzo.R.string.pref_speed_unlimited)
+        else getString(khaled.benzo.R.string.pref_speed_limit_value, v)
+    }
+
+    private fun pickTime(current: Int, onPicked: (Int) -> Unit) {
+        android.app.TimePickerDialog(this, { _, h, m -> onPicked(h * 60 + m) },
+            current / 60, current % 60, true).show()
+    }
+
     private fun loadCurrentSettings() {
         val repo = viewModel.repository
         binding.sliderMaxDownloads.value = repo.maxConcurrentDownloads.toFloat()
         binding.sliderDefaultThreads.value = repo.defaultPartsCount.toFloat()
         binding.switchWifiOnly.isChecked = repo.isWifiOnly
         binding.sliderBattery.value = repo.batteryThresholdPercent.toFloat()
-        binding.switchStopOnUnplug.isChecked = repo.pauseOnBatteryLow
+        binding.switchStopOnUnplug.isChecked = repo.stopOnChargerUnplug
+        binding.sliderSpeedLimit.value = repo.speedLimitKBps.toFloat().coerceIn(0f, 10240f)
+        updateSpeedLabel()
+        binding.sliderSpeedLimit.addOnChangeListener { _, _, _ -> updateSpeedLabel() }
+        binding.switchSchedule.isChecked = repo.scheduleEnabled
+        startMinute = repo.scheduleStartMinute
+        stopMinute = repo.scheduleStopMinute
+        updateScheduleLabels()
+        binding.btnScheduleStart.setOnClickListener { pickTime(startMinute) { startMinute = it; updateScheduleLabels() } }
+        binding.btnScheduleStop.setOnClickListener { pickTime(stopMinute) { stopMinute = it; updateScheduleLabels() } }
         binding.switchSoundComplete.isChecked = repo.soundOnComplete
         binding.switchVibrateComplete.isChecked = repo.vibrateOnComplete
     }
@@ -41,7 +72,11 @@ class SettingsActivity : AppCompatActivity() {
             batteryThreshold = binding.sliderBattery.value.toInt(),
             stopOnUnplug = binding.switchStopOnUnplug.isChecked,
             soundComplete = binding.switchSoundComplete.isChecked,
-            vibrateComplete = binding.switchVibrateComplete.isChecked
+            vibrateComplete = binding.switchVibrateComplete.isChecked,
+            speedLimitKBps = binding.sliderSpeedLimit.value.toInt(),
+            scheduleEnabled = binding.switchSchedule.isChecked,
+            scheduleStartMinute = startMinute,
+            scheduleStopMinute = stopMinute
         )
         finish()
     }

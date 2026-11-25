@@ -112,7 +112,14 @@ class DownloadService : Service() {
      * low battery, unplugged, outside the schedule window) go back to the queue, and queued ones start when every rule
      * allows it. Downloads the user paused stay paused.
      */
+    private var appliedLimit = Long.MIN_VALUE
+
     private suspend fun processQueue() {
+        val limit = settings.speedLimitBytesPerSec
+        if (limit != appliedLimit) {
+            limiter.setLimit(limit)
+            appliedLimit = limit
+        }
         val entities = khaled.benzo.data.db.BenzoDatabase.getInstance(this)
             .downloadDao().getPendingAndActiveDownloads()
         val items = entities.map { it.toModel() }

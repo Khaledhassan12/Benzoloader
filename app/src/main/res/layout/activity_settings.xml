@@ -127,6 +127,59 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/pref_stop_on_unplug" />
 
+            <TextView
+                android:id="@+id/txtSpeedLimit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/pref_speed_limit"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderSpeedLimit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stepSize="64.0"
+                android:value="0.0"
+                android:valueFrom="0.0"
+                android:valueTo="10240.0" />
+
+            <!-- Category: Schedule -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="@color/divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_schedule"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchSchedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/pref_schedule_enable" />
+
+            <Button
+                android:id="@+id/btnScheduleStart"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_schedule_start" />
+
+            <Button
+                android:id="@+id/btnScheduleStop"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_schedule_stop" />
+
             <!-- Category: Sounds & Vibrations -->
             <View
                 android:layout_width="match_parent"
