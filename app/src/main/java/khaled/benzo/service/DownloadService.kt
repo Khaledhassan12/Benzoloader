@@ -140,6 +140,11 @@ class DownloadService : Service() {
                 limiter = limiter,
                 headers = emptyMap(),
                 onChunkCreated = { chunks ->
+                    repository.deleteChunks(id)
+                    repository.saveChunks(chunks)
+                    repository.getChunks(id)
+                },
+                onChunksSnapshot = { chunks ->
                     repository.saveChunks(chunks)
                 },
                 onProgress = { downloadedBytes, speed ->

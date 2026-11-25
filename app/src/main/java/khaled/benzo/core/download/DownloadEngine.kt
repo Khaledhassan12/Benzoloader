@@ -2,7 +2,9 @@ package khaled.benzo.core.download
 
 import khaled.benzo.data.model.DownloadChunk
 import khaled.benzo.data.model.DownloadItem
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -61,108 +63,119 @@ class DownloadEngine(
         existingChunks: List<DownloadChunk>,
         limiter: TokenBucketLimiter,
         headers: Map<String, String>,
-        onChunkCreated: suspend (List<DownloadChunk>) -> Unit,
-        onProgress: suspend (downloadedBytes: Long, speed: Long) -> Unit
+        /** Persist (replace) the chunk plan and return the persisted chunks (with database ids). */
+        onChunkCreated: suspend (List<DownloadChunk>) -> List<DownloadChunk>,
+        /** Called about twice a second and once more when the job ends or is cancelled, so resume is exact. */
+        onChunksSnapshot: suspend (List<DownloadChunk>) -> Unit = {},
+        onProgress: suspend (downloadedBytes: Long, speed: Long) -> Unit,
+        forceSingle: Boolean = false
     ): Result<Unit> = withContext(Dispatchers.IO) {
         val targetFile = File(item.savePath)
         targetFile.parentFile?.mkdirs()
 
-        // 1. Determine Chunks
-        val chunks: List<DownloadChunk> = if (existingChunks.isNotEmpty()) {
+        // 1. Determine chunks (resume from persisted ones when present)
+        var knownTotal = item.totalBytes
+        val chunks: List<DownloadChunk> = if (existingChunks.isNotEmpty() && !forceSingle) {
             existingChunks
         } else {
             val serverInfo = try {
                 checkServer(item.url, headers)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
             } catch (e: Exception) {
                 ServerFileInfo(item.totalBytes, false, null)
             }
-
             val totalSize = if (serverInfo.contentLength > 0) serverInfo.contentLength else item.totalBytes
-            val partsCount = if (serverInfo.supportsRange && totalSize > 0) item.threadsCount.coerceIn(1, 16) else 1
+            knownTotal = totalSize
+            val partsCount = if (!forceSingle && serverInfo.supportsRange && totalSize > 0)
+                item.threadsCount.coerceIn(1, 16) else 1
 
             if (totalSize > 0) {
-                RandomAccessFile(targetFile, "rw").use { raf ->
-                    raf.setLength(totalSize)
+                val parent = targetFile.parentFile
+                val needed = totalSize - (if (targetFile.exists()) minOf(targetFile.length(), totalSize) else 0L)
+                if (parent != null && parent.usableSpace in 0 until needed) {
+                    return@withContext Result.failure(java.io.IOException("Not enough free storage: need $needed bytes"))
                 }
             }
+            if (forceSingle && targetFile.exists()) targetFile.delete()
 
-            val generatedChunks = mutableListOf<DownloadChunk>()
+            val plan = mutableListOf<DownloadChunk>()
             if (partsCount > 1 && totalSize > 0) {
                 val chunkSize = totalSize / partsCount
                 for (i in 0 until partsCount) {
                     val start = i * chunkSize
                     val end = if (i == partsCount - 1) totalSize - 1 else (start + chunkSize - 1)
-                    generatedChunks.add(
-                        DownloadChunk(
-                            downloadId = item.id,
-                            partIndex = i,
-                            startByte = start,
-                            currentByte = start,
-                            endByte = end,
-                            status = 0
-                        )
-                    )
+                    plan.add(DownloadChunk(downloadId = item.id, partIndex = i, startByte = start, currentByte = start, endByte = end))
                 }
             } else {
-                generatedChunks.add(
-                    DownloadChunk(
-                        downloadId = item.id,
-                        partIndex = 0,
-                        startByte = 0L,
-                        currentByte = 0L,
-                        endByte = if (totalSize > 0) totalSize - 1 else -1L,
-                        status = 0
-                    )
-                )
+                plan.add(DownloadChunk(downloadId = item.id, partIndex = 0, startByte = 0L, currentByte = 0L,
+                    endByte = if (totalSize > 0) totalSize - 1 else -1L))
             }
-            onChunkCreated(generatedChunks)
-            generatedChunks
+            onChunkCreated(plan)
         }
+        val totalSize = if (chunks.any { it.endByte < 0 }) -1L else chunks.maxOf { it.endByte } + 1
+        if (totalSize > 0) {
+            RandomAccessFile(targetFile, "rw").use { raf -> if (raf.length() != totalSize) raf.setLength(totalSize) }
+        } else if (!targetFile.exists()) targetFile.createNewFile()
+        val wholeFile = chunks.size == 1 && chunks[0].startByte == 0L
 
-        // 2. Setup Speed Tracker & Progress
+        // 2. Progress accounting (atomic; workers run on several threads)
+        val downloaded = java.util.concurrent.atomic.AtomicLong(chunks.sumOf { it.downloadedSize })
         val speedTracker = SpeedTracker()
-        var lastDbUpdateTime = System.currentTimeMillis()
+        val snapshot = { chunks.map { it.copy() } }
 
-        // 3. Launch Workers in Parallel
         try {
             coroutineScope {
-                val tasks = chunks.map { chunk ->
-                    async {
-                        val worker = ChunkWorker(
-                            client = client,
-                            url = item.url,
-                            chunk = chunk,
-                            outputFile = targetFile,
-                            limiter = limiter,
-                            headers = headers,
-                            onProgress = { c, bytes ->
-                                speedTracker.recordBytes(bytes.toLong())
-                                val now = System.currentTimeMillis()
-                                if (now - lastDbUpdateTime >= 500) {
-                                    lastDbUpdateTime = now
-                                    val totalDownloaded = chunks.sumOf { it.downloadedSize }
-                                    val currentSpeed = speedTracker.getSpeedBytesPerSec()
-                                    this@coroutineScope.async {
-                                        onProgress(totalDownloaded, currentSpeed)
-                                    }
-                                }
-                            }
-                        )
-                        worker.execute()
+                val ticker = launch {
+                    while (true) {
+                        delay(500)
+                        onProgress(downloaded.get(), speedTracker.getSpeedBytesPerSec())
+                        onChunksSnapshot(snapshot())
                     }
                 }
-                val results = tasks.awaitAll()
-                val failure = results.firstOrNull { it.isFailure }
-                if (failure != null) {
-                    return@coroutineScope Result.failure(failure.exceptionOrNull() ?: Exception("Chunk download failed"))
+                try {
+                    chunks.map { chunk ->
+                        async {
+                            ChunkWorker(
+                                client = client, url = item.url, chunk = chunk, outputFile = targetFile,
+                                limiter = limiter, headers = headers, wholeFile = wholeFile,
+                                onProgress = { _, bytes ->
+                                    downloaded.addAndGet(bytes.toLong())
+                                    speedTracker.recordBytes(bytes.toLong())
+                                }
+                            ).execute().getOrThrow()
+                        }
+                    }.awaitAll()
+                } finally {
+                    ticker.cancel()
                 }
-                val totalDownloaded = chunks.sumOf { it.downloadedSize }
-                onProgress(totalDownloaded, 0L)
-                Result.success(Unit)
             }
+        } catch (e: RangeIgnoredException) {
+            withContext(NonCancellable) { onChunksSnapshot(snapshot()) }
+            if (forceSingle) return@withContext Result.failure(e)
+            // Server cannot do ranges: fall back to one plain connection, from scratch.
+            return@withContext runDownload(item, emptyList(), limiter, headers, onChunkCreated, onChunksSnapshot, onProgress, forceSingle = true)
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            withContext(NonCancellable) { onChunksSnapshot(snapshot()); onProgress(downloaded.get(), 0L) }
+            throw e
         } catch (e: Exception) {
-            Result.failure(e)
+            withContext(NonCancellable) { onChunksSnapshot(snapshot()); onProgress(downloaded.get(), 0L) }
+            return@withContext Result.failure(e)
         }
+
+        // 3. Verify before reporting success
+        withContext(NonCancellable) { onChunksSnapshot(snapshot()) }
+        val written = chunks.sumOf { it.downloadedSize }
+        if (totalSize > 0) {
+            if (written != totalSize || targetFile.length() != totalSize) {
+                return@withContext Result.failure(java.io.IOException(
+                    "Verification failed: received $written of $totalSize bytes, file is ${targetFile.length()}"))
+            }
+        } else {
+            RandomAccessFile(targetFile, "rw").use { it.setLength(written) }
+        }
+        onProgress(written, 0L)
+        Result.success(Unit)
     }
 
     private fun extractFileName(contentDisposition: String?, url: String): String? {

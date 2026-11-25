@@ -1,14 +1,34 @@
 package khaled.benzo.core.download
 
 import khaled.benzo.data.model.DownloadChunk
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
+import java.io.IOException
 import java.io.RandomAccessFile
+import java.nio.ByteBuffer
+import kotlin.coroutines.coroutineContext
 
+/** The server answered a Range request with a full 200 body (or a wrong range); the file must not be written at an offset. */
+class RangeIgnoredException(message: String) : IOException(message)
+
+/** A failure that retrying cannot fix (4xx, bad Content-Range, ...). */
+class PermanentDownloadException(message: String) : IOException(message)
+
+/**
+ * Downloads one byte range into [outputFile] at the right offsets.
+ *
+ * Safety rules:
+ *  - a ranged request is only accepted as HTTP 206 whose Content-Range starts exactly at the requested byte;
+ *  - an HTTP 200 reply is accepted only when this chunk is the whole file and starts at byte 0;
+ *  - a short body (connection dropped early) is an error, never a completed chunk;
+ *  - transient errors are retried with exponential backoff, resuming from the last byte actually written.
+ */
 class ChunkWorker(
     private val client: OkHttpClient,
     private val url: String,
@@ -16,59 +36,107 @@ class ChunkWorker(
     private val outputFile: File,
     private val limiter: TokenBucketLimiter,
     private val headers: Map<String, String>,
+    private val wholeFile: Boolean = false,
+    private val maxRetries: Int = 4,
+    private val retryBaseDelayMs: Long = 400,
     private val onProgress: (chunk: DownloadChunk, bytesRead: Int) -> Unit
 ) {
 
     suspend fun execute(): Result<Unit> = withContext(Dispatchers.IO) {
-        if (chunk.isFinished) {
-            return@withContext Result.success(Unit)
-        }
-
-        val requestBuilder = Request.Builder().url(url)
-        headers.forEach { (k, v) -> requestBuilder.header(k, v) }
-
-        // Set Range header
-        if (chunk.endByte > 0) {
-            requestBuilder.header("Range", "bytes=${chunk.currentByte}-${chunk.endByte}")
-        } else if (chunk.currentByte > 0) {
-            requestBuilder.header("Range", "bytes=${chunk.currentByte}-")
-        }
-
-        try {
-            client.newCall(requestBuilder.build()).execute().use { response ->
-                if (!response.isSuccessful && response.code != 206 && response.code != 200) {
-                    return@withContext Result.failure(Exception("HTTP error code: ${response.code}"))
+        var attempt = 0
+        while (true) {
+            if (isDone()) {
+                chunk.status = 2
+                return@withContext Result.success(Unit)
+            }
+            try {
+                chunk.status = 1
+                runOnce()
+                if (!isDone()) throw IOException("Connection ended early at byte ${chunk.currentByte}")
+                chunk.status = 2
+                return@withContext Result.success(Unit)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: RangeIgnoredException) {
+                chunk.status = 3
+                return@withContext Result.failure(e)
+            } catch (e: PermanentDownloadException) {
+                chunk.status = 3
+                return@withContext Result.failure(e)
+            } catch (e: IOException) {
+                if (attempt >= maxRetries) {
+                    chunk.status = 3
+                    return@withContext Result.failure(e)
                 }
+                delay(retryBaseDelayMs shl attempt)
+                attempt++
+            }
+        }
+        @Suppress("UNREACHABLE_CODE")
+        Result.success(Unit)
+    }
 
-                val body = response.body ?: return@withContext Result.failure(Exception("Empty response body"))
-                val buffer = ByteArray(16 * 1024) // 16 KB buffer
+    @Volatile private var streamEnded = false
 
-                RandomAccessFile(outputFile, "rw").use { raf ->
-                    raf.seek(chunk.currentByte)
-                    body.byteStream().use { input ->
-                        var read = 0
-                        while (coroutineContext.isActive && input.read(buffer).also { read = it } != -1) {
-                            limiter.acquire(read)
-                            raf.write(buffer, 0, read)
-                            chunk.currentByte += read
-                            onProgress(chunk, read)
+    private fun isDone() = streamEnded || (chunk.endByte >= 0 && chunk.currentByte > chunk.endByte)
 
-                            if (chunk.endByte > 0 && chunk.currentByte > chunk.endByte) {
-                                break
-                            }
-                        }
+    private suspend fun runOnce() {
+        val sized = chunk.endByte >= 0
+        val req = Request.Builder().url(url)
+        headers.forEach { (k, v) -> req.header(k, v) }
+        val resuming = chunk.currentByte > chunk.startByte
+        if (sized && (!wholeFile || resuming)) {
+            req.header("Range", "bytes=${chunk.currentByte}-${chunk.endByte}")
+        }
+        client.newCall(req.build()).execute().use { resp ->
+            val code = resp.code
+            if (code == 416 && sized) {
+                // Requested range not satisfiable: only OK when we really already have everything.
+                if (isDone()) return
+                throw PermanentDownloadException("Server rejected range (HTTP 416); file may have changed")
+            }
+            if (code in 400..499) throw PermanentDownloadException("HTTP $code")
+            if (code >= 500) throw IOException("HTTP $code")
+            val ranged = sized && (!wholeFile || resuming)
+            var writeFrom = chunk.currentByte
+            when {
+                code == 206 -> {
+                    val cr = resp.header("Content-Range")
+                    val start = cr?.let { Regex("bytes\\s+(\\d+)-").find(it)?.groupValues?.get(1)?.toLongOrNull() }
+                    if (start == null || start != chunk.currentByte) {
+                        throw PermanentDownloadException("Content-Range start ${start} != requested ${chunk.currentByte}")
                     }
                 }
-
-                if (!coroutineContext.isActive) {
-                    return@withContext Result.failure(Exception("Cancelled"))
+                code == 200 -> {
+                    if (ranged) throw RangeIgnoredException("Server ignored the Range header (HTTP 200)")
+                    if (resuming) throw RangeIgnoredException("Cannot resume without range support")
+                    writeFrom = 0
+                    chunk.currentByte = chunk.startByte // whole-file stream starts at 0
                 }
-
-                chunk.status = 2 // Completed
-                Result.success(Unit)
+                else -> throw PermanentDownloadException("Unexpected HTTP $code")
             }
-        } catch (e: Exception) {
-            Result.failure(e)
+            val body = resp.body ?: throw IOException("Empty response body")
+            val buffer = ByteArray(16 * 1024)
+            RandomAccessFile(outputFile, "rw").use { raf ->
+                val channel = raf.channel
+                body.byteStream().use { input ->
+                    var pos = writeFrom
+                    while (true) {
+                        coroutineContext.ensureActive()
+                        val limit = if (chunk.endByte >= 0) minOf(buffer.size.toLong(), chunk.endByte - pos + 1).toInt() else buffer.size
+                        if (limit <= 0) break
+                        val read = input.read(buffer, 0, limit)
+                        if (read == -1) break
+                        limiter.acquire(read)
+                        val bb = ByteBuffer.wrap(buffer, 0, read)
+                        while (bb.hasRemaining()) pos += channel.write(bb, pos)
+                        chunk.currentByte = pos
+                        onProgress(chunk, read)
+                    }
+                }
+            }
+            // Unknown size: a clean end of stream means the file is complete.
+            if (chunk.endByte < 0) streamEnded = true
         }
     }
 }

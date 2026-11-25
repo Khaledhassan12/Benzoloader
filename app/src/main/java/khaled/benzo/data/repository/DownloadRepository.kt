@@ -57,6 +57,10 @@ class DownloadRepository(context: Context) {
         return chunkDao.getChunksForDownload(downloadId).map { it.toModel() }
     }
 
+    suspend fun deleteChunks(downloadId: Long) {
+        chunkDao.deleteChunksForDownload(downloadId)
+    }
+
     suspend fun saveChunks(chunks: List<DownloadChunk>) {
         chunkDao.insertChunks(chunks.map { ChunkEntity.fromModel(it) })
     }
