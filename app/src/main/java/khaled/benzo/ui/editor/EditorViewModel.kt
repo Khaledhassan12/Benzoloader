@@ -34,12 +34,18 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
             }
             val finalPath = khaled.benzo.core.catalog.CatalogPolicy.targetFolder(
                 savePath, root, category, settingsRepository.catalogEnabled)
+            val queuedNames = khaled.benzo.data.db.BenzoDatabase.getInstance(getApplication())
+                .downloadDao().getPendingAndActiveDownloads()
+                .filter { it.savePath == finalPath }.map { it.fileName }.toSet()
+            val uniqueFileName = khaled.benzo.core.files.FileNaming.uniqueName(fileName) { candidate ->
+                candidate in queuedNames || java.io.File(finalPath, candidate).exists()
+            }
             val status = if (startNow) DownloadStatus.QUEUED else DownloadStatus.PAUSED
 
             val item = DownloadItem(
                 id = 0L,
                 url = url,
-                fileName = fileName,
+                fileName = uniqueFileName,
                 savePath = finalPath,
                 totalBytes = -1L,
                 downloadedBytes = 0L,

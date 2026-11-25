@@ -23,7 +23,7 @@ HTTP/HTTPS multi-connection downloads · resume · BitTorrent · in-app browser 
 
 Every status is also written in words, so nothing depends on the icons displaying. Last full build and test run: 40 of 40 unit tests passed at commit `fd59931`. Later commits are ✍️ until a final build.
 No speed or reliability measurements exist; this document makes no performance claim.
-Per-feature detail: [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md).
+Per-feature detail: [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md). Coverage against the original brief: [docs/SPEC_COVERAGE.md](docs/SPEC_COVERAGE.md).
 
 ## ✨ Features
 
@@ -44,6 +44,8 @@ Per-feature detail: [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md).
 | 🔔 | Foreground notification, completion sound | compiled only |
 | 🔄 | Boot / schedule recovery: "tap to resume" notification, resume on app open, exact alarm when permitted | not built; not run on a device |
 | 🗃️ | Sort new downloads into Video / Music / Documents / Archives / Programs / Torrents folders (Settings switch, off by default; skipped when the user picked another folder) | not built |
+| ⏸️ | Pause (keep progress) instead of Failed when a download fails for good (Settings) | not built |
+| 🧬 | Unique file names (`name (1).ext`) when a file or queued download already exists | not built |
 | 🔂 | Retries per part on errors, 0 to 10 (Settings) | not built |
 | 📝 | HLS download and merge, seeding limits, DHT/port settings | planned, not implemented |
 
@@ -84,7 +86,7 @@ Benzoloader/
         │                          settings, props, common
         └── test/                  QueuePolicyTest, DownloadEngineTest,
                                    TorrentMappingTest, ResumePolicyTest,
-                                   CatalogPolicyTest
+                                   CatalogPolicyTest, FileNamingTest
 ```
 
 ## 📚 Libraries and what they do

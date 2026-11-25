@@ -197,7 +197,7 @@ class DownloadService : Service() {
                     notificationHelper.playSound(R.raw.done)
                 }
             } else {
-                repository.updateStatusAndSpeed(id, DownloadStatus.ERROR, 0L)
+                repository.updateStatusAndSpeed(id, khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError), 0L)
                 notificationHelper.playSound(R.raw.error)
             }
 
@@ -217,7 +217,7 @@ class DownloadService : Service() {
         val hash = item.torrentInfoHash
         if (hash == null) {
             activeItems.remove(id)
-            repository.updateStatusAndSpeed(id, DownloadStatus.ERROR, 0L)
+            repository.updateStatusAndSpeed(id, khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError), 0L)
             return
         }
         val job = serviceScope.launch {
@@ -256,7 +256,7 @@ class DownloadService : Service() {
             activeJobs.remove(id)
             activeItems.remove(id)
             if (failed) {
-                repository.updateStatusAndSpeed(id, DownloadStatus.ERROR, 0L)
+                repository.updateStatusAndSpeed(id, khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError), 0L)
                 notificationHelper.playSound(R.raw.error)
             } else {
                 repository.updateStatusAndSpeed(id, DownloadStatus.COMPLETED, 0L)

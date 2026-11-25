@@ -57,6 +57,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchSchedule.isChecked = repo.scheduleEnabled
         binding.switchCatalog.isChecked = repo.catalogEnabled
         binding.sliderErrorRetries.value = repo.errorRetries.toFloat()
+        binding.switchPauseAfterError.isChecked = repo.pauseAfterError
         startMinute = repo.scheduleStartMinute
         stopMinute = repo.scheduleStopMinute
         updateScheduleLabels()
@@ -80,7 +81,8 @@ class SettingsActivity : AppCompatActivity() {
             scheduleStartMinute = startMinute,
             scheduleStopMinute = stopMinute,
             catalogEnabled = binding.switchCatalog.isChecked,
-            errorRetries = binding.sliderErrorRetries.value.toInt()
+            errorRetries = binding.sliderErrorRetries.value.toInt(),
+            pauseAfterError = binding.switchPauseAfterError.isChecked
         )
         finish()
     }

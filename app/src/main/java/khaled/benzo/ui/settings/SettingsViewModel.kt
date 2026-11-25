@@ -21,7 +21,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         scheduleStartMinute: Int,
         scheduleStopMinute: Int,
         catalogEnabled: Boolean,
-        errorRetries: Int
+        errorRetries: Int,
+        pauseAfterError: Boolean
     ) {
         repository.maxConcurrentDownloads = maxDownloads
         repository.defaultPartsCount = defaultThreads
@@ -36,6 +37,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         repository.scheduleStopMinute = scheduleStopMinute
         repository.catalogEnabled = catalogEnabled
         repository.errorRetries = errorRetries
+        repository.pauseAfterError = pauseAfterError
         khaled.benzo.service.ScheduleManager.rearm(getApplication())
     }
 }

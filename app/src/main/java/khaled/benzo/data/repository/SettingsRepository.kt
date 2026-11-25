@@ -79,6 +79,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getInt(KEY_ERROR_RETRIES, 4).coerceIn(0, 10)
         set(value) = prefs.edit().putInt(KEY_ERROR_RETRIES, value.coerceIn(0, 10)).apply()
 
+    /** A download that fails after all retries becomes Paused (keeps its partial file) instead of Failed. */
+    var pauseAfterError: Boolean
+        get() = prefs.getBoolean(KEY_PAUSE_AFTER_ERROR, false)
+        set(value) = prefs.edit().putBoolean(KEY_PAUSE_AFTER_ERROR, value).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -101,6 +106,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_SCHEDULE_STOP = "schedule_stop_minute"
         private const val KEY_CATALOG = "catalog_enabled"
         private const val KEY_ERROR_RETRIES = "error_retries"
+        private const val KEY_PAUSE_AFTER_ERROR = "pause_after_error"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_DOWNLOAD_PATH = "download_path"
     }
