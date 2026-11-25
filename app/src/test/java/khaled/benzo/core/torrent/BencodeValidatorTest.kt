@@ -8,8 +8,8 @@ class BencodeValidatorTest {
     private fun bad(s: String) = assertTrue("expected Bad for: $s", v(s) is BencodeValidator.Result.Bad)
 
     @Test fun wellFormedTorrentShapeIsAccepted() {
-        assertEquals(BencodeValidator.Result.Ok, v("d8:announce3:url4:infod6:lengthi5e4:name1:a12:piece lengthi16384ee"))
-        assertEquals(BencodeValidator.Result.Ok, v("d1:ald1:bi-3eee1:cle"))
+        assertEquals(BencodeValidator.Result.Ok, v("d8:announce3:url4:infod6:lengthi5e4:name1:a12:piece lengthi16384eee"))
+        assertEquals(BencodeValidator.Result.Ok, v("d1:ald1:bi-3eee1:clee"))
     }
 
     @Test fun notADictionaryOrTooShort() { bad("l1:ae"); bad("i5e"); bad("d"); bad("") }
@@ -41,6 +41,6 @@ class BencodeValidatorTest {
     }
 
     @Test fun binaryStringContentIsNotInterpreted() {
-        assertEquals(BencodeValidator.Result.Ok, v("d6:pieces4:de\u0000ee1:ai1ee"))
+        assertEquals(BencodeValidator.Result.Ok, v("d6:pieces4:de\u0000e1:ai1ee"))
     }
 }
