@@ -136,4 +136,9 @@
     <string name="pref_pause_after_error">Pause (keep progress) when a download fails</string>
     <string name="nav_paused">Paused</string>
     <string name="nav_failed">Failed</string>
+    <string name="action_export_list">Export list (.txt)</string>
+    <string name="action_import_list">Import list (.txt)</string>
+    <string name="list_export_done">List exported. Cookies and headers are not included.</string>
+    <string name="list_import_done">Added %1$d, skipped %2$d</string>
+    <string name="list_transfer_failed">Could not read or write the file</string>
 </resources>

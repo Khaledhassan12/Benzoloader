@@ -46,6 +46,16 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_export_list"
+        android:title="@string/action_export_list"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_import_list"
+        android:title="@string/action_import_list"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="never" />

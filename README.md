@@ -94,7 +94,7 @@ Benzoloader/
 | Library | Version | Role in this project |
 |---|---|---|
 | Kotlin + Coroutines | 2.2.10 / 1.8.1 | Language, async I/O, cancellation of downloads |
-| OkHttp | 4.12.0 | HTTP/HTTPS client for the download engine (`logging-interceptor` is declared as well) |
+| OkHttp | 4.12.0 | HTTP/HTTPS client used by DownloadEngine and ChunkWorker (traced in code). `logging-interceptor` is declared but no code uses it. OkHttp speaks only http/https, so ftp is not supported |
 | Room (+ KSP compiler) | 2.8.5 | Local database for downloads, chunk progress, torrents, sites (a bookmarks table exists but is unused) |
 | jlibtorrent (FrostWire) | 1.2.0.18 | Java binding of libtorrent for the torrent engine |
 | `jlibtorrent-android-{arm64,arm,x86,x86_64}` | 1.2.0.18 | Native `.so` per ABI, same version as the Java API |
