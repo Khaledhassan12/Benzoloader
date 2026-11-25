@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#1E88E5</color>
-    <color name="primary_dark">#1565C0</color>
-    <color name="primary_container">#D1E4FF</color>
-    <color name="on_primary_container">#001D36</color>
-    <color name="accent">#00B0FF</color>
+    <color name="primary">#659B37</color>
+    <color name="primary_dark">#4B7A27</color>
+    <color name="primary_container">#C1D6AB</color>
+    <color name="on_primary_container">#1C3A06</color>
+    <color name="accent">#8CBF5B</color>
 
-    <color name="background_light">#F8F9FA</color>
-    <color name="surface_light">#FFFFFF</color>
-    <color name="on_surface_light">#1C1B1F</color>
-    <color name="on_surface_variant_light">#49454F</color>
+    <color name="background_light">#FDFDF5</color>
+    <color name="surface_light">#FDFDF5</color>
+    <color name="on_surface_light">#292822</color>
+    <color name="on_surface_variant_light">#7D7C77</color>
 
     <color name="background_dark">#121212</color>
     <color name="surface_dark">#1E1E1E</color>
     <color name="on_surface_dark">#E6E1E5</color>
     <color name="on_surface_variant_dark">#CAC4D0</color>
 
-    <color name="progress_active">#1E88E5</color>
+    <color name="progress_active">#659B37</color>
     <color name="progress_background">#E0E0E0</color>
     <color name="progress_chunk">#00E676</color>
 
-    <color name="status_downloading">#1E88E5</color>
+    <color name="status_downloading">#659B37</color>
     <color name="status_completed">#43A047</color>
     <color name="status_paused">#FB8C00</color>
     <color name="status_error">#E53935</color>
@@ -32,9 +32,18 @@
     <color name="black_active">#333333</color>
 
     <color name="widg_light_back">#E0E0E0</color>
-    <color name="widg_prog">#1E88E5</color>
+    <color name="widg_prog">#659B37</color>
     <color name="widg_black_back">#424242</color>
-    <color name="blue">#1E88E5</color>
+    <color name="blue">#659B37</color>
     <color name="red">#E53935</color>
     <color name="green">#43A047</color>
+
+    <!-- Bars and hints. Approximate values sampled from the reference captures (JPEG); dark values are my own choice. -->
+    <color name="bar_light">#F2F2EA</color>
+    <color name="on_bar_light">#292822</color>
+    <color name="hint_green_light">#4B7A27</color>
+    <color name="switch_track_light">#C1D6AB</color>
+    <color name="bar_dark">#1E1E1E</color>
+    <color name="on_bar_dark">#E6E1E5</color>
+    <color name="hint_green_dark">#9CCB6B</color>
 </resources>

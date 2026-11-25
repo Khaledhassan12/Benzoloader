@@ -18,7 +18,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="?attr/barBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="8dp">
@@ -31,7 +31,7 @@
                     android:contentDescription="Back"
                     android:src="@drawable/sort_size_down"
                     android:rotation="90"
-                    app:tint="#FFFFFF" />
+                    app:tint="?attr/onBar" />
 
                 <ImageButton
                     android:id="@+id/btnBrowserForward"
@@ -41,7 +41,7 @@
                     android:contentDescription="Forward"
                     android:src="@drawable/sort_size_down"
                     android:rotation="270"
-                    app:tint="#FFFFFF" />
+                    app:tint="?attr/onBar" />
 
                 <!-- URL / Search Input -->
                 <com.google.android.material.textfield.TextInputEditText
@@ -65,7 +65,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Refresh"
                     android:src="@drawable/stat_start"
-                    app:tint="#FFFFFF" />
+                    app:tint="?attr/onBar" />
 
                 <ImageButton
                     android:id="@+id/btnBrowserMenu"
@@ -74,7 +74,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Menu"
                     android:src="@drawable/ic_more_vert"
-                    app:tint="#FFFFFF" />
+                    app:tint="?attr/onBar" />
 
             </LinearLayout>
 

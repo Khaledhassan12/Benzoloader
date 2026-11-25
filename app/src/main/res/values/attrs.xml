@@ -2,4 +2,7 @@
 <resources>
     <attr name="myDivider" format="color|reference" />
     <attr name="myDialog" format="color|reference" />
+    <attr name="barBackground" format="color|reference" />
+    <attr name="onBar" format="color|reference" />
+    <attr name="hintGreen" format="color|reference" />
 </resources>

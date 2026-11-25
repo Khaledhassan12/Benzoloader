@@ -14,10 +14,10 @@
             android:id="@+id/toolbarSettings"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/barBackground"
             app:navigationIcon="@drawable/abc_ic_ab_back_material"
             app:title="@string/action_settings"
-            app:titleTextColor="#FFFFFF" />
+            app:titleTextColor="?attr/onBar" />
 
         <LinearLayout
             android:layout_width="match_parent"

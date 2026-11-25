@@ -20,10 +20,10 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="?attr/barBackground"
                 app:navigationIcon="@drawable/ic_menu"
                 app:title="@string/app_name"
-                app:titleTextColor="#FFFFFF" />
+                app:titleTextColor="?attr/onBar" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

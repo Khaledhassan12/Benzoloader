@@ -3,8 +3,11 @@
     <style name="Theme.Benzo" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent</item>
         <item name="colorOnPrimary">#000000</item>
-        <item name="colorPrimaryContainer">#003355</item>
-        <item name="colorOnPrimaryContainer">#D1E4FF</item>
+        <item name="barBackground">@color/bar_dark</item>
+        <item name="onBar">@color/on_bar_dark</item>
+        <item name="hintGreen">@color/hint_green_dark</item>
+        <item name="colorPrimaryContainer">#2F4A17</item>
+        <item name="colorOnPrimaryContainer">#C1D6AB</item>
         <item name="android:statusBarColor">@color/surface_dark</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:colorBackground">@color/background_dark</item>
