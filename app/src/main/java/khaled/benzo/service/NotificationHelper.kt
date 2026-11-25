@@ -202,6 +202,13 @@ class NotificationHelper(private val context: Context) {
         notificationManager.notify(RESUME_PROMPT_ID, n)
     }
 
+    /** Removes the finished-download notifications this app posted. The resume prompt and the ongoing one are left alone. */
+    fun clearCompletedNotifications() {
+        notificationManager.activeNotifications
+            .filter { it.notification.channelId == CHANNEL_COMPLETED && it.id != RESUME_PROMPT_ID }
+            .forEach { notificationManager.cancel(it.id) }
+    }
+
     fun cancelResumePrompt() = notificationManager.cancel(RESUME_PROMPT_ID)
 
     @Suppress("DEPRECATION")

@@ -69,7 +69,8 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | Progress, speed, completion notifications | BUILT (before `fd59931`) |
 | Lock-screen visibility, Pause all button | WRITTEN |
 | Vibration on success (existing completion switch, default on) and separate vibration on error (default off), with durations | WRITTEN, TESTS WRITTEN. The success switch did nothing before; it now vibrates |
-| Vibration for intercept and total finish, per-event sound choice, clear on close | NOT STARTED |
+| Clear finished-download notifications on Exit (`clear_notifs_on_exit`, default off, in backup spec) | WRITTEN, UNBUILT. Triggered only by the Exit action, not by swiping the app away |
+| Vibration for intercept and total finish, per-event sound choice | NOT STARTED |
 
 ### Browser
 | Item | State |
@@ -151,7 +152,7 @@ Implementation comes first. The one build happens at the end, after all of this.
 4. Network: smart download, proxy, per-connection profiles, multi-threading mode, user-agent presets.
 5. Browser: tab race fix, standalone bookmarks and history screens, desktop mode, pop-up tabs, clear cache, address-bar position.
 6. Interface: custom colour picker, value rows for pause-after-error and clear-finished, Top window, Data screen, side panel with graph, remaining Interface rows.
-7. Notifications: intercept and total-finish vibration, per-event sound choice, clear on close.
+7. Notifications: intercept and total-finish vibration, per-event sound choice (clear on Exit written).
 8. Automation: add to bottom or top of list, after-finishing action, auto-open pages, auto-add without editor.
 9. Security and data: backup policy proposal, secrets in URLs, provenance check of `res/raw` files, access-test cleanup.
 10. Whole-diff static review of all written code.

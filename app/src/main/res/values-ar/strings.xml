@@ -298,4 +298,5 @@
     <string name="mode_system">حسب النظام</string>
     <string name="mode_light">فاتح</string>
     <string name="mode_dark">داكن</string>
+    <string name="pref_clear_notifs_exit">حذف إشعارات التحميلات المكتملة عند الخروج</string>
 </resources>

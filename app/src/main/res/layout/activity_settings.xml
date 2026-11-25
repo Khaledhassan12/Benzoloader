@@ -47,6 +47,7 @@
         <com.google.android.material.slider.Slider android:id="@+id/sliderVibError" android:layout_width="match_parent" android:layout_height="wrap_content" android:stepSize="50.0" android:value="300.0" android:valueFrom="50.0" android:valueTo="1000.0" />
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchNotifLockScreen" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_notif_lock_screen" />
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchNotifPauseAll" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_notif_pause_all" />
+        <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchClearNotifsOnExit" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:checked="false" android:text="@string/pref_clear_notifs_exit" />
       </LinearLayout>
       <LinearLayout android:id="@+id/section_automation" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchNewestFirst" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_newest_first" app:prefSummary="@string/sum_newest_first" />

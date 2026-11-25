@@ -307,6 +307,7 @@ class DownloadService : Service() {
     }
 
     private fun stopAllAndExit() {
+        if (settings.clearNotifsOnExit) notificationHelper.clearCompletedNotifications()
         activeJobs.values.forEach { it.cancel() }
         activeJobs.clear()
         activeItems.clear()

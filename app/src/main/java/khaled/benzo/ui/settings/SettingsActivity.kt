@@ -204,6 +204,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderVibSuccess.value = repo.vibrateSuccessMs.toFloat()
         binding.sliderVibError.value = repo.vibrateErrorMs.toFloat()
         binding.switchVibrateError.isChecked = repo.vibrateOnError
+        binding.switchClearNotifsOnExit.isChecked = repo.clearNotifsOnExit
         showUserAgentRow(repo.defaultUserAgent)
         binding.switchTorrentFixedPort.isChecked = repo.torrentFixedPort
         binding.switchTorrentAnonymous.isChecked = repo.torrentAnonymous
@@ -228,6 +229,7 @@ class SettingsActivity : AppCompatActivity() {
         repo.vibrateSuccessMs = binding.sliderVibSuccess.value.toInt()
         repo.vibrateErrorMs = binding.sliderVibError.value.toInt()
         repo.vibrateOnError = binding.switchVibrateError.isChecked
+        repo.clearNotifsOnExit = binding.switchClearNotifsOnExit.isChecked
         repo.defaultUserAgent = userAgentValue
         repo.torrentFixedPort = binding.switchTorrentFixedPort.isChecked
         repo.torrentAnonymous = binding.switchTorrentAnonymous.isChecked

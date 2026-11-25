@@ -49,6 +49,7 @@ object SettingsBackup {
         "torrent_anonymous" to Spec.Bool,
         "vibrate_success_ms" to Spec.IntRange(50, 1000, 50),
         "vibrate_on_error" to Spec.Bool,
+        "clear_notifs_on_exit" to Spec.Bool,
         "vibrate_error_ms" to Spec.IntRange(50, 1000, 50),
         "min_thread_kb" to Spec.IntRange(128, 4096, 128),
         "default_user_agent" to Spec.Text(300) { s -> s.none { it.code < 32 || it.code > 126 } },
