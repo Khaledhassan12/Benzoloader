@@ -114,6 +114,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 ## Batch history (newest first)
 | Commit | Time (25 Nov, Cairo) | Change | State |
 |---|---|---|---|
+| `fdf6b4d` | 18:06 | Failure-injection tests for resume: If-Range header, changed file restarts clean | TESTS WRITTEN |
 | `5ef01a9` | 18:05 | List Delete stops the running transfer first; removed torrents lose their stored files | WRITTEN, TESTS WRITTEN |
 | `69e6ead` | 17:50 | Torrent fast-resume (resume data saved and reused) | WRITTEN, TESTS WRITTEN (store) |
 | `c9d73af` | 17:34 | Manual light / dark / follow-system choice | WRITTEN, NOT RENDERED |
