@@ -289,4 +289,9 @@
     <string name="row_vib_error">اهتزاز عند الخطأ</string>
     <string name="val_ms">%1$d مللي ثانية</string>
     <string name="pref_vibrate_on_error">اهتزاز عند فشل التحميل</string>
+    <string name="trackers_button">التراكرز</string>
+    <string name="trackers_title">التراكرز</string>
+    <string name="trackers_note">عنوان في كل سطر (http أو https أو udp). يسري أثناء تشغيل التورنت داخل التطبيق ولا يُحفظ بعد إعادة التشغيل.</string>
+    <string name="trackers_bad">عنوان تراكر غير صالح: %1$s</string>
+    <string name="trackers_not_running">شغّل التورنت أولًا ثم عدّل التراكرز</string>
 </resources>

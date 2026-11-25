@@ -59,6 +59,15 @@
         tools:text="Threads: 8 · Range: Supported" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTrackers"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/trackers_button"
+        android:visibility="gone" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCloseProperties"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"

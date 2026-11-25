@@ -289,4 +289,9 @@
     <string name="row_vib_error">Vibration on error</string>
     <string name="val_ms">%1$d ms</string>
     <string name="pref_vibrate_on_error">Vibrate when a download fails</string>
+    <string name="trackers_button">Trackers</string>
+    <string name="trackers_title">Trackers</string>
+    <string name="trackers_note">One address per line (http, https or udp). Applies while this torrent is running in the app; it is not remembered after a restart.</string>
+    <string name="trackers_bad">Not a valid tracker address: %1$s</string>
+    <string name="trackers_not_running">Start this torrent first, then edit its trackers</string>
 </resources>
