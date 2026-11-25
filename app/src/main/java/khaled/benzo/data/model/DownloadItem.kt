@@ -21,8 +21,15 @@ data class DownloadItem(
     val errorMessage: String? = null,
     val isTorrent: Boolean = false,
     val torrentInfoHash: String? = null,
-    val isWifiOnly: Boolean = false
+    val isWifiOnly: Boolean = false,
+    /** Stored cookies/headers that could not be decrypted, kept as stored so they are never overwritten with nothing. */
+    val rawCookies: String? = null,
+    val rawHeaders: String? = null
 ) {
+    /** True when saved cookies or headers cannot be read (security key changed). The user must enter them again. */
+    val needsReentry: Boolean
+        get() = rawCookies != null || rawHeaders != null
+
     val parts: Int
         get() = threadsCount
 

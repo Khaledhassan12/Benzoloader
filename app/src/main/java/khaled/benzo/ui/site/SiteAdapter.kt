@@ -37,7 +37,9 @@ class SiteAdapter(
 
         fun bind(site: SiteProfile) {
             binding.txtMediaTitle.text = site.domain
-            binding.txtMediaUrl.text = site.username
+            binding.txtMediaUrl.text =
+                if (site.needsReentry) binding.root.context.getString(khaled.benzo.R.string.secrets_reenter_site)
+                else site.username
             binding.btnDownloadThisMedia.text = "Delete"
             binding.btnDownloadThisMedia.setOnClickListener {
                 onDeleteClick(site)

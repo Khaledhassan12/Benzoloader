@@ -35,6 +35,10 @@ interface DownloadDao {
     @Query("SELECT * FROM downloads WHERE category = :category ORDER BY created_date DESC")
     fun getDownloadsByCategoryFlow(category: String): Flow<List<DownloadEntity>>
 
+    /** Compare-and-set so a migration never overwrites a row that changed meanwhile. Returns rows changed (0 or 1). */
+    @Query("UPDATE downloads SET cookies = :newCookies, headers = :newHeaders WHERE id = :id AND cookies IS :oldCookies AND headers IS :oldHeaders")
+    suspend fun swapSecrets(id: Long, oldCookies: String?, oldHeaders: String?, newCookies: String?, newHeaders: String?): Int
+
     @Query("SELECT * FROM downloads")
     suspend fun getAllOnce(): List<DownloadEntity>
 

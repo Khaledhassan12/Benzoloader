@@ -32,6 +32,8 @@ data class DownloadEntity(
     @ColumnInfo(name = "is_wifi_only") val isWifiOnly: Boolean = false
 ) {
     fun toModel(): DownloadItem {
+        val ck = khaled.benzo.core.security.Secrets.read(cookies)
+        val hd = khaled.benzo.core.security.Secrets.read(headers)
         return DownloadItem(
             id = id,
             url = url,
@@ -46,9 +48,11 @@ data class DownloadEntity(
             completedDate = completedDate,
             mimeType = mimeType,
             userAgent = userAgent,
-            cookies = khaled.benzo.core.security.Secrets.open(cookies),
+            cookies = (ck as? khaled.benzo.core.security.SecretRead.Ok)?.value,
+            rawCookies = (ck as? khaled.benzo.core.security.SecretRead.Unreadable)?.raw,
             referer = referer,
-            headersJson = khaled.benzo.core.security.Secrets.open(headers),
+            headersJson = (hd as? khaled.benzo.core.security.SecretRead.Ok)?.value,
+            rawHeaders = (hd as? khaled.benzo.core.security.SecretRead.Unreadable)?.raw,
             category = FileCategory.entries.firstOrNull { it.key == category } ?: FileCategory.DOCUMENT,
             errorMessage = errorMessage,
             isTorrent = isTorrent,
@@ -73,9 +77,9 @@ data class DownloadEntity(
                 completedDate = model.completedDate,
                 mimeType = model.mimeType,
                 userAgent = model.userAgent,
-                cookies = khaled.benzo.core.security.Secrets.seal(model.cookies),
+                cookies = khaled.benzo.core.security.Secrets.sealOrKeep(model.cookies, model.rawCookies),
                 referer = model.referer,
-                headers = khaled.benzo.core.security.Secrets.seal(model.headersJson),
+                headers = khaled.benzo.core.security.Secrets.sealOrKeep(model.headersJson, model.rawHeaders),
                 category = model.category.key,
                 errorMessage = model.errorMessage,
                 isTorrent = model.isTorrent,

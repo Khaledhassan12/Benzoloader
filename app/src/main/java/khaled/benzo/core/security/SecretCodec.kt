@@ -34,10 +34,17 @@ class AesGcmCodec(private val key: () -> SecretKey) : SecretCodec {
     }
 }
 
+/** Result of reading a stored column. [Unreadable] keeps the stored ciphertext so nothing is destroyed. */
+sealed interface SecretRead {
+    data class Ok(val value: String?) : SecretRead
+    data class Unreadable(val raw: String) : SecretRead
+}
+
 /**
  * Column-level wrapper. Stored form is "enc1:" + codec output. A value without the prefix is a legacy plaintext row and is
- * returned as is, then re-encrypted the next time the row is written. A value that cannot be decrypted (for example the
- * key was lost after a reinstall or backup restore) reads as null instead of crashing.
+ * returned as is until [SecretsMigration] seals it. A value that cannot be decrypted (key lost after a reinstall or backup
+ * restore, or a Keystore fault) is reported as [SecretRead.Unreadable] with its raw stored text, so the caller can keep
+ * it unchanged and show a re-entry status instead of treating it as empty.
  */
 object Secrets {
     const val PREFIX = "enc1:"
@@ -49,16 +56,21 @@ object Secrets {
     /** Fails loudly when no codec is installed: secrets are never written as plaintext by accident. */
     fun seal(plain: String?): String? = sealWith(requireCodec(), plain)
 
-    fun open(stored: String?): String? =
-        if (stored == null || !stored.startsWith(PREFIX)) stored else openWith(requireCodec(), stored)
+    fun read(stored: String?): SecretRead =
+        if (stored == null || !stored.startsWith(PREFIX)) SecretRead.Ok(stored) else readWith(requireCodec(), stored)
+
+    /** Value to store: new plaintext is sealed; when the caller has no new value but holds unreadable [raw], keep [raw]. */
+    fun sealOrKeep(plain: String?, raw: String?): String? =
+        if (plain == null && raw != null) raw else seal(plain)
 
     private fun requireCodec() = codec ?: error("SecretCodec not installed")
 
     fun sealWith(c: SecretCodec, plain: String?): String? =
         if (plain.isNullOrEmpty() || plain.startsWith(PREFIX)) plain else PREFIX + c.encrypt(plain)
 
-    fun openWith(c: SecretCodec, stored: String?): String? {
-        if (stored == null || !stored.startsWith(PREFIX)) return stored
-        return runCatching { c.decrypt(stored.removePrefix(PREFIX)) }.getOrNull()
+    fun readWith(c: SecretCodec, stored: String?): SecretRead {
+        if (stored == null || !stored.startsWith(PREFIX)) return SecretRead.Ok(stored)
+        return runCatching { c.decrypt(stored.removePrefix(PREFIX)) }
+            .fold({ SecretRead.Ok(it) }, { SecretRead.Unreadable(stored) })
     }
 }

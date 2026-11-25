@@ -6,5 +6,11 @@ data class SiteProfile(
     val username: String? = null,
     val password: String? = null,
     val userAgent: String? = null,
-    val customCookies: String? = null
-)
+    val customCookies: String? = null,
+    /** Stored values that could not be decrypted, kept as stored. */
+    val rawPassword: String? = null,
+    val rawCookies: String? = null
+) {
+    val needsReentry: Boolean
+        get() = rawPassword != null || rawCookies != null
+}

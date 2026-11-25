@@ -152,6 +152,13 @@ class DownloadService : Service() {
     private suspend fun startTask(id: Long) {
         val item = repository.getDownload(id) ?: return
         if (activeJobs.containsKey(id)) return
+        if (item.needsReentry) {
+            // Saved cookies or headers cannot be decrypted. Do not retry silently: show why, keep the stored values as they are.
+            repository.updateDownload(item.copy(status = DownloadStatus.ERROR, speed = 0L,
+                errorMessage = getString(R.string.secrets_reenter_download)))
+            updateNotification()
+            return
+        }
 
         wakeLockManager.acquire()
         repository.updateStatusAndSpeed(id, DownloadStatus.RUNNING, 0L)

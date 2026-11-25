@@ -29,6 +29,9 @@ interface SiteDao {
     @Query("SELECT * FROM sites ORDER BY domain ASC")
     fun getAllSitesFlow(): Flow<List<SiteEntity>>
 
+    @Query("UPDATE sites SET password = :newPassword, custom_cookies = :newCookies WHERE id = :id AND password IS :oldPassword AND custom_cookies IS :oldCookies")
+    suspend fun swapSecrets(id: Long, oldPassword: String?, oldCookies: String?, newPassword: String?, newCookies: String?): Int
+
     @Query("DELETE FROM sites WHERE domain = :domain")
     suspend fun deleteByDomain(domain: String): Int
 }

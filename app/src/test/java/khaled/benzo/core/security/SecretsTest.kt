@@ -14,7 +14,7 @@ class SecretsTest {
         val c = codec()
         val s = Secrets.sealWith(c, "sid=abc; token=xyz")!!
         assertTrue(s.startsWith(Secrets.PREFIX)); assertFalse(s.contains("abc"))
-        assertEquals("sid=abc; token=xyz", Secrets.openWith(c, s))
+        assertEquals(SecretRead.Ok("sid=abc; token=xyz"), Secrets.readWith(c, s))
     }
 
     @Test fun randomIvGivesDifferentCiphertexts() {
@@ -25,7 +25,7 @@ class SecretsTest {
     @Test fun nullEmptyAndLegacyPlaintextPassThrough() {
         val c = codec()
         assertNull(Secrets.sealWith(c, null)); assertEquals("", Secrets.sealWith(c, ""))
-        assertEquals("legacy=1", Secrets.openWith(c, "legacy=1"))
+        assertEquals(SecretRead.Ok("legacy=1"), Secrets.readWith(c, "legacy=1"))
     }
 
     @Test fun sealIsIdempotent() {
@@ -34,14 +34,15 @@ class SecretsTest {
         assertEquals(once, Secrets.sealWith(c, once))
     }
 
-    @Test fun wrongKeyOrCorruptionReadsAsNull() {
-        val s = Secrets.sealWith(codec(), "secret")
-        assertNull(Secrets.openWith(codec(), s))
-        assertNull(Secrets.openWith(codec(), Secrets.PREFIX + "garbage"))
+    @Test fun wrongKeyOrCorruptionIsReportedWithRawValueKept() {
+        val s = Secrets.sealWith(codec(), "secret")!!
+        assertEquals(SecretRead.Unreadable(s), Secrets.readWith(codec(), s))
+        val bad = Secrets.PREFIX + "garbage"
+        assertEquals(SecretRead.Unreadable(bad), Secrets.readWith(codec(), bad))
     }
 
     @Test fun unicodeSurvives() {
         val c = codec()
-        assertEquals("كوكي=قيمة", Secrets.openWith(c, Secrets.sealWith(c, "كوكي=قيمة")))
+        assertEquals(SecretRead.Ok("كوكي=قيمة"), Secrets.readWith(c, Secrets.sealWith(c, "كوكي=قيمة")))
     }
 }
