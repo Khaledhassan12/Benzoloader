@@ -17,8 +17,8 @@ Useful facts from the originals:
 - LibreTorrent's README says the Google Play build has no all-files permission and points to F-Droid or the direct APK. It matches our GitHub/Play storage split (docs/STORAGE_DESIGN.md).
 - Ketch's torrent page documents restart behaviour: it saves seeding state about once a minute and when stopping, remembers which tasks seed, and keeps showing the old progress while it re-checks files. It also says a seeding-only Android app is not kept in the foreground. Source: https://github.com/linroid/Ketch/blob/main/docs/torrent.md . This is a design reference for our open "torrent resume after app restart" item. I read documentation only, not Ketch code.
 
-## Licensing consequence (a decision for Khaled, not for me)
-Benzoloader has no LICENSE file in the repository. Until he picks how it will be distributed, GPL code (aria2, Gopeed, LibreTorrent, Maglev) must not be copied or linked. Apache-2.0 (Ketch) allows reuse with notice, but adopting it is an engine replacement, which is a separate decision. The report itself is not legal advice and neither is this.
+## Licensing: a review gate, not a conclusion
+Scope of this file: README and documentation pages only. It is not a code-level evaluation and not a completed five-engine comparison. The GPL licenses listed above carry obligations on copying, linking and distribution that need a proper review against how Benzoloader will be distributed. The repository currently has no LICENSE file, which leaves that question open; it is not a legal finding either way. Until the review is done and Khaled decides, the rule in force is: no third-party code reuse and no engine replacement. aria2's "or later" wording stays unresolved until checked against its authoritative license grant text. Ketch is Apache-2.0 per its repository page; adopting it would still be an engine replacement and a separate decision. Nothing here is legal advice.
 
 ## How the current code compares with the report's HTTP requirements (read from code, static)
 - 206 and Content-Range checked, and a mismatching start is a permanent error (ChunkWorker).
