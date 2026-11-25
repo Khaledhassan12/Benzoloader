@@ -88,6 +88,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_PAUSE_AFTER_ERROR, false)
         set(value) = prefs.edit().putBoolean(KEY_PAUSE_AFTER_ERROR, value).apply()
 
+    /** A download that failed for a reason that may pass (dropped connection) is queued again by itself, a few times. */
+    var autoResume: Boolean
+        get() = prefs.getBoolean(KEY_AUTO_RESUME, true)
+        set(value) = prefs.edit().putBoolean(KEY_AUTO_RESUME, value).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -112,6 +117,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_CATALOG_NAMES = "catalog_folder_names"
         private const val KEY_ERROR_RETRIES = "error_retries"
         private const val KEY_PAUSE_AFTER_ERROR = "pause_after_error"
+        private const val KEY_AUTO_RESUME = "auto_resume"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_DOWNLOAD_PATH = "download_path"
     }

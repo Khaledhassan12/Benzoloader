@@ -139,6 +139,27 @@ class DownloadService : Service() {
         updateNotification()
     }
 
+    private val autoResumeAttempts = mutableMapOf<Long, Int>()
+
+    /**
+     * Auto-resume: after a failure that may pass, put the download back in the queue after a growing delay.
+     * It only acts if the row still has the status the failure gave it (the user did not touch it meanwhile).
+     */
+    private fun scheduleAutoResume(id: Long, failedStatus: DownloadStatus, failure: Throwable?) {
+        // With "pause after error" the failed row is Paused, which a user pause also produces: the two cannot be told
+        // apart, so that setting wins and nothing is resumed automatically.
+        if (failedStatus != DownloadStatus.ERROR) return
+        val attempts = autoResumeAttempts[id] ?: 0
+        if (!khaled.benzo.core.queue.AutoResumePolicy.shouldResume(settings.autoResume, attempts, failure)) return
+        autoResumeAttempts[id] = attempts + 1
+        serviceScope.launch {
+            delay(khaled.benzo.core.queue.AutoResumePolicy.delayMs(attempts))
+            if (repository.getDownload(id)?.status == failedStatus) {
+                repository.updateStatusAndSpeed(id, DownloadStatus.QUEUED, 0L)
+            }
+        }
+    }
+
     /** Stops the transfer but keeps it in the queue so it resumes by itself when conditions allow. Progress is already saved. */
     private suspend fun requeueTask(id: Long) {
         activeJobs.remove(id)?.cancel()
@@ -202,9 +223,12 @@ class DownloadService : Service() {
                 if (settings.soundOnComplete) {
                     notificationHelper.playSound(R.raw.done)
                 }
+                autoResumeAttempts.remove(id)
             } else {
-                repository.updateStatusAndSpeed(id, khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError), 0L)
+                val failedStatus = khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError)
+                repository.updateStatusAndSpeed(id, failedStatus, 0L)
                 notificationHelper.playSound(R.raw.error)
+                scheduleAutoResume(id, failedStatus, result.exceptionOrNull())
             }
 
             if (activeJobs.isEmpty()) {

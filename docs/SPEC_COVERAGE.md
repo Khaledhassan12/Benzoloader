@@ -24,7 +24,7 @@ State words: **done-tested** (JVM tests passed), **done-compiled** (built, no te
 | 9.4 | Storage | partial | free-space check and safe names done; duplicate names written-unbuilt; SAF, MediaStore, SD-card picker missing |
 | 10 | Browser, tabs, UA, media detection | partial | single WebView with back/forward/reload, fixed mobile user-agent string, media sniffer dialog (compiled at fd59931). Missing: tabs, history, bookmarks UI, desktop mode, HLS/manifest handling. Behaviour unverified |
 | 11 | Torrent | written-unbuilt + compiled | real engine (compiled at fd59931), service run, editor, cataloging; missing: sequential, seeding limits, share ratio, trackers list, DHT/port, resume data |
-| 12.1 | Downloading settings | partial | destination, concurrent, threads, speed, Wi-Fi, schedule, battery, retries, pause-after-error; missing: auto-resume toggle, proxy, create-empty-file toggle, after-finishing action, user-agent presets |
+| 12.1 | Downloading settings | partial | destination, concurrent, threads, speed, Wi-Fi, schedule, battery, retries, pause-after-error; auto-resume toggle written-unbuilt (HTTP downloads only; off when "pause after error" is on); missing: proxy, create-empty-file toggle, after-finishing action, user-agent presets |
 | 12.2 | Notifications settings | partial | sound, vibrate; missing: pop-up, lock screen, priority, command buttons |
 | 12.3 | Scheduler | written-unbuilt | start/stop times, window crossing midnight; no per-day, no network condition per schedule |
 | 12.4 | Automation | missing | auto-add without editor, auto-open pages in browser, auto-stop low battery restore |

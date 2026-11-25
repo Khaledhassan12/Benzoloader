@@ -156,4 +156,5 @@
     <string name="notif_permission_why">الإشعارات بتعرض تقدم التحميل ونتيجته. من غيرها التحميل بيكمل لكن مش هتشوف التقدم.</string>
     <string name="notif_permission_settings">الإشعارات مقفولة للتطبيق، فتقدم التحميل مخفي. تقدر تفتحها من إعدادات التطبيق.</string>
     <string name="notif_open_settings">فتح الإعدادات</string>
+    <string name="pref_auto_resume">استكمال تلقائي بعد الفشل (لحد 3 مرات، مع مهلة)</string>
 </resources>
