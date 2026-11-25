@@ -65,7 +65,20 @@ object SettingsBackup {
         "bottom_bar" to Spec.Bool,
         "theme_color" to Spec.IntRange(0, 4, 1),
         "theme_mode" to Spec.IntRange(0, 2, 1),
-        "download_path" to Spec.Text(512) { isPlausiblePath(it) }
+        "download_path" to Spec.Text(512) { isPlausiblePath(it) },
+        "top_window_enabled" to Spec.Bool,
+        "top_window_stats" to Spec.IntRange(0, 63),
+        "top_window_text_color" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
+        "top_window_bg_color" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
+        "top_window_bar_color" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
+        "top_window_opacity" to Spec.IntRange(10, 100),
+        "top_window_width" to Spec.IntRange(0, 20000),
+        "top_window_line_height" to Spec.IntRange(1, 128),
+        "top_window_text_size" to Spec.IntRange(1, 32),
+        "top_window_h_align" to Spec.IntRange(0, 2),
+        "top_window_v_align" to Spec.IntRange(0, 2),
+        "top_window_offset_x" to Spec.IntRange(0, 20000),
+        "top_window_offset_y" to Spec.IntRange(0, 20000)
     )
 
     /** Empty means "not set". Otherwise an absolute path without ".." parts, NUL or line breaks. */

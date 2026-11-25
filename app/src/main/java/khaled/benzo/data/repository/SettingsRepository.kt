@@ -282,7 +282,14 @@ class SettingsRepository(context: Context) {
         KEY_KEEP_SCREEN to keepScreenOn, KEY_CLEAR_FINISHED to clearFinishedOnStart,
         KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes, KEY_TORRENT_DHT to torrentDht, KEY_TORRENT_CONNECTIONS to torrentConnections, KEY_NEWEST_FIRST to newestFirst, KEY_AFTER_FINISH to afterFinish, KEY_QUICK_ADD to quickAddLinks, KEY_QUICK_ADD_START to quickAddStart, KEY_LIST_BOTTOM to listAddToBottom, KEY_SWAP_MENUS to swapSideMenus, KEY_MIN_THREAD_KB to minThreadKb, KEY_VIB_SUCCESS to vibrateSuccessMs, KEY_VIB_ERROR to vibrateErrorMs, KEY_VIB_ERROR_ON to vibrateOnError, KEY_CLEAR_NOTIFS_EXIT to clearNotifsOnExit, KEY_DEFAULT_UA to defaultUserAgent, KEY_TORRENT_FIXED_PORT to torrentFixedPort, KEY_TORRENT_PORT to torrentPort, KEY_TORRENT_ANON to torrentAnonymous,
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor, KEY_THEME_MODE to themeMode,
-        KEY_DOWNLOAD_PATH to defaultDownloadPath
+        KEY_DOWNLOAD_PATH to defaultDownloadPath,
+        "top_window_enabled" to topWindowEnabled, "top_window_stats" to topWindowStatsMask,
+        "top_window_text_color" to topWindowTextColor, "top_window_bg_color" to topWindowBackgroundColor,
+        "top_window_bar_color" to topWindowBarColor, "top_window_opacity" to topWindowOpacityPercent,
+        "top_window_width" to topWindowWidthPx, "top_window_line_height" to topWindowLineHeightPx,
+        "top_window_text_size" to topWindowTextSizePx, "top_window_h_align" to topWindowHAlign,
+        "top_window_v_align" to topWindowVAlign, "top_window_offset_x" to topWindowOffsetX,
+        "top_window_offset_y" to topWindowOffsetY
     )
 
     /**
