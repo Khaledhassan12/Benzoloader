@@ -18,7 +18,9 @@ class ListStateTest {
     )
 
     @Test fun drawerStatusEntriesSetStatusAndClearType() {
-        assertEquals(StatusFilter.ACTIVE, ListState(type = FileCategory.VIDEO).withCategory(FileCategory.DOWNLOADING).let { assertNull(it.type); it.status })
+        val active = ListState(type = FileCategory.VIDEO).withCategory(FileCategory.DOWNLOADING)
+        assertEquals(StatusFilter.ACTIVE, active.status)
+        assertNull(active.type)
         assertEquals(StatusFilter.COMPLETED, ListState().withCategory(FileCategory.COMPLETED).status)
         assertEquals(StatusFilter.QUEUED, ListState().withCategory(FileCategory.QUEUED).status)
     }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import khaled.benzo.core.torrent.BencodeValidator
 import khaled.benzo.core.torrent.TorrentEngine
 import khaled.benzo.core.torrent.TorrentMapping
 import khaled.benzo.core.torrent.TorrentSourcePolicy
@@ -66,8 +67,13 @@ class TorrentEditorViewModel(application: Application) : AndroidViewModel(applic
     private fun readBytes(s: String): ByteArray? {
         val ctx = getApplication<Application>()
         val bytes = when (TorrentSourcePolicy.classify(s)) {
-            TorrentSourcePolicy.Kind.CONTENT ->
-                ctx.contentResolver.openInputStream(Uri.parse(s.trim()))?.use { TorrentSourcePolicy.readLimited(it) }
+            TorrentSourcePolicy.Kind.CONTENT -> {
+                val uri = Uri.parse(s.trim())
+                // A provider of this very app (for example the file provider) must not be read on behalf of another app.
+                val owner = uri.authority?.let { ctx.packageManager.resolveContentProvider(it, 0)?.packageName }
+                if (owner == ctx.packageName) null
+                else ctx.contentResolver.openInputStream(uri)?.use { TorrentSourcePolicy.readLimited(it) }
+            }
             TorrentSourcePolicy.Kind.FILE -> {
                 val raw = s.trim()
                 val path = if (raw.startsWith("/")) raw else Uri.parse(raw).path
@@ -77,7 +83,7 @@ class TorrentEditorViewModel(application: Application) : AndroidViewModel(applic
             }
             else -> null
         }
-        return bytes?.takeIf { TorrentSourcePolicy.looksLikeTorrent(it) }
+        return bytes?.takeIf { BencodeValidator.validate(it) is BencodeValidator.Result.Ok }
     }
 
     private fun fileAllowed(ctx: Application, canonical: String): Boolean {

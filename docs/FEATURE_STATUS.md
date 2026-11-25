@@ -30,3 +30,8 @@ Known gaps: secure storage for cookies/headers,
 instrumented (device) tests, UI match against the reference screens.
 
 | Encryption of cookies, headers, site passwords at rest | written, not compiled | pure part unit-tested? no: SecretsTest and SecretsMigrationTest written, not run | Keystore path never run on a device; allowBackup is true: a restored database has sealed values without their key and shows the re-enter status |
+
+## Torrent input validation (written, not built, tests written, not run)
+- BencodeValidator: iterative structural check (depth 64, 500k items, string lengths inside the buffer, integer form, dictionary keys, no trailing data). It replaces the old first/last byte check, which was only a precheck.
+- Content URIs served by this app's own providers are refused. Files are limited to shared storage.
+- libtorrent still parses afterwards (TorrentInfo.bdecode in a try/catch). Its own internal limits were not verified: the load_torrent_limits class is not in the jar's Java API.

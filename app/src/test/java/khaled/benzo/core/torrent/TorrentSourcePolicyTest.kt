@@ -29,12 +29,6 @@ class TorrentSourcePolicyTest {
         assertTrue(P.isInside("/storage/emulated/0", "/storage/emulated/0/"))
     }
 
-    @Test fun bencodeShape() {
-        assertTrue(P.looksLikeTorrent("d4:infod4:name1:aee".toByteArray()))
-        assertFalse(P.looksLikeTorrent("SQLite format 3".toByteArray()))
-        assertFalse(P.looksLikeTorrent(ByteArray(0)))
-    }
-
     @Test fun readLimitedStopsAtTheCap() {
         assertNull(P.readLimited(ByteArray(100).inputStream(), 50))
         assertEquals(100, P.readLimited(ByteArray(100).inputStream(), 100)!!.size)

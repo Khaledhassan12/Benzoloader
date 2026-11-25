@@ -6,7 +6,8 @@ import java.io.InputStream
 /**
  * Rules for torrent sources that arrive from other apps (open/share intents). Pure and testable.
  * Magnet links and content:// URIs stay allowed. file:// and plain paths must point into shared storage,
- * never into this app's own data. Every read is size-bounded and must look like a bencoded dictionary.
+ * never into this app's own data. content:// URIs that point at this app's own providers are refused too. Every read is
+ * size-bounded and must pass [BencodeValidator] before the native parser sees it.
  */
 object TorrentSourcePolicy {
     /** Real .torrent files are small. Larger input is refused instead of being read into memory. */
@@ -36,10 +37,6 @@ object TorrentSourcePolicy {
         val r = root.trimEnd('/')
         return path == r || path.startsWith("$r/")
     }
-
-    /** A .torrent is a bencoded dictionary: starts with 'd' and ends with 'e'. */
-    fun looksLikeTorrent(bytes: ByteArray): Boolean =
-        bytes.size >= 2 && bytes.first() == 'd'.code.toByte() && bytes.last() == 'e'.code.toByte()
 
     /** Reads at most [MAX_BYTES]. Returns null when the stream is larger. */
     fun readLimited(input: InputStream, max: Int = MAX_BYTES): ByteArray? {
