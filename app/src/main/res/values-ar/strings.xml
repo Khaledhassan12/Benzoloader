@@ -330,5 +330,5 @@
     <string name="panel_sort_category">النوع</string>
     <string name="panel_all">الكل</string>
     <string name="pref_swap_menus">تبديل القوائم الجانبية</string>
-    <string name="sum_swap_menus">قائمة التنقل على اليمين وقائمة التصفية على الشمال. تسري المرة الجاية اللي تفتح فيها الشاشة الرئيسية</string>
+    <string name="sum_swap_menus">قائمة التنقل على اليمين وقائمة التصفية على الشمال. تتطبق لما ترجع للشاشة الرئيسية</string>
 </resources>

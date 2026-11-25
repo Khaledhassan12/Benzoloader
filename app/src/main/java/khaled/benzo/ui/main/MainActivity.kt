@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         applyBottomBar()
+        applySideMenuSwap()
         viewModel.setAddToBottom(khaled.benzo.data.repository.SettingsRepository(this).listAddToBottom)
         // Applied on every return to the screen so a change in Settings takes effect without a restart.
         if (khaled.benzo.data.repository.SettingsRepository(this).keepScreenOn) {
@@ -118,16 +119,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Edge of the navigation drawer; the filter panel takes the other one. Read when the screen is created. */
+    /** Edge of the navigation drawer; the filter panel takes the other one. Re-read on every return to the screen. */
     private var navGravity = GravityCompat.START
     private var panelGravity = GravityCompat.END
 
     private fun applySideMenuSwap() {
-        if (!khaled.benzo.data.repository.SettingsRepository(this).swapSideMenus) return
-        navGravity = GravityCompat.END
-        panelGravity = GravityCompat.START
-        (binding.navigationView.layoutParams as androidx.drawerlayout.widget.DrawerLayout.LayoutParams).gravity = navGravity
-        (binding.filterPanelScroll.layoutParams as androidx.drawerlayout.widget.DrawerLayout.LayoutParams).gravity = panelGravity
+        val swap = khaled.benzo.data.repository.SettingsRepository(this).swapSideMenus
+        val nav = if (swap) GravityCompat.END else GravityCompat.START
+        val panel = if (swap) GravityCompat.START else GravityCompat.END
+        if (nav == navGravity && binding.navigationView.layoutParams.let { (it as androidx.drawerlayout.widget.DrawerLayout.LayoutParams).gravity == nav }) return
+        binding.drawerLayout.closeDrawers()
+        navGravity = nav
+        panelGravity = panel
+        (binding.navigationView.layoutParams as androidx.drawerlayout.widget.DrawerLayout.LayoutParams).gravity = nav
+        (binding.filterPanelScroll.layoutParams as androidx.drawerlayout.widget.DrawerLayout.LayoutParams).gravity = panel
+        binding.navigationView.requestLayout()
+        binding.filterPanelScroll.requestLayout()
     }
 
     private fun setupNavigationDrawer() {
