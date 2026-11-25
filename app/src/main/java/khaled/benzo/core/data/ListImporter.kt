@@ -2,12 +2,9 @@ package khaled.benzo.core.data
 
 import android.content.Context
 import android.os.Environment
-import khaled.benzo.core.catalog.CatalogPolicy
-import khaled.benzo.core.files.FileNaming
 import khaled.benzo.data.db.BenzoDatabase
 import khaled.benzo.data.model.DownloadItem
 import khaled.benzo.data.model.DownloadStatus
-import khaled.benzo.data.model.FileCategory
 import khaled.benzo.data.repository.DownloadRepository
 import khaled.benzo.data.repository.SettingsRepository
 import java.io.File
@@ -23,27 +20,21 @@ class ListImporter(private val context: Context, private val repository: Downloa
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         }
         val existing = BenzoDatabase.getInstance(context).downloadDao().getAllOnce()
-        val knownUrls = existing.map { it.url }.toMutableSet()
-        val taken = existing.map { it.savePath to it.fileName }.toMutableSet()
+        val knownUrls = existing.map { it.url }.toSet()
+        val taken = existing.map { it.savePath to it.fileName }.toSet()
         val entries = ListTransfer.parse(text)
-        var added = 0
-        for (e in entries) {
-            if (e.url in knownUrls) continue
-            val raw = ListTransfer.nameFor(e)
-            val category = FileCategory.fromExtension(raw)
-            val folder = CatalogPolicy.targetFolder(root, root, category, settings.catalogEnabled, settings.catalogFolderNames)
-            val name = FileNaming.uniqueName(raw) { c -> (folder to c) in taken || File(folder, c).exists() }
-            taken.add(folder to name)
-            knownUrls.add(e.url)
+        val planner = ImportPlanner(root, settings.catalogEnabled, settings.catalogFolderNames) { folder, name -> File(folder, name).exists() }
+        val planned = planner.plan(entries, knownUrls, taken)
+        for (p in planned) {
             repository.insertDownload(
                 DownloadItem(
-                    url = e.url, fileName = name, savePath = folder,
-                    status = DownloadStatus.PAUSED, category = category,
+                    url = p.url, fileName = p.fileName, savePath = p.folder,
+                    status = DownloadStatus.PAUSED, category = p.category,
                     threadsCount = settings.defaultThreadsCount, isWifiOnly = settings.isWifiOnly
                 )
             )
-            added++
         }
+        val added = planned.size
         return ImportResult(added, entries.size - added)
     }
 }

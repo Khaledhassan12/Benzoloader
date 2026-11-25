@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import khaled.benzo.data.model.DownloadItem
 import khaled.benzo.data.model.FileCategory
 import khaled.benzo.data.repository.DownloadRepository
-import khaled.benzo.core.queue.ListLogic
+import khaled.benzo.core.queue.ListState
 import khaled.benzo.core.queue.SortKey
 import khaled.benzo.core.queue.StatusFilter
 import kotlinx.coroutines.flow.combine
@@ -15,15 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-
-/** Everything the list needs to decide what to show. */
-data class ListState(
-    val status: StatusFilter = StatusFilter.ALL,
-    val type: FileCategory? = null,
-    val query: String = "",
-    val sort: SortKey = SortKey.TIME,
-    val ascending: Boolean = false
-)
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -38,10 +29,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         viewModelScope.launch {
-            combine(repository.getAllDownloads(null), _state) { all, st ->
-                ListLogic.apply(all, st.status, st.query, st.sort, st.ascending)
-                    .let { list -> if (st.type == null) list else list.filter { it.category == st.type } }
-            }.collect { list ->
+            combine(repository.getAllDownloads(null), _state) { all, st -> st.apply(all) }.collect { list ->
                 (downloads as MutableStateFlow).value = list
             }
         }
@@ -50,29 +38,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /** Drawer entries: ALL and the status entries set a status filter, the others filter by file type. */
     fun setCategory(category: FileCategory?) {
         _selectedCategory.value = category
-        _state.update {
-            when (category) {
-                null, FileCategory.ALL -> it.copy(status = StatusFilter.ALL, type = null)
-                FileCategory.DOWNLOADING -> it.copy(status = StatusFilter.ACTIVE, type = null)
-                FileCategory.COMPLETED -> it.copy(status = StatusFilter.COMPLETED, type = null)
-                FileCategory.QUEUED -> it.copy(status = StatusFilter.QUEUED, type = null)
-                else -> it.copy(status = StatusFilter.ALL, type = category)
-            }
-        }
+        _state.update { it.withCategory(category) }
     }
 
     fun setStatusFilter(filter: StatusFilter) {
         _selectedCategory.value = null
-        _state.update { it.copy(status = filter, type = null) }
+        _state.update { it.withStatus(filter) }
     }
 
-    fun setQuery(query: String) = _state.update { it.copy(query = query) }
+    fun setQuery(query: String) = _state.update { it.withQuery(query) }
 
-    /** Picking the active sort key again flips the direction; a new key starts in its natural direction. */
-    fun setSort(key: SortKey) = _state.update {
-        if (it.sort == key) it.copy(ascending = !it.ascending)
-        else it.copy(sort = key, ascending = key == SortKey.NAME || key == SortKey.CATEGORY)
-    }
+    fun setSort(key: SortKey) = _state.update { it.withSort(key) }
 
     fun deleteDownload(id: Long) {
         viewModelScope.launch {

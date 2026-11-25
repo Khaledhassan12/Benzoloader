@@ -68,12 +68,13 @@ Benzoloader/
         │       ├── BenzoApp.kt
         │       ├── core/
         │       │   ├── catalog/   CatalogPolicy, FolderNames
-        │       │   ├── data/      ListTransfer (txt format), ListImporter
+        │       │   ├── data/      ListTransfer (txt format), ListImporter,
+        │       │   │              ImportPlanner
         │       │   ├── download/  DownloadEngine, ChunkWorker,
         │       │   │              TokenBucketLimiter, SpeedTracker,
         │       │   │              ResumePolicy, RequestHeaders
         │       │   ├── files/     FileNaming
-        │       │   ├── queue/     QueuePolicy, ListLogic
+        │       │   ├── queue/     QueuePolicy, ListLogic, ListState
         │       │   ├── security/  SecretCodec, Secrets, KeystoreKey,
         │       │   │              SecretsMigration(+Runner), CredentialRepair
         │       │   ├── torrent/   TorrentEngine, TorrentMapping,
@@ -93,7 +94,8 @@ Benzoloader/
         └── test/                  QueuePolicyTest, DownloadEngineTest,
                                    TorrentMappingTest, ResumePolicyTest,
                                    CatalogPolicyTest, FolderNamesTest, FileNamingTest,
-                                   TorrentSourcePolicyTest,
+                                   TorrentSourcePolicyTest, ListStateTest,
+                                   ImportPlannerTest,
                                    ListTransferTest, SecretsTest, SecretsMigrationTest, CredentialRepairTest,
                                    RequestHeadersTest
 ```

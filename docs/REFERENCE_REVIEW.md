@@ -18,6 +18,10 @@ No script from them was run, nothing was installed, and no UI framework change w
 
 - Torrent editor sources (TorrentSourcePolicy, 5 tests written, not run): magnet and content:// stay allowed. file:// and plain paths must resolve (canonical path) into shared storage and not into the app's own data. Reads are capped at 8 MiB and the bytes must look like a bencoded dictionary. Previously any readable path was read without a size limit. No normal share/open flow is removed. Limit: a .torrent behind an http link is still not supported.
 
+## Skills applied to the work (second pass)
+- android/skills testing-setup (read in full): "respect the current stack" (JUnit4 stays; no Hilt, Mockk or Robolectric added, since the project has none and the user did not ask) and "refactor for unit tests: put logic behind pure classes or fakes". Applied: list state transitions moved out of MainViewModel into core/queue/ListState (ListStateTest, 5 tests); import planning moved out of ListImporter into core/data/ImportPlanner with a fake file-exists function (ImportPlannerTest, 4 tests); FolderNamesTest, TorrentSourcePolicyTest, CredentialRepairTest, SecretsMigrationTest added. All written, none run.
+- superpowers test-driven-development, systematic-debugging, requesting-code-review, receiving-code-review, writing-plans (headlines read): the pure logic gets its tests written with the code. Because nothing can be compiled yet, a static read-through of the diff since fd59931 replaces the "run it" step and will be repeated before the final build.
+
 ## Audited, no change needed
 - Every PendingIntent uses FLAG_IMMUTABLE.
 - Non-launcher components are not exported, except the boot receiver, which checks its action.
