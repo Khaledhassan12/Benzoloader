@@ -32,5 +32,12 @@ object ResumeStore {
         } catch (e: IOException) { null }
     }
 
+    /** Removes everything the app stored for one torrent: its .torrent copy, file priorities, resume data and any temp file. Never touches downloaded content. */
+    fun deleteAllFor(dir: File, infoHash: String) {
+        if (infoHash.isEmpty() || infoHash.any { !it.isLetterOrDigit() }) return // a hash is hex; anything else is not ours to build a path from
+        listOf("$infoHash.torrent", "$infoHash.torrent.tmp", "$infoHash.prio", "$infoHash.fastresume", "$infoHash.fastresume.tmp")
+            .forEach { delete(File(dir, it)) }
+    }
+
     fun delete(file: File) { runCatching { file.delete() } }
 }

@@ -286,7 +286,10 @@ class DownloadService : Service() {
         job?.cancel()
         activeItems.remove(id)
         serviceScope.launch {
-            torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.orNull()?.removeTorrent(it, false) }
+            torrentHashOf(id)?.let { hash ->
+                khaled.benzo.core.torrent.TorrentEngine.orNull()?.removeTorrent(hash, false)
+                khaled.benzo.core.torrent.ResumeStore.deleteAllFor(java.io.File(filesDir, "torrents"), hash)
+            }
             repository.deleteDownload(id)
             updateNotification()
         }

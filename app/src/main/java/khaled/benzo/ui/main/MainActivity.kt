@@ -220,7 +220,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 2 -> {
-                    viewModel.deleteDownload(item.id)
+                    // Through the service: it stops a running transfer (and removes a torrent from the session) before the row goes.
+                    startService(Intent(this, DownloadService::class.java).apply {
+                        action = khaled.benzo.receiver.DownloadActionReceiver.ACTION_CANCEL
+                        putExtra(khaled.benzo.receiver.DownloadActionReceiver.EXTRA_DOWNLOAD_ID, item.id)
+                    })
                     true
                 }
                 else -> false

@@ -29,7 +29,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | Minimum part size setting (128 KB to 4 MB, default 512 KB) | WRITTEN, TESTS WRITTEN |
 | Default user agent setting (fallback only) | WRITTEN, TESTS WRITTEN |
 | Auto-resume after transient errors (opt-in), Retry-After handling | WRITTEN, TESTS WRITTEN |
-| Fast-resume for torrents (save libtorrent resume data every 60 s, on finish and on pause; use it when the torrent is added again) | WRITTEN, TESTS WRITTEN (file store only). The libtorrent calls were read from the jar's signatures and have never run. Stale resume and .torrent files are not yet deleted when a torrent is removed |
+| Fast-resume for torrents (save libtorrent resume data every 60 s, on finish and on pause; use it when the torrent is added again) | WRITTEN, TESTS WRITTEN (file store only). The libtorrent calls were read from the jar's signatures and have never run. Stored .torrent, priority and resume files are deleted when the user removes the torrent (written) |
 | If-Range on resumed ranged requests (changed file makes the engine restart clean) | WRITTEN, TESTS WRITTEN. Restart path unverified until a failure-injection test runs |
 | Smart download (spec 3.4: a configurable speed-management system covering parallel connections, network changes, scheduling and recovery; must be tested, not assumed) | NOT STARTED. My next action: design it from that list and test it |
 | Proxy support (spec phase 6), per-connection profiles, multi-threading mode | NOT STARTED. My next action |

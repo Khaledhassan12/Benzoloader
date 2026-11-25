@@ -27,4 +27,19 @@ class ResumeStoreTest {
         assertArrayEquals(byteArrayOf(9, 9), ResumeStore.load(f))
         ResumeStore.delete(f); assertNull(ResumeStore.load(f))
     }
+
+    @Test fun deleteAllForRemovesOnlyThatTorrentsFiles() {
+        listOf("ab.torrent", "ab.prio", "ab.fastresume", "cd.torrent").forEach { java.io.File(tmp.root, it).writeText("x") }
+        ResumeStore.deleteAllFor(tmp.root, "ab")
+        assertFalse(java.io.File(tmp.root, "ab.torrent").exists())
+        assertFalse(java.io.File(tmp.root, "ab.prio").exists())
+        assertFalse(java.io.File(tmp.root, "ab.fastresume").exists())
+        assertTrue(java.io.File(tmp.root, "cd.torrent").exists())
+    }
+    @Test fun deleteAllForIgnoresUnsafeHash() {
+        val f = java.io.File(tmp.root, "keep.torrent"); f.writeText("x")
+        ResumeStore.deleteAllFor(tmp.root, "../keep")
+        ResumeStore.deleteAllFor(tmp.root, "")
+        assertTrue(f.exists())
+    }
 }
