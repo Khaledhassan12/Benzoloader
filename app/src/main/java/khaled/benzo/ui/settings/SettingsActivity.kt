@@ -95,7 +95,9 @@ class SettingsActivity : AppCompatActivity() {
         userAgentValue = value
         val row = binding.txtUserAgent
         val title = getString(khaled.benzo.R.string.row_user_agent)
-        val shown = value.ifBlank { getString(khaled.benzo.R.string.val_default) }
+        val presetNames = intArrayOf(khaled.benzo.R.string.val_default, khaled.benzo.R.string.ua_mobile_chrome, khaled.benzo.R.string.ua_desktop_chrome, khaled.benzo.R.string.ua_desktop_firefox, khaled.benzo.R.string.ua_desktop_safari)
+        val preset = khaled.benzo.core.settings.UserAgentPresets.indexOf(value)
+        val shown = if (preset >= 0) getString(presetNames[preset]) else value
         val b = android.text.SpannableStringBuilder(title).append('\n')
         val start = b.length
         b.append(shown)
@@ -105,7 +107,29 @@ class SettingsActivity : AppCompatActivity() {
         row.minHeight = (72 * d).toInt(); row.gravity = android.view.Gravity.CENTER_VERTICAL
         row.setPadding((20 * d).toInt(), (12 * d).toInt(), (20 * d).toInt(), (12 * d).toInt())
         row.isClickable = true
-        row.setOnClickListener {
+        row.setOnClickListener { showUserAgentChoices(title) }
+    }
+
+    /** Preset list first (Default, four browser formats, Custom); Custom opens the text dialog. */
+    private fun showUserAgentChoices(title: String) {
+        val names = arrayOf(
+            getString(khaled.benzo.R.string.val_default), getString(khaled.benzo.R.string.ua_mobile_chrome), getString(khaled.benzo.R.string.ua_desktop_chrome),
+            getString(khaled.benzo.R.string.ua_desktop_firefox), getString(khaled.benzo.R.string.ua_desktop_safari), getString(khaled.benzo.R.string.ua_custom)
+        )
+        val current = khaled.benzo.core.settings.UserAgentPresets.indexOf(userAgentValue).let { if (it < 0) names.size - 1 else it }
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setSingleChoiceItems(names, current) { dialog, which ->
+                dialog.dismiss()
+                if (which < names.size - 1) showUserAgentRow(khaled.benzo.core.settings.UserAgentPresets.values[which]) else showUserAgentText(title)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun showUserAgentText(title: String) {
+        val d = resources.displayMetrics.density
+        run {
             val edit = android.widget.EditText(this).apply { setText(userAgentValue); hint = getString(khaled.benzo.R.string.val_default); setSingleLine() }
             val pad = (24 * d).toInt()
             com.google.android.material.dialog.MaterialAlertDialogBuilder(this)

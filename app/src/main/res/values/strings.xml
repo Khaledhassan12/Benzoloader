@@ -331,4 +331,9 @@
     <string name="panel_all">All</string>
     <string name="pref_swap_menus">Swap side menus</string>
     <string name="sum_swap_menus">Navigation menu on the right, filter panel on the left. Applied when you return to the main screen</string>
+    <string name="ua_mobile_chrome">Mobile Chrome (Android)</string>
+    <string name="ua_desktop_chrome">Desktop Chrome</string>
+    <string name="ua_desktop_firefox">Desktop Firefox</string>
+    <string name="ua_desktop_safari">Desktop Safari</string>
+    <string name="ua_custom">Custom</string>
 </resources>

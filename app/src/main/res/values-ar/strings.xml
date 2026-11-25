@@ -331,4 +331,9 @@
     <string name="panel_all">الكل</string>
     <string name="pref_swap_menus">تبديل القوائم الجانبية</string>
     <string name="sum_swap_menus">قائمة التنقل على اليمين وقائمة التصفية على الشمال. تتطبق لما ترجع للشاشة الرئيسية</string>
+    <string name="ua_mobile_chrome">كروم موبايل (أندرويد)</string>
+    <string name="ua_desktop_chrome">كروم سطح المكتب</string>
+    <string name="ua_desktop_firefox">فايرفوكس سطح المكتب</string>
+    <string name="ua_desktop_safari">سفاري سطح المكتب</string>
+    <string name="ua_custom">مخصص</string>
 </resources>
