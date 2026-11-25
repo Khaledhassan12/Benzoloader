@@ -75,6 +75,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchClearFinished.isChecked = repo.clearFinishedOnStart
         binding.switchTorrentSequential.isChecked = repo.torrentSequential
         binding.switchTorrentSeed.isChecked = repo.torrentSeedAfterFinish
+        binding.switchBrowserHistory.isChecked = repo.browserHistory
     }
 
     private fun saveAndFinish() {
@@ -99,7 +100,8 @@ class SettingsActivity : AppCompatActivity() {
             keepScreenOn = binding.switchKeepScreenOn.isChecked,
             clearFinished = binding.switchClearFinished.isChecked,
             torrentSequential = binding.switchTorrentSequential.isChecked,
-            torrentSeed = binding.switchTorrentSeed.isChecked
+            torrentSeed = binding.switchTorrentSeed.isChecked,
+            browserHistory = binding.switchBrowserHistory.isChecked
         )
         finish()
     }

@@ -84,6 +84,17 @@
     <string name="notification_cancel">إلغاء</string>
     <string name="notification_open">فتح</string>
     <string name="notification_exit">خروج</string>
+    <string name="browser_add_bookmark">إضافة الصفحة للعلامات</string>
+    <string name="browser_bookmark_added">اتحفظت العلامة</string>
+    <string name="browser_bookmark_not_added">الصفحة دي مينفعش تتحفظ كعلامة أو محفوظة قبل كده</string>
+    <string name="browser_bookmarks_empty">مفيش علامات لسه</string>
+    <string name="browser_close">إغلاق</string>
+    <string name="browser_delete">حذف</string>
+    <string name="browser_bookmark_delete_confirm">تحذف العلامة \"%1$s\"؟</string>
+    <string name="browser_history_clear">مسح السجل</string>
+    <string name="browser_history_empty">السجل فاضي</string>
+    <string name="browser_history_off">السجل مقفول. شغّل خيار سجل المتصفح من الإعدادات عشان يتسجل.</string>
+    <string name="pref_browser_history">المتصفح: تذكّر الصفحات اللي زرتها (السجل)</string>
     <string name="pref_torrent_sequential">التورنت: تنزيل الأجزاء بالترتيب (بيفيد في المعاينة وممكن يبقى أبطأ)</string>
     <string name="pref_torrent_seed">التورنت: كمّل الرفع بعد ما التحميل يخلص</string>
     <string name="pref_keep_screen_on">إبقاء الشاشة شغالة أثناء فتح التطبيق</string>

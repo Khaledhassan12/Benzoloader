@@ -123,6 +123,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_TORRENT_SEED, true)
         set(value) = prefs.edit().putBoolean(KEY_TORRENT_SEED, value).apply()
 
+    /** Remember visited pages in the browser. Off by default (privacy). */
+    var browserHistory: Boolean
+        get() = prefs.getBoolean(KEY_BROWSER_HISTORY, false)
+        set(value) = prefs.edit().putBoolean(KEY_BROWSER_HISTORY, value).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -148,6 +153,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_ERROR_RETRIES = "error_retries"
         private const val KEY_PAUSE_AFTER_ERROR = "pause_after_error"
         private const val KEY_AUTO_RESUME = "auto_resume"
+        private const val KEY_BROWSER_HISTORY = "browser_history"
         private const val KEY_TORRENT_SEQ = "torrent_sequential"
         private const val KEY_TORRENT_SEED = "torrent_seed_after_finish"
         private const val KEY_KEEP_SCREEN = "keep_screen_on"

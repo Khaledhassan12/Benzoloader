@@ -14,12 +14,16 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.viewModels
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import khaled.benzo.databinding.ActivityBrowserBinding
 import khaled.benzo.ui.editor.EditorActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import khaled.benzo.R
 
 class BrowserActivity : AppCompatActivity() {
 
@@ -44,8 +48,9 @@ class BrowserActivity : AppCompatActivity() {
         val settings = binding.webView.settings
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
-        settings.allowFileAccess = true
-        settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        // Pages from the web never need to read local files, and secure pages must not load insecure content silently.
+        settings.allowFileAccess = false
+        settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
         settings.userAgentString = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
 
         binding.webView.webViewClient = object : WebViewClient() {
@@ -61,6 +66,9 @@ class BrowserActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 binding.progressBarBrowser.visibility = View.GONE
+                val pageUrl = url
+                val pageTitle = view?.title
+                lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) { viewModel.recordVisit(pageTitle, pageUrl) }
             }
 
             override fun shouldInterceptRequest(
@@ -110,6 +118,8 @@ class BrowserActivity : AppCompatActivity() {
             }
         }
 
+        binding.btnBrowserMenu.setOnClickListener { showMenu(it) }
+
         binding.fabMediaSniffer.setOnClickListener {
             val list = viewModel.detectedMediaList.value
             if (list.isNotEmpty()) {
@@ -121,6 +131,80 @@ class BrowserActivity : AppCompatActivity() {
                 }
                 dialog.show(supportFragmentManager, "MediaSnifferDialog")
             }
+        }
+    }
+
+    private fun showMenu(anchor: View) {
+        val menu = android.widget.PopupMenu(this, anchor)
+        menu.menu.add(0, 1, 0, R.string.browser_add_bookmark)
+        menu.menu.add(0, 2, 1, R.string.browser_bookmarks)
+        menu.menu.add(0, 3, 2, R.string.browser_history)
+        menu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                1 -> addBookmark()
+                2 -> showBookmarks()
+                3 -> showHistory()
+            }
+            true
+        }
+        menu.show()
+    }
+
+    private fun addBookmark() {
+        val url = binding.webView.url
+        val title = binding.webView.title
+        lifecycleScope.launch {
+            val saved = withContext(kotlinx.coroutines.Dispatchers.IO) { viewModel.addBookmark(title, url) }
+            Toast.makeText(this@BrowserActivity, if (saved) R.string.browser_bookmark_added else R.string.browser_bookmark_not_added, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showBookmarks() {
+        lifecycleScope.launch {
+            val list = withContext(kotlinx.coroutines.Dispatchers.IO) { viewModel.bookmarks() }
+            if (list.isEmpty()) {
+                Toast.makeText(this@BrowserActivity, R.string.browser_bookmarks_empty, Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            val dialog = AlertDialog.Builder(this@BrowserActivity)
+                .setTitle(R.string.browser_bookmarks)
+                .setItems(list.map { it.title }.toTypedArray()) { _, i -> loadUrl(list[i].url) }
+                .setNegativeButton(R.string.browser_close, null)
+                .create()
+            dialog.show()
+            // A long press deletes one bookmark, after a confirmation.
+            dialog.listView.setOnItemLongClickListener { _, _, i, _ ->
+                AlertDialog.Builder(this@BrowserActivity)
+                    .setMessage(getString(R.string.browser_bookmark_delete_confirm, list[i].title))
+                    .setPositiveButton(R.string.browser_delete) { _, _ ->
+                        lifecycleScope.launch {
+                            withContext(kotlinx.coroutines.Dispatchers.IO) { viewModel.deleteBookmark(list[i].id) }
+                            dialog.dismiss()
+                        }
+                    }
+                    .setNegativeButton(R.string.browser_close, null)
+                    .show()
+                true
+            }
+        }
+    }
+
+    private fun showHistory() {
+        lifecycleScope.launch {
+            val list = withContext(kotlinx.coroutines.Dispatchers.IO) { viewModel.history() }
+            if (list.isEmpty()) {
+                val msg = if (viewModel.historyEnabled) R.string.browser_history_empty else R.string.browser_history_off
+                Toast.makeText(this@BrowserActivity, msg, Toast.LENGTH_LONG).show()
+                return@launch
+            }
+            AlertDialog.Builder(this@BrowserActivity)
+                .setTitle(R.string.browser_history)
+                .setItems(list.map { it.title }.toTypedArray()) { _, i -> loadUrl(list[i].url) }
+                .setNeutralButton(R.string.browser_history_clear) { _, _ ->
+                    lifecycleScope.launch { withContext(kotlinx.coroutines.Dispatchers.IO) { viewModel.clearHistory() } }
+                }
+                .setNegativeButton(R.string.browser_close, null)
+                .show()
         }
     }
 

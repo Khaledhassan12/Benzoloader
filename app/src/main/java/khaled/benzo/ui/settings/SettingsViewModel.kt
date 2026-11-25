@@ -29,7 +29,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         keepScreenOn: Boolean,
         clearFinished: Boolean,
         torrentSequential: Boolean,
-        torrentSeed: Boolean
+        torrentSeed: Boolean,
+        browserHistory: Boolean
     ) {
         repository.maxConcurrentDownloads = maxDownloads
         repository.defaultPartsCount = defaultThreads
@@ -52,6 +53,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         repository.clearFinishedOnStart = clearFinished
         repository.torrentSequential = torrentSequential
         repository.torrentSeedAfterFinish = torrentSeed
+        repository.browserHistory = browserHistory
         khaled.benzo.service.ScheduleManager.rearm(getApplication())
     }
 }

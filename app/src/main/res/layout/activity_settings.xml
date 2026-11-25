@@ -298,6 +298,13 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/pref_torrent_seed" />
 
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchBrowserHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/pref_browser_history" />
+
         </LinearLayout>
 
     </LinearLayout>
