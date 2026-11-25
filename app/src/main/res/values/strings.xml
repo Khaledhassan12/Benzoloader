@@ -213,7 +213,7 @@
     <string name="legacy_storage_why">On Android 10 and older, the app needs the storage permission to save downloads to the folder you chose.</string>
     <string name="legacy_storage_settings">The storage permission was denied. You can allow it in the app settings.</string>
     <string name="action_reset_settings">Reset settings</string>
-    <string name="reset_settings_confirm">Set default settings?</string>
+    <string name="reset_settings_confirm">Set default settings?\n\nSaved open tabs and the default download folder setting are reset too. Downloads, history, bookmarks and logins are kept.</string>
     <string name="reset_settings_do">Reset</string>
     <string name="reset_settings_done">Settings were reset.</string>
     <string name="wait_no_network">Waiting for network</string>
