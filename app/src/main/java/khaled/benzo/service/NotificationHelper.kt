@@ -204,6 +204,19 @@ class NotificationHelper(private val context: Context) {
 
     fun cancelResumePrompt() = notificationManager.cancel(RESUME_PROMPT_ID)
 
+    @Suppress("DEPRECATION")
+    fun vibrate(ms: Long) {
+        if (ms <= 0L) return
+        try {
+            val v = if (Build.VERSION.SDK_INT >= 31)
+                (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager).defaultVibrator
+            else context.getSystemService(Context.VIBRATOR_SERVICE) as android.os.Vibrator
+            v.vibrate(android.os.VibrationEffect.createOneShot(ms, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
+        } catch (e: Exception) {
+            // No vibrator or not allowed: ignore
+        }
+    }
+
     fun playSound(rawResId: Int) {
         try {
             val mediaPlayer = MediaPlayer.create(context, rawResId)

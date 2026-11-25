@@ -212,11 +212,13 @@ class DownloadService : Service() {
                 if (settings.soundOnComplete) {
                     notificationHelper.playSound(R.raw.done)
                 }
+                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateSuccessMs))
                 autoResume.onSuccess(id)
             } else {
                 val failedStatus = khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError)
                 repository.updateStatusAndSpeed(id, failedStatus, 0L)
                 notificationHelper.playSound(R.raw.error)
+                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateErrorMs))
                 autoResume.onFailure(id, failedStatus, result.exceptionOrNull())
             }
 
@@ -247,10 +249,12 @@ class DownloadService : Service() {
             if (!ok) {
                 repository.updateStatusAndSpeed(id, khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError), 0L)
                 notificationHelper.playSound(R.raw.error)
+                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateErrorMs))
             } else {
                 repository.updateStatusAndSpeed(id, DownloadStatus.COMPLETED, 0L)
                 (repository.getDownload(id) ?: item).let { notificationHelper.showCompletedNotification(it) }
                 if (settings.soundOnComplete) notificationHelper.playSound(R.raw.done)
+                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateSuccessMs))
             }
             if (activeJobs.isEmpty()) wakeLockManager.release()
             updateNotification()

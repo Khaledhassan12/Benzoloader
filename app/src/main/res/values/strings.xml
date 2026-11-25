@@ -285,4 +285,7 @@
     <string name="val_default">Default</string>
     <string name="sum_user_agent">Sent with downloads that have no user agent of their own. Letters, digits and symbols only; leave it on Default to use the client\'s own.</string>
     <string name="ua_invalid">Only plain ASCII characters are allowed</string>
+    <string name="row_vib_success">Vibration on success</string>
+    <string name="row_vib_error">Vibration on error</string>
+    <string name="val_ms">%1$d ms</string>
 </resources>
