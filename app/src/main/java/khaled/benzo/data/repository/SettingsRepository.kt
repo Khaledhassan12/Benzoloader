@@ -161,8 +161,17 @@ class SettingsRepository(context: Context) {
         get() = prefs.getString(KEY_DOWNLOAD_PATH, "") ?: ""
         set(value) = prefs.edit().putString(KEY_DOWNLOAD_PATH, value).apply()
 
-    /** Puts every setting back to its default (the preferences file is emptied: settings, saved tabs, the declined flag). Downloads, history, bookmarks and credentials are not touched. */
-    fun resetToDefaults() { prefs.edit().clear().apply() }
+    /**
+     * Puts every setting the backup knows back to its default by removing exactly those keys.
+     * Also drops the saved tab list, because "keep open tabs" goes back to off and the setter does the same when it is switched off.
+     * Everything else in the file stays: the "all files access declined" choice. Downloads, history, bookmarks and credentials live elsewhere.
+     */
+    fun resetToDefaults() {
+        val e = prefs.edit()
+        backupValues().keys.forEach { e.remove(it) }
+        e.remove(KEY_BROWSER_TABS)
+        e.apply()
+    }
 
     /** Current effective value of every setting that the settings backup knows (see SettingsBackup.specs). */
     fun backupValues(): Map<String, Any?> = mapOf(

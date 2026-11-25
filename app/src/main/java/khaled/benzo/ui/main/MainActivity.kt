@@ -217,6 +217,10 @@ class MainActivity : AppCompatActivity() {
                 khaled.benzo.data.repository.SettingsRepository(this).resetToDefaults()
                 khaled.benzo.service.ScheduleManager.rearm(this)
                 android.widget.Toast.makeText(this, R.string.reset_settings_done, android.widget.Toast.LENGTH_LONG).show()
+                lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                    val pending = khaled.benzo.data.db.BenzoDatabase.getInstance(this@MainActivity).downloadDao().getPendingAndActiveDownloads().size
+                    if (pending > 0) startService(Intent(this@MainActivity, DownloadService::class.java).apply { action = DownloadService.ACTION_PROCESS_QUEUE })
+                }
                 recreate()
             }
             .setNegativeButton(android.R.string.cancel, null)
