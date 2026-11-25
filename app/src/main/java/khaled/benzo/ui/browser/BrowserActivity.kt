@@ -160,8 +160,9 @@ class BrowserActivity : AppCompatActivity() {
                 // Ignore a page that is not the one the WebView shows now (a slow page from the tab we just left).
                 if (pageUrl != null && pageUrl != "about:blank" && pageUrl == view?.url) {
                     viewModel.tabs = viewModel.tabs.update(viewModel.tabs.selectedId, pageUrl, pageTitle)
+                    // History records only the page the WebView shows now, so a stale finish from a tab we left adds no entry.
+                    lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) { viewModel.recordVisit(pageTitle, pageUrl) }
                 }
-                lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) { viewModel.recordVisit(pageTitle, pageUrl) }
             }
 
             override fun shouldInterceptRequest(
