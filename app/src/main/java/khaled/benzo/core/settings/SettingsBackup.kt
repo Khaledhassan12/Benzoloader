@@ -48,6 +48,7 @@ object SettingsBackup {
         "quick_add_links" to Spec.Bool,
         "quick_add_start" to Spec.Bool,
         "list_add_to_bottom" to Spec.Bool,
+        "swap_side_menus" to Spec.Bool,
         "torrent_fixed_port" to Spec.Bool,
         "torrent_port" to Spec.IntRange(1024, 65535, 1),
         "torrent_anonymous" to Spec.Bool,

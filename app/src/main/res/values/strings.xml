@@ -329,4 +329,6 @@
     <string name="panel_sort_time">Time</string>
     <string name="panel_sort_category">Category</string>
     <string name="panel_all">All</string>
+    <string name="pref_swap_menus">Swap side menus</string>
+    <string name="sum_swap_menus">Navigation menu on the right, filter panel on the left. Takes effect next time the main screen opens</string>
 </resources>

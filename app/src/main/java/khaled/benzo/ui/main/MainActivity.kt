@@ -118,7 +118,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /** Edge of the navigation drawer; the filter panel takes the other one. Read when the screen is created. */
+    private var navGravity = GravityCompat.START
+    private var panelGravity = GravityCompat.END
+
+    private fun applySideMenuSwap() {
+        if (!khaled.benzo.data.repository.SettingsRepository(this).swapSideMenus) return
+        navGravity = GravityCompat.END
+        panelGravity = GravityCompat.START
+        (binding.navigationView.layoutParams as androidx.drawerlayout.widget.DrawerLayout.LayoutParams).gravity = navGravity
+        (binding.filterPanelScroll.layoutParams as androidx.drawerlayout.widget.DrawerLayout.LayoutParams).gravity = panelGravity
+    }
+
     private fun setupNavigationDrawer() {
+        applySideMenuSwap()
         val toggle = ActionBarDrawerToggle(
             this,
             binding.drawerLayout,
@@ -128,6 +141,8 @@ class MainActivity : AppCompatActivity() {
         )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+        // The toolbar button opens the navigation drawer on whichever edge it sits.
+        binding.toolbar.setNavigationOnClickListener { binding.drawerLayout.openDrawer(navGravity) }
 
         binding.navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -148,7 +163,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_browser -> startActivity(Intent(this, BrowserActivity::class.java))
                 R.id.nav_settings -> startActivity(Intent(this, khaled.benzo.ui.settings.SettingsHubActivity::class.java))
             }
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            binding.drawerLayout.closeDrawer(navGravity)
             true
         }
     }
@@ -198,7 +213,7 @@ class MainActivity : AppCompatActivity() {
         binding.navBrowser.setOnClickListener { startActivity(Intent(this, BrowserActivity::class.java)) }
         binding.navQueue.setOnClickListener { viewModel.setStatusFilter(khaled.benzo.core.queue.StatusFilter.UNFINISHED) }
         binding.navFinished.setOnClickListener { viewModel.setCategory(FileCategory.COMPLETED) }
-        binding.navList.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.START) }
+        binding.navList.setOnClickListener { binding.drawerLayout.openDrawer(navGravity) }
         binding.navPower.setOnClickListener { v ->
             PopupMenu(this, v).apply {
                 menu.add(0, 1, 0, R.string.action_resume_all)
@@ -334,7 +349,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_filter -> { binding.drawerLayout.openDrawer(GravityCompat.END); true }
+            R.id.action_filter -> { binding.drawerLayout.openDrawer(panelGravity); true }
             R.id.sort_by_name -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.NAME); true }
             R.id.sort_by_size -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.SIZE); true }
             R.id.sort_by_date -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.TIME); true }

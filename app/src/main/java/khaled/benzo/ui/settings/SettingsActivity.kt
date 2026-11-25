@@ -214,6 +214,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchTorrentDht.isChecked = repo.torrentDht
         binding.switchBottomBar.isChecked = repo.bottomBar
         binding.switchBottomBar.setOnCheckedChangeListener { _, on -> repo.bottomBar = on }
+        binding.switchSwapMenus.isChecked = repo.swapSideMenus
+        binding.switchSwapMenus.setOnCheckedChangeListener { _, on -> repo.swapSideMenus = on }
         val modeIds = listOf(khaled.benzo.R.id.modeSystem, khaled.benzo.R.id.modeLight, khaled.benzo.R.id.modeDark)
         binding.radioThemeMode.check(modeIds[repo.themeMode])
         binding.radioThemeMode.setOnCheckedChangeListener { _, id ->
