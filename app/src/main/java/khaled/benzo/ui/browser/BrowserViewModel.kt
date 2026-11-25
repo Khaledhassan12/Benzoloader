@@ -15,6 +15,11 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class BrowserViewModel(application: Application) : AndroidViewModel(application) {
 
+    /** Open tabs. One WebView shows the selected tab; the others wait as saved page states (kept while the screen lives, not on disk). */
+    var tabs: khaled.benzo.core.browser.TabList = khaled.benzo.core.browser.TabList.single()
+    var tabsStarted = false
+    val tabStates = HashMap<Int, android.os.Bundle>()
+
     private val _detectedMediaList = MutableStateFlow<List<DetectedMedia>>(emptyList())
     val detectedMediaList: StateFlow<List<DetectedMedia>> = _detectedMediaList.asStateFlow()
 

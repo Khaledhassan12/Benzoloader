@@ -181,4 +181,10 @@
     <string name="settings_import_done">Settings restored: %1$d. Skipped: %2$d.</string>
     <string name="settings_import_not_settings">This is not a Benzoloader settings file, or it has no valid settings.</string>
     <string name="settings_import_folder_skipped">The saved download folder is not available on this device, so the current one was kept.</string>
+    <string name="browser_tab_new">New tab</string>
+    <string name="browser_tabs_title">Tabs (%1$d)</string>
+    <string name="browser_tab_blank">Blank tab</string>
+    <string name="browser_tab_close">Close tab</string>
+    <string name="browser_tab_close_confirm">Close the tab \"%1$s\"?</string>
+    <string name="browser_tabs_max">The tab limit is reached. Close a tab first.</string>
 </resources>

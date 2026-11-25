@@ -39,8 +39,86 @@ class BrowserActivity : AppCompatActivity() {
         setupListeners()
         observeViewModel()
 
-        val initialUrl = intent.getStringExtra("extra_url") ?: "https://www.google.com"
-        loadUrl(initialUrl)
+        if (viewModel.tabsStarted) {
+            // Screen was recreated (rotation): bring back the selected tab's page.
+            showSelectedTab()
+        } else {
+            viewModel.tabsStarted = true
+            loadUrl(intent.getStringExtra("extra_url") ?: "https://www.google.com")
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        saveCurrentTabState()
+    }
+
+    private fun saveCurrentTabState() {
+        val b = Bundle()
+        binding.webView.saveState(b)
+        viewModel.tabStates[viewModel.tabs.selectedId] = b
+    }
+
+    /** Shows the selected tab in the single WebView: its saved page state if there is one, else its address, else a blank page. */
+    private fun showSelectedTab() {
+        val tab = viewModel.tabs.selected
+        val saved = viewModel.tabStates[tab.id]
+        when {
+            saved != null && binding.webView.restoreState(saved) != null -> {}
+            tab.url.isNotEmpty() -> binding.webView.loadUrl(tab.url)
+            else -> binding.webView.loadUrl("about:blank")
+        }
+        binding.edtBrowserUrl.setText(tab.url)
+        viewModel.clearDetectedMedia()
+    }
+
+    private fun switchTo(id: Int) {
+        if (id == viewModel.tabs.selectedId) return
+        saveCurrentTabState()
+        viewModel.tabs = viewModel.tabs.select(id)
+        showSelectedTab()
+    }
+
+    private fun newTab() {
+        if (viewModel.tabs.tabs.size >= khaled.benzo.core.browser.TabList.MAX_TABS) {
+            Toast.makeText(this, R.string.browser_tabs_max, Toast.LENGTH_SHORT).show()
+            return
+        }
+        saveCurrentTabState()
+        viewModel.tabs = viewModel.tabs.open("")
+        showSelectedTab()
+        binding.edtBrowserUrl.requestFocus()
+    }
+
+    private fun closeTab(id: Int) {
+        val wasSelected = id == viewModel.tabs.selectedId
+        viewModel.tabStates.remove(id)
+        viewModel.tabs = viewModel.tabs.close(id)
+        if (wasSelected) showSelectedTab()
+    }
+
+    private fun showTabs() {
+        val list = viewModel.tabs.tabs
+        val labels = list.map { t ->
+            val name = t.title.ifBlank { t.url.ifBlank { getString(R.string.browser_tab_blank) } }
+            if (t.id == viewModel.tabs.selectedId) "• $name" else name
+        }.toTypedArray()
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.browser_tabs_title, list.size))
+            .setItems(labels) { _, i -> switchTo(list[i].id) }
+            .setPositiveButton(R.string.browser_tab_new) { _, _ -> newTab() }
+            .setNegativeButton(R.string.browser_close, null)
+            .create()
+        dialog.show()
+        // A long press closes one tab, after a confirmation.
+        dialog.listView.setOnItemLongClickListener { _, _, i, _ ->
+            AlertDialog.Builder(this)
+                .setMessage(getString(R.string.browser_tab_close_confirm, labels[i].removePrefix("• ")))
+                .setPositiveButton(R.string.browser_tab_close) { _, _ -> closeTab(list[i].id); dialog.dismiss() }
+                .setNegativeButton(R.string.browser_close, null)
+                .show()
+            true
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -58,7 +136,8 @@ class BrowserActivity : AppCompatActivity() {
                 super.onPageStarted(view, url, favicon)
                 binding.progressBarBrowser.visibility = View.VISIBLE
                 if (url != null) {
-                    binding.edtBrowserUrl.setText(url)
+                    binding.edtBrowserUrl.setText(if (url == "about:blank") "" else url)
+                    viewModel.tabs = viewModel.tabs.update(viewModel.tabs.selectedId, if (url == "about:blank") "" else url, null)
                 }
                 viewModel.clearDetectedMedia()
             }
@@ -68,6 +147,9 @@ class BrowserActivity : AppCompatActivity() {
                 binding.progressBarBrowser.visibility = View.GONE
                 val pageUrl = url
                 val pageTitle = view?.title
+                if (pageUrl != null && pageUrl != "about:blank") {
+                    viewModel.tabs = viewModel.tabs.update(viewModel.tabs.selectedId, pageUrl, pageTitle)
+                }
                 lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) { viewModel.recordVisit(pageTitle, pageUrl) }
             }
 
@@ -139,11 +221,15 @@ class BrowserActivity : AppCompatActivity() {
         menu.menu.add(0, 1, 0, R.string.browser_add_bookmark)
         menu.menu.add(0, 2, 1, R.string.browser_bookmarks)
         menu.menu.add(0, 3, 2, R.string.browser_history)
+        menu.menu.add(0, 4, 3, R.string.browser_tab_new)
+        menu.menu.add(0, 5, 4, getString(R.string.browser_tabs_title, viewModel.tabs.tabs.size))
         menu.setOnMenuItemClickListener {
             when (it.itemId) {
                 1 -> addBookmark()
                 2 -> showBookmarks()
                 3 -> showHistory()
+                4 -> newTab()
+                5 -> showTabs()
             }
             true
         }

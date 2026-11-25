@@ -181,4 +181,10 @@
     <string name="settings_import_done">تم استرجاع الإعدادات: %1$d. تم تخطي: %2$d.</string>
     <string name="settings_import_not_settings">هذا ليس ملف إعدادات Benzoloader، أو لا يحتوي على إعدادات صالحة.</string>
     <string name="settings_import_folder_skipped">مجلد التحميل المحفوظ غير متاح على هذا الجهاز، فتم الاحتفاظ بالمجلد الحالي.</string>
+    <string name="browser_tab_new">تبويب جديد</string>
+    <string name="browser_tabs_title">التبويبات (%1$d)</string>
+    <string name="browser_tab_blank">تبويب فارغ</string>
+    <string name="browser_tab_close">إغلاق التبويب</string>
+    <string name="browser_tab_close_confirm">إغلاق التبويب \"%1$s\"؟</string>
+    <string name="browser_tabs_max">وصلت للحد الأقصى من التبويبات. أغلق تبويبًا أولًا.</string>
 </resources>
