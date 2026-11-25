@@ -10,8 +10,11 @@ data class ListState(
     val sort: SortKey = SortKey.TIME,
     val ascending: Boolean = false,
     /** Display order of new downloads: false = newest on top, true = newest at the bottom. Not the queue start order. */
-    val addToBottom: Boolean = false
+    val addToBottom: Boolean = false,
+    val time: TimeFilter = TimeFilter.ALL
 ) {
+    fun withTime(filter: TimeFilter): ListState = copy(time = filter)
+
     /** Applies the stored display-order choice. Only the time sort follows it, and only while the user has not flipped it by hand. */
     fun withAddToBottom(bottom: Boolean): ListState =
         if (bottom == addToBottom) this
@@ -36,6 +39,6 @@ data class ListState(
         else copy(sort = key, ascending = key == SortKey.NAME || key == SortKey.CATEGORY || (key == SortKey.TIME && addToBottom))
 
     /** Applies filters, search, sort and the file-type filter to the full list. */
-    fun apply(all: List<khaled.benzo.data.model.DownloadItem>): List<khaled.benzo.data.model.DownloadItem> =
-        ListLogic.apply(all, status, query, sort, ascending).let { list -> if (type == null) list else list.filter { it.category == type } }
+    fun apply(all: List<khaled.benzo.data.model.DownloadItem>, nowMillis: Long = System.currentTimeMillis()): List<khaled.benzo.data.model.DownloadItem> =
+        ListLogic.apply(all, status, query, sort, ascending, time, nowMillis).let { list -> if (type == null) list else list.filter { it.category == type } }
 }

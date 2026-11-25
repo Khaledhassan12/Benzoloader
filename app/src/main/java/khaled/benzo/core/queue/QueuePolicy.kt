@@ -81,7 +81,8 @@ object QueuePolicy {
 
 /** UNFINISHED is the bottom bar's Queue: everything not completed (queued, connecting, running, paused, failed), so no pending work is hidden. */
 enum class StatusFilter { ALL, ACTIVE, QUEUED, PAUSED, FAILED, COMPLETED, UNFINISHED }
-enum class SortKey { TIME, NAME, SIZE, CATEGORY }
+/** ORDER is the order items were added (by id); the reference panel lists Order, Size, Name, Time and Category, each up and down. */
+enum class SortKey { TIME, NAME, SIZE, CATEGORY, ORDER }
 
 object ListLogic {
     fun matches(item: DownloadItem, f: StatusFilter) = when (f) {
@@ -94,13 +95,17 @@ object ListLogic {
         StatusFilter.UNFINISHED -> item.status != DownloadStatus.COMPLETED
     }
 
-    fun apply(items: List<DownloadItem>, filter: StatusFilter, query: String, sort: SortKey, ascending: Boolean): List<DownloadItem> {
+    fun apply(
+        items: List<DownloadItem>, filter: StatusFilter, query: String, sort: SortKey, ascending: Boolean,
+        time: TimeFilter = TimeFilter.ALL, nowMillis: Long = System.currentTimeMillis()
+    ): List<DownloadItem> {
         val q = query.trim()
-        val base = items.filter { matches(it, filter) && (q.isEmpty() || it.fileName.contains(q, ignoreCase = true)) }
+        val base = items.filter { matches(it, filter) && time.matches(it, nowMillis) && (q.isEmpty() || it.fileName.contains(q, ignoreCase = true)) }
         val sorted = when (sort) {
             SortKey.TIME -> base.sortedBy { it.createdDate }
             SortKey.NAME -> base.sortedBy { it.fileName.lowercase() }
             SortKey.SIZE -> base.sortedBy { it.totalBytes }
+            SortKey.ORDER -> base.sortedBy { it.id }
             SortKey.CATEGORY -> base.sortedWith(compareBy({ it.category.name }, { it.fileName.lowercase() }))
         }
         return if (ascending) sorted else sorted.reversed()
