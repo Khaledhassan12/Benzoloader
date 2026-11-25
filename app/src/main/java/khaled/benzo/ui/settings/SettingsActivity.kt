@@ -7,6 +7,17 @@ import khaled.benzo.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
 
+    private var encryptionIndex = 0
+
+    private fun showEncryptionRow() {
+        val v = when (khaled.benzo.core.torrent.TorrentEncryption.fromIndex(encryptionIndex)) {
+            khaled.benzo.core.torrent.TorrentEncryption.PREFER -> R.string.enc_prefer
+            khaled.benzo.core.torrent.TorrentEncryption.REQUIRE -> R.string.enc_require
+            khaled.benzo.core.torrent.TorrentEncryption.DISABLE -> R.string.enc_disable
+        }
+        binding.txtTorrentEncryption.text = getString(R.string.pref_torrent_encryption) + ": " + getString(v)
+    }
+
     private lateinit var binding: ActivitySettingsBinding
     private val viewModel: SettingsViewModel by viewModels()
 
@@ -270,6 +281,16 @@ class SettingsActivity : AppCompatActivity() {
         showUserAgentRow(repo.defaultUserAgent)
         binding.switchTorrentFixedPort.isChecked = repo.torrentFixedPort
         binding.switchTorrentAnonymous.isChecked = repo.torrentAnonymous
+        encryptionIndex = repo.torrentEncryption
+        showEncryptionRow()
+        binding.txtTorrentEncryption.setOnClickListener {
+            val names = arrayOf(getString(R.string.enc_prefer), getString(R.string.enc_require), getString(R.string.enc_disable))
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.pref_torrent_encryption)
+                .setSingleChoiceItems(names, encryptionIndex) { d, which -> encryptionIndex = which; showEncryptionRow(); d.dismiss() }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
         binding.editTorrentPort.setText(repo.torrentPort.toString())
         binding.editTorrentPort.isEnabled = repo.torrentFixedPort
         binding.switchTorrentFixedPort.setOnCheckedChangeListener { _, on -> binding.editTorrentPort.isEnabled = on }
@@ -299,6 +320,7 @@ class SettingsActivity : AppCompatActivity() {
         repo.defaultUserAgent = userAgentValue
         repo.torrentFixedPort = binding.switchTorrentFixedPort.isChecked
         repo.torrentAnonymous = binding.switchTorrentAnonymous.isChecked
+        repo.torrentEncryption = encryptionIndex
         // An empty or out-of-range port keeps the previous saved port.
         binding.editTorrentPort.text?.toString()?.toIntOrNull()
             ?.takeIf { it in khaled.benzo.core.torrent.TorrentNetworkPolicy.MIN_PORT..khaled.benzo.core.torrent.TorrentNetworkPolicy.MAX_PORT }

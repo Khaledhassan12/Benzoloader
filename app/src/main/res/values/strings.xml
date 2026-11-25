@@ -266,6 +266,10 @@
     <string name="pref_torrent_fixed_port">Use a fixed port</string>
     <string name="sum_torrent_fixed_port">Off keeps the engine\'s own port setting</string>
     <string name="pref_torrent_port">Port (1024 to 65535)</string>
+    <string name="pref_torrent_encryption">Encryption mode</string>
+    <string name="enc_prefer">Prefer</string>
+    <string name="enc_require">Require</string>
+    <string name="enc_disable">Disable</string>
     <string name="pref_torrent_anonymous">Anonymous mode</string>
     <string name="sum_torrent_anonymous">Hides identifying details from peers and trackers; some features stop working</string>
     <string name="pref_newest_first">Newest downloads start first</string>

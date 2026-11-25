@@ -266,6 +266,10 @@
     <string name="pref_torrent_fixed_port">استخدام منفذ ثابت</string>
     <string name="sum_torrent_fixed_port">لو مقفول بيفضل إعداد المنفذ الأصلي للمحرك</string>
     <string name="pref_torrent_port">المنفذ (من 1024 إلى 65535)</string>
+    <string name="pref_torrent_encryption">وضع التشفير</string>
+    <string name="enc_prefer">يفضّل</string>
+    <string name="enc_require">إلزامي</string>
+    <string name="enc_disable">معطّل</string>
     <string name="pref_torrent_anonymous">الوضع المجهول</string>
     <string name="sum_torrent_anonymous">بيخفي بيانات التعريف عن الأقران والتراكرز، وبعض الميزات بتتعطل</string>
     <string name="pref_newest_first">الأحدث يبدأ أولاً</string>
