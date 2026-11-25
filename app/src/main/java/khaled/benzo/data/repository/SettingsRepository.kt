@@ -305,6 +305,59 @@ class SettingsRepository(context: Context) {
         return pathSkipped
     }
 
+    // Top window (overlay). Defaults: OFF, and the values seen in the reference captures where they are device independent.
+    var topWindowEnabled: Boolean
+        get() = prefs.getBoolean("top_window_enabled", false)
+        set(v) = prefs.edit().putBoolean("top_window_enabled", v).apply()
+    var topWindowStatsMask: Int
+        get() = prefs.getInt("top_window_stats", 0b001001) // percent + speed
+        set(v) = prefs.edit().putInt("top_window_stats", v and 0b111111).apply()
+    var topWindowTextColor: Int
+        get() = prefs.getInt("top_window_text_color", 0xFFFFFFFF.toInt())
+        set(v) = prefs.edit().putInt("top_window_text_color", v).apply()
+    var topWindowBackgroundColor: Int
+        get() = prefs.getInt("top_window_bg_color", 0xFF000000.toInt())
+        set(v) = prefs.edit().putInt("top_window_bg_color", v).apply()
+    var topWindowBarColor: Int
+        get() = prefs.getInt("top_window_bar_color", 0xFFE53935.toInt())
+        set(v) = prefs.edit().putInt("top_window_bar_color", v).apply()
+    var topWindowOpacityPercent: Int
+        get() = prefs.getInt("top_window_opacity", 60)
+        set(v) = prefs.edit().putInt("top_window_opacity", v.coerceIn(10, 100)).apply()
+    var topWindowWidthPx: Int
+        get() = prefs.getInt("top_window_width", 0)
+        set(v) = prefs.edit().putInt("top_window_width", v.coerceAtLeast(0)).apply()
+    var topWindowLineHeightPx: Int
+        get() = prefs.getInt("top_window_line_height", 41)
+        set(v) = prefs.edit().putInt("top_window_line_height", v.coerceIn(1, 128)).apply()
+    var topWindowTextSizePx: Int
+        get() = prefs.getInt("top_window_text_size", 14)
+        set(v) = prefs.edit().putInt("top_window_text_size", v.coerceIn(1, 32)).apply()
+    var topWindowHAlign: Int
+        get() = prefs.getInt("top_window_h_align", 0)
+        set(v) = prefs.edit().putInt("top_window_h_align", v.coerceIn(0, 2)).apply()
+    var topWindowVAlign: Int
+        get() = prefs.getInt("top_window_v_align", 0)
+        set(v) = prefs.edit().putInt("top_window_v_align", v.coerceIn(0, 2)).apply()
+    var topWindowOffsetX: Int
+        get() = prefs.getInt("top_window_offset_x", 0)
+        set(v) = prefs.edit().putInt("top_window_offset_x", v.coerceAtLeast(0)).apply()
+    var topWindowOffsetY: Int
+        get() = prefs.getInt("top_window_offset_y", 0)
+        set(v) = prefs.edit().putInt("top_window_offset_y", v.coerceAtLeast(0)).apply()
+
+    fun topWindowConfig(): khaled.benzo.core.overlay.TopWindowConfig {
+        val stats = khaled.benzo.core.overlay.TopStat.values().filter { topWindowStatsMask and (1 shl it.ordinal) != 0 }.toSet()
+        return khaled.benzo.core.overlay.TopWindowConfig(
+            enabled = topWindowEnabled, stats = stats, textColor = topWindowTextColor,
+            backgroundColor = topWindowBackgroundColor, barColor = topWindowBarColor,
+            opacityPercent = topWindowOpacityPercent, widthPx = topWindowWidthPx,
+            lineHeightPx = topWindowLineHeightPx, textSizePx = topWindowTextSizePx,
+            horizontal = khaled.benzo.core.overlay.TopWindowConfig.Align.values()[topWindowHAlign], vertical = khaled.benzo.core.overlay.TopWindowConfig.VAlign.values()[topWindowVAlign],
+            offsetXPx = topWindowOffsetX, offsetYPx = topWindowOffsetY
+        )
+    }
+
     companion object {
         private const val KEY_MAX_CONCURRENT = "max_concurrent"
         private const val KEY_DEFAULT_THREADS = "default_threads"

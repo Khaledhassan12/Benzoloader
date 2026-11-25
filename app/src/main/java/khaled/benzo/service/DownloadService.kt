@@ -300,8 +300,27 @@ class DownloadService : Service() {
         }
     }
 
+    private val topWindow by lazy { khaled.benzo.service.TopWindowOverlay(this) }
+    private val topWindowStart = ConcurrentHashMap<Long, Long>()
+
+    /** Shows the Top window strip for the first running item, or removes it. Which item shows with several is UNCLEAR in the reference. */
+    private fun updateTopWindow(tasks: List<DownloadItem>) {
+        val running = tasks.filter { it.status == DownloadStatus.RUNNING }.sortedBy { it.id }
+        val ids = running.map { it.id }.toSet()
+        topWindowStart.keys.retainAll(ids)
+        val first = running.firstOrNull()
+        if (first == null) { topWindow.hide(); return }
+        val now = System.currentTimeMillis()
+        val started = topWindowStart.getOrPut(first.id) { now }
+        topWindow.update(
+            settings.topWindowConfig(), running.size,
+            khaled.benzo.core.overlay.TopWindowSample(first.downloadedBytes, first.totalBytes, first.speed, (now - started) / 1000L)
+        )
+    }
+
     private fun updateNotification() {
         val tasks = activeItems.values.toList()
+        updateTopWindow(tasks)
         val totalSpeed = tasks.sumOf { it.speed }
         val notif = notificationHelper.buildForegroundNotification(tasks, totalSpeed)
         val notifManager = getSystemService(NOTIFICATION_SERVICE) as android.app.NotificationManager
@@ -345,6 +364,7 @@ class DownloadService : Service() {
     }
 
     override fun onDestroy() {
+        topWindow.hide()
         serviceScope.cancel()
         wakeLockManager.release()
         super.onDestroy()

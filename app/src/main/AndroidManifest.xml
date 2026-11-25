@@ -5,6 +5,8 @@
 
     <!-- Network & Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Top window: progress strip drawn over other apps. Requested only when the user switches the setting on. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
