@@ -98,6 +98,73 @@
             app:srcCompat="@drawable/ic_add"
             app:tint="#FFFFFF" />
 
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:background="?attr/barBackground"
+        android:orientation="horizontal"
+        android:elevation="8dp">
+
+        <ImageButton
+            android:id="@+id/navPower"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/nav_power"
+            android:src="@drawable/ic_nav_power" />
+        <ImageButton
+            android:id="@+id/navSettings"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_settings"
+            android:src="@drawable/ic_settings" />
+        <ImageButton
+            android:id="@+id/navBrowser"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_browser"
+            android:src="@drawable/ic_browser" />
+        <ImageButton
+            android:id="@+id/navAdd"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_add"
+            android:src="@drawable/ic_nav_add" />
+        <ImageButton
+            android:id="@+id/navQueue"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/nav_queue"
+            android:src="@drawable/ic_nav_queue" />
+        <ImageButton
+            android:id="@+id/navFinished"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/nav_finished"
+            android:src="@drawable/ic_nav_finished" />
+        <ImageButton
+            android:id="@+id/navList"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/nav_list"
+            android:src="@drawable/ic_nav_list" />
+    </LinearLayout>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!-- Navigation Drawer -->

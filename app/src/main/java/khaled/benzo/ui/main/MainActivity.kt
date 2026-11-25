@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        applyBottomBar()
         // Applied on every return to the screen so a change in Settings takes effect without a restart.
         if (khaled.benzo.data.repository.SettingsRepository(this).keepScreenOn) {
             window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -137,7 +138,38 @@ class MainActivity : AppCompatActivity() {
     private fun reentryFailed() =
         android.widget.Toast.makeText(this, R.string.secrets_save_failed, android.widget.Toast.LENGTH_LONG).show()
 
+    /** Bottom bar is shown or hidden from Settings > Interface. When it is shown its add button replaces the floating one. */
+    private fun applyBottomBar() {
+        val show = khaled.benzo.data.repository.SettingsRepository(this).bottomBar
+        binding.bottomBar.visibility = if (show) View.VISIBLE else View.GONE
+        binding.fabAdd.visibility = if (show) View.GONE else View.VISIBLE
+    }
+
+    private fun setupBottomBar() {
+        binding.navAdd.setOnClickListener { binding.fabAdd.performClick() }
+        binding.navSettings.setOnClickListener { startActivity(Intent(this, khaled.benzo.ui.settings.SettingsHubActivity::class.java)) }
+        binding.navBrowser.setOnClickListener { startActivity(Intent(this, BrowserActivity::class.java)) }
+        binding.navQueue.setOnClickListener { viewModel.setCategory(FileCategory.DOWNLOADING) }
+        binding.navFinished.setOnClickListener { viewModel.setCategory(FileCategory.COMPLETED) }
+        binding.navList.setOnClickListener { binding.drawerLayout.openDrawer(GravityCompat.START) }
+        binding.navPower.setOnClickListener { v ->
+            PopupMenu(this, v).apply {
+                menu.add(0, 1, 0, R.string.action_resume_all)
+                menu.add(0, 2, 1, R.string.action_pause_all)
+                setOnMenuItemClickListener {
+                    if (it.itemId == 1) {
+                        viewModel.resumeAll()
+                        startService(Intent(this@MainActivity, DownloadService::class.java).apply { action = DownloadService.ACTION_PROCESS_QUEUE })
+                    } else viewModel.pauseAll()
+                    true
+                }
+                show()
+            }
+        }
+    }
+
     private fun setupListeners() {
+        setupBottomBar()
         binding.fabAdd.setOnClickListener {
             startActivity(Intent(this, EditorActivity::class.java))
         }

@@ -58,6 +58,9 @@
         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchBrowserHistory" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_browser_history" />
         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchBrowserSaveTabs" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_browser_save_tabs" />
       </LinearLayout>
+      <LinearLayout android:id="@+id/section_interface" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchBottomBar" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_bottom_bar" />
+      </LinearLayout>
     </LinearLayout>
   </ScrollView>
 </LinearLayout>

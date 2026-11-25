@@ -10,6 +10,7 @@ enum class SettingsSection(val id: String, val title: Int, val subtitle: Int, va
     AUTOMATION("automation", R.string.cat_automation, R.string.cat_automation_sub, R.drawable.ic_cat_automation, 0xFFF0715F.toInt()),
     CATALOGING("cataloging", R.string.cat_cataloging, R.string.cat_cataloging_sub, R.drawable.ic_cat_cataloging, 0xFF2BA69A.toInt()),
     SCHEDULER("scheduler", R.string.cat_scheduler, R.string.cat_scheduler_sub, R.drawable.ic_cat_scheduler, 0xFFE0568C.toInt()),
+    INTERFACE("interface", R.string.cat_interface, R.string.cat_interface_sub, R.drawable.ic_cat_interface, 0xFFF2A444.toInt()),
     BROWSER("browser", R.string.cat_browser, R.string.cat_browser_sub, R.drawable.ic_cat_browser, 0xFF6C7AE0.toInt());
 
     companion object {

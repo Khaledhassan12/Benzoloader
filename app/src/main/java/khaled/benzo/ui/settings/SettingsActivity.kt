@@ -111,6 +111,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderSeedRatio.value = repo.seedRatioTenths.toFloat()
         binding.sliderSeedMinutes.value = repo.seedMinutes.toFloat()
         binding.switchTorrentDht.isChecked = repo.torrentDht
+        binding.switchBottomBar.isChecked = repo.bottomBar
+        binding.switchBottomBar.setOnCheckedChangeListener { _, on -> repo.bottomBar = on }
         binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
         updateConnectionsLabel()
         binding.sliderTorrentConnections.addOnChangeListener { _, _, _ -> updateConnectionsLabel() }

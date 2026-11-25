@@ -240,4 +240,11 @@
     <string name="cat_scheduler_sub">وقت البدء، وقت الإيقاف</string>
     <string name="cat_browser">المتصفح</string>
     <string name="cat_browser_sub">سجل الزيارات، التابات المفتوحة</string>
+    <string name="nav_power">التحكم في الطابور</string>
+    <string name="nav_queue">الطابور</string>
+    <string name="nav_finished">المنتهية</string>
+    <string name="nav_list">التصنيفات</string>
+    <string name="pref_bottom_bar">شريط التنقل السفلي</string>
+    <string name="cat_interface">الواجهة</string>
+    <string name="cat_interface_sub">شريط التنقل السفلي</string>
 </resources>
