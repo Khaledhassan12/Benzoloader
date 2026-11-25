@@ -121,6 +121,40 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         added to skipped
     }
 
+    /** Finished downloads as records (no cookies, no headers). */
+    fun exportFinishedText(): String = khaled.benzo.core.data.FinishedTransfer.format(
+        allItems.value.filter { !it.isTorrent && it.status == khaled.benzo.data.model.DownloadStatus.COMPLETED }
+            .map { khaled.benzo.core.data.FinishedRecord(it.url, it.fileName, it.savePath, it.totalBytes, it.completedDate, it.category.key) })
+
+    /** Restores finished records as COMPLETED entries. Never queues anything, never touches files. Returns (added, skipped). */
+    suspend fun importFinishedText(text: String): Pair<Int, Int> = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+        val existing = db().downloadDao().getAllOnce().map { Triple(it.url, it.savePath, it.fileName) }.toHashSet()
+        var added = 0; var skipped = 0
+        for (r in khaled.benzo.core.data.FinishedTransfer.parse(text)) {
+            if (!existing.add(Triple(r.url, r.folder, r.fileName))) { skipped++; continue }
+            repository.insertDownload(khaled.benzo.data.model.DownloadItem(
+                url = r.url, fileName = r.fileName, savePath = r.folder, totalBytes = r.totalBytes,
+                downloadedBytes = if (r.totalBytes > 0) r.totalBytes else 0L,
+                status = khaled.benzo.data.model.DownloadStatus.COMPLETED, completedDate = r.completedAt,
+                category = khaled.benzo.data.model.FileCategory.entries.firstOrNull { it.key == r.category } ?: khaled.benzo.data.model.FileCategory.OTHER))
+            added++
+        }
+        added to skipped
+    }
+
+    /** Adds history rows that are not stored yet (same URL and time). Returns (added, skipped). */
+    suspend fun importHistoryText(text: String): Pair<Int, Int> = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+        val dao = db().historyDao()
+        var added = 0; var skipped = 0
+        for (e in khaled.benzo.core.data.PageListTransfer.parse(text)) {
+            val at = if (e.time > 0) e.time else System.currentTimeMillis()
+            if (dao.countExact(e.url, at) > 0) { skipped++; continue }
+            dao.insert(khaled.benzo.data.db.HistoryEntity(title = e.title.ifEmpty { e.url }, url = e.url, visitedAt = at))
+            added++
+        }
+        added to skipped
+    }
+
     /** Same as [importText] but suspending, for bundle import. */
     suspend fun importDownloadsText(text: String): Pair<Int, Int> {
         val r = khaled.benzo.core.data.ListImporter(getApplication(), repository).importText(text)

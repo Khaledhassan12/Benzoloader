@@ -12,6 +12,9 @@ interface HistoryDao {
     @Query("SELECT * FROM history ORDER BY visited_at DESC LIMIT :limit")
     suspend fun recent(limit: Int): List<HistoryEntity>
 
+    @Query("SELECT COUNT(*) FROM history WHERE url = :url AND visited_at = :at")
+    suspend fun countExact(url: String, at: Long): Int
+
     @Query("SELECT url FROM history ORDER BY visited_at DESC LIMIT 1")
     suspend fun lastUrl(): String?
 

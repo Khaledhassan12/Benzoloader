@@ -346,7 +346,7 @@ class MainActivity : AppCompatActivity() {
                     val parts = LinkedHashMap<String, String>()
                     val dl = viewModel.allItems.value
                     if (khaled.benzo.core.data.ExportItem.QUEUE in ticked) parts["queue"] = khaled.benzo.core.data.ListTransfer.format(dl.filter { it.status != khaled.benzo.data.model.DownloadStatus.COMPLETED })
-                    if (khaled.benzo.core.data.ExportItem.FINISHED in ticked) parts["finished"] = khaled.benzo.core.data.ListTransfer.format(dl.filter { it.status == khaled.benzo.data.model.DownloadStatus.COMPLETED })
+                    if (khaled.benzo.core.data.ExportItem.FINISHED in ticked) parts["finished"] = viewModel.exportFinishedText()
                     if (khaled.benzo.core.data.ExportItem.BOOKMARKS in ticked) parts["bookmarks"] = viewModel.exportBookmarksText()
                     if (khaled.benzo.core.data.ExportItem.HISTORY in ticked) parts["history"] = viewModel.exportHistoryText()
                     listFiles.exportPrepared(khaled.benzo.core.data.ExportBundle.join(parts))
@@ -357,13 +357,15 @@ class MainActivity : AppCompatActivity() {
         dlg.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).isEnabled = false
     }
 
-    /** Plain list files go to the download importer. Bundles: queue and finished become paused downloads, bookmarks are added; history import is not built yet. */
+    /** Plain list files go to the download importer. Bundles: queue entries become paused downloads, finished entries are restored as completed records (no re-download, files untouched), bookmarks and history are added. */
     private fun importAny(text: String, report: (added: Int, skipped: Int) -> Unit) {
         val bundle = khaled.benzo.core.data.ExportBundle.split(text)
         if (bundle == null) { viewModel.importText(text, report); return }
         lifecycleScope.launch {
             var added = 0; var skipped = 0
-            for (name in listOf("queue", "finished")) bundle[name]?.let { val (a, s) = viewModel.importDownloadsText(it); added += a; skipped += s }
+            bundle["queue"]?.let { val (a, s) = viewModel.importDownloadsText(it); added += a; skipped += s }
+            bundle["finished"]?.let { val (a, s) = viewModel.importFinishedText(it); added += a; skipped += s }
+            bundle["history"]?.let { val (a, s) = viewModel.importHistoryText(it); added += a; skipped += s }
             bundle["bookmarks"]?.let { val (a, s) = viewModel.importBookmarksText(it); added += a; skipped += s }
             report(added, skipped)
         }
