@@ -3,12 +3,12 @@
     <style name="Theme.Benzo" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent</item>
         <item name="colorOnPrimary">#000000</item>
-        <item name="barBackground">@color/bar_dark</item>
-        <item name="onBar">@color/on_bar_dark</item>
-        <item name="hintGreen">@color/hint_green_dark</item>
+        <item name="barBackground">?attr/colorSurfaceContainer</item>
+        <item name="onBar">?attr/colorOnSurface</item>
+        <item name="hintGreen">?attr/colorPrimary</item>
         <item name="colorPrimaryContainer">#2F4A17</item>
         <item name="colorOnPrimaryContainer">#C1D6AB</item>
-        <item name="android:statusBarColor">@color/surface_dark</item>
+        <item name="android:statusBarColor">?attr/colorSurfaceContainer</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:colorBackground">@color/background_dark</item>
     </style>
@@ -17,5 +17,24 @@
         <item name="colorPrimary">@color/accent</item>
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
+    <style name="ThemeOverlay.Benzo.Blue" parent="">
+        <item name="colorPrimary">#A8C7FA</item>
+        <item name="colorOnPrimary">#062E6F</item>
+        <item name="colorPrimaryContainer">#1F4A85</item>
+        <item name="colorOnPrimaryContainer">#D3E3FD</item>
+    </style>
+    <style name="ThemeOverlay.Benzo.Purple" parent="">
+        <item name="colorPrimary">#D0BCFF</item>
+        <item name="colorOnPrimary">#381E72</item>
+        <item name="colorPrimaryContainer">#4F378B</item>
+        <item name="colorOnPrimaryContainer">#EADDFF</item>
+    </style>
+    <style name="ThemeOverlay.Benzo.Orange" parent="">
+        <item name="colorPrimary">#FFB77C</item>
+        <item name="colorOnPrimary">#4A2800</item>
+        <item name="colorPrimaryContainer">#6B3A00</item>
+        <item name="colorOnPrimaryContainer">#FFDCC2</item>
     </style>
 </resources>

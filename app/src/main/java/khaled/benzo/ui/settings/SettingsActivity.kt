@@ -113,6 +113,12 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchTorrentDht.isChecked = repo.torrentDht
         binding.switchBottomBar.isChecked = repo.bottomBar
         binding.switchBottomBar.setOnCheckedChangeListener { _, on -> repo.bottomBar = on }
+        val themeIds = listOf(khaled.benzo.R.id.themeDevice, khaled.benzo.R.id.themeGreen, khaled.benzo.R.id.themeBlue, khaled.benzo.R.id.themePurple, khaled.benzo.R.id.themeOrange)
+        binding.radioThemeColor.check(themeIds[repo.themeColor.coerceIn(0, 4)])
+        binding.radioThemeColor.setOnCheckedChangeListener { _, id ->
+            val index = themeIds.indexOf(id)
+            if (index >= 0 && index != repo.themeColor) { repo.themeColor = index; recreate() }
+        }
         binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
         updateConnectionsLabel()
         binding.sliderTorrentConnections.addOnChangeListener { _, _, _ -> updateConnectionsLabel() }

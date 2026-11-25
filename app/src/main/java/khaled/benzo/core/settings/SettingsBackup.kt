@@ -48,6 +48,7 @@ object SettingsBackup {
         "browser_save_tabs" to Spec.Bool,
         "dark_mode" to Spec.Bool,
         "bottom_bar" to Spec.Bool,
+        "theme_color" to Spec.IntRange(0, 4, 1),
         "download_path" to Spec.Text(512) { isPlausiblePath(it) }
     )
 

@@ -6,12 +6,12 @@
         <item name="colorSurface">@color/surface_light</item>
         <item name="colorOnSurface">@color/on_surface_light</item>
         <item name="colorOnSurfaceVariant">@color/on_surface_variant_light</item>
-        <item name="barBackground">@color/bar_light</item>
-        <item name="onBar">@color/on_bar_light</item>
-        <item name="hintGreen">@color/hint_green_light</item>
+        <item name="barBackground">?attr/colorSurfaceContainer</item>
+        <item name="onBar">?attr/colorOnSurface</item>
+        <item name="hintGreen">?attr/colorPrimary</item>
         <item name="colorPrimaryContainer">@color/primary_container</item>
         <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
-        <item name="android:statusBarColor">@color/bar_light</item>
+        <item name="android:statusBarColor">?attr/colorSurfaceContainer</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:colorBackground">@color/background_light</item>
     </style>
@@ -20,5 +20,25 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
+    <!-- Colour presets for the "Theme colour" setting. Applied on top of Theme.Benzo by BenzoApp; they replace only the primary roles. -->
+    <style name="ThemeOverlay.Benzo.Blue" parent="">
+        <item name="colorPrimary">#2F6DB5</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#D3E3FD</item>
+        <item name="colorOnPrimaryContainer">#0B2A52</item>
+    </style>
+    <style name="ThemeOverlay.Benzo.Purple" parent="">
+        <item name="colorPrimary">#7A52B3</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#E9DDFF</item>
+        <item name="colorOnPrimaryContainer">#2B0F55</item>
+    </style>
+    <style name="ThemeOverlay.Benzo.Orange" parent="">
+        <item name="colorPrimary">#B5651D</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#FFDCC2</item>
+        <item name="colorOnPrimaryContainer">#3A1D00</item>
     </style>
 </resources>

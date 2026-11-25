@@ -60,6 +60,15 @@
       </LinearLayout>
       <LinearLayout android:id="@+id/section_interface" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchBottomBar" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_bottom_bar" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/pref_theme_color" android:textAppearance="?attr/textAppearanceBodyLarge" />
+        <TextView android:id="@+id/textThemeColorNote" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_theme_color_note" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="?attr/hintGreen" />
+        <RadioGroup android:id="@+id/radioThemeColor" android:layout_width="match_parent" android:layout_height="wrap_content">
+          <RadioButton android:id="@+id/themeDevice" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/theme_device" />
+          <RadioButton android:id="@+id/themeGreen" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/theme_green" />
+          <RadioButton android:id="@+id/themeBlue" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/theme_blue" />
+          <RadioButton android:id="@+id/themePurple" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/theme_purple" />
+          <RadioButton android:id="@+id/themeOrange" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/theme_orange" />
+        </RadioGroup>
       </LinearLayout>
     </LinearLayout>
   </ScrollView>

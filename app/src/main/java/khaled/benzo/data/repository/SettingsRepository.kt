@@ -167,6 +167,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_BOTTOM_BAR, true)
         set(value) = prefs.edit().putBoolean(KEY_BOTTOM_BAR, value).apply()
 
+    /** 0 = device colours (Material You, Android 12+), 1 = green (Benzo default), 2 blue, 3 purple, 4 orange. */
+    var themeColor: Int
+        get() = prefs.getInt(KEY_THEME_COLOR, 0)
+        set(value) = prefs.edit().putInt(KEY_THEME_COLOR, value).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -200,7 +205,7 @@ class SettingsRepository(context: Context) {
         KEY_NOTIF_LOCK to notifOnLockScreen, KEY_NOTIF_PAUSE_ALL to notifPauseAllButton,
         KEY_KEEP_SCREEN to keepScreenOn, KEY_CLEAR_FINISHED to clearFinishedOnStart,
         KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes, KEY_TORRENT_DHT to torrentDht, KEY_TORRENT_CONNECTIONS to torrentConnections,
-        KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar,
+        KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor,
         KEY_DOWNLOAD_PATH to defaultDownloadPath
     )
 
@@ -257,6 +262,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_NOTIF_PAUSE_ALL = "notif_pause_all_button"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_BOTTOM_BAR = "bottom_bar"
+        private const val KEY_THEME_COLOR = "theme_color"
         private const val KEY_DOWNLOAD_PATH = "download_path"
     }
 }
