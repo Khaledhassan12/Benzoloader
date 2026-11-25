@@ -41,6 +41,11 @@ class SecretsTest {
         assertEquals(SecretRead.Unreadable(bad), Secrets.readWith(codec(), bad))
     }
 
+    @Test fun storedTokenHasA12ByteIvAndNoIvIsSuppliedByTheCaller() {
+        val token = codec().encrypt("x")
+        assertEquals(12, java.util.Base64.getDecoder().decode(token.substringBefore(":")).size)
+    }
+
     @Test fun unicodeSurvives() {
         val c = codec()
         assertEquals(SecretRead.Ok("كوكي=قيمة"), Secrets.readWith(c, Secrets.sealWith(c, "كوكي=قيمة")))

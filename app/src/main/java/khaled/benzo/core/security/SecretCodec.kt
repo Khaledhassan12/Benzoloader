@@ -1,6 +1,5 @@
 package khaled.benzo.core.security
 
-import java.security.SecureRandom
 import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
@@ -12,14 +11,14 @@ interface SecretCodec {
     fun decrypt(token: String): String
 }
 
-/** AES-256-GCM with a random 12-byte IV per value. The key comes from the caller (Android Keystore on the device). */
+/** AES-256-GCM with a random 12-byte IV per value (made by the cipher). The key comes from the caller (Android Keystore on the device). */
 class AesGcmCodec(private val key: () -> SecretKey) : SecretCodec {
-    private val rng = SecureRandom()
-
     override fun encrypt(plain: String): String {
-        val iv = ByteArray(12).also { rng.nextBytes(it) }
         val c = Cipher.getInstance("AES/GCM/NoPadding")
-        c.init(Cipher.ENCRYPT_MODE, key(), GCMParameterSpec(128, iv))
+        // The Android Keystore key requires randomized encryption: the cipher makes the 12-byte IV itself and a
+        // caller-supplied IV is refused. The IV is read back and stored with the ciphertext. Tag length is the 128-bit default.
+        c.init(Cipher.ENCRYPT_MODE, key())
+        val iv = c.iv
         val ct = c.doFinal(plain.toByteArray(Charsets.UTF_8))
         val b64 = Base64.getEncoder()
         return b64.encodeToString(iv) + ":" + b64.encodeToString(ct)
