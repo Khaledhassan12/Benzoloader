@@ -113,6 +113,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 ## Batch history (newest first)
 | Commit | Time (25 Nov, Cairo) | Change | State |
 |---|---|---|---|
+| `69e6ead` | 17:50 | Torrent fast-resume (resume data saved and reused) | WRITTEN, TESTS WRITTEN (store) |
 | `c9d73af` | 17:34 | Manual light / dark / follow-system choice | WRITTEN, NOT RENDERED |
 | `2260b7b` | 17:30 | Disabling a container row now disables its child rows (Cataloging category rows) | WRITTEN, NOT RENDERED |
 | `8d66a24` | 17:29 | If-Range on resumed requests | WRITTEN, TESTS WRITTEN |
