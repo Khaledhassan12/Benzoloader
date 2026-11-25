@@ -200,4 +200,13 @@
     <string name="folder_dialog_use_app_folder">استخدم مجلد التطبيق</string>
     <string name="folder_dialog_app_folder_note">مجلد التطبيق خاص ببينزولودر. الملفات اللي فيه بتتمسح لما التطبيق يتحذف، ومش بتظهر في تطبيقات تانية ولا في مجلد التحميلات. مفيش حاجة بتتنقل: التحميل ده بس هيستخدمه، وتقدر تغيّره.</string>
     <string name="folder_app_folder_selected">اتضبط المجلد على مجلد التطبيق. اضغط إضافة أو بدء تاني للمتابعة.</string>
+    <string name="allfiles_title">تسمح بالوصول لكل الملفات؟</string>
+    <string name="allfiles_message">بينزولودر بيحفظ التحميلات في مجلدات انت بتختارها، زي مجلد التحميلات. في أندرويد 11 وأحدث، النظام مش بيسمح للتطبيق يكتب هناك إلا لو سمحت بـ «الوصول لكل الملفات». ده اختياري. هتختار في الشاشة الجاية، وتقدر تغيّره بعدين من إعدادات النظام أو من إعدادات بينزولودر. التطبيق بيكتب بس التحميلات اللي بتبدأها والمجلدات اللي بتختارها. لو رفضت، تقدر تستخدم مجلد التطبيق، بس ملفاته بتتمسح لما التطبيق يتحذف.</string>
+    <string name="allfiles_open">متابعة</string>
+    <string name="allfiles_decline">مش دلوقتي</string>
+    <string name="allfiles_unavailable">الجهاز ده مفيهوش شاشة إعدادات للوصول لكل الملفات.</string>
+    <string name="allfiles_settings_button">الوصول للملفات: غير مسموح (اضغط للمراجعة)</string>
+    <string name="allfiles_state_on">الوصول للملفات: مسموح (اضغط للمراجعة)</string>
+    <string name="allfiles_state_off">الوصول للملفات: غير مسموح (اضغط للمراجعة)</string>
+    <string name="folder_dialog_allow_access">السماح بالوصول لكل الملفات</string>
 </resources>

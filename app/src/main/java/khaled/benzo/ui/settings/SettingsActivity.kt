@@ -124,6 +124,21 @@ class SettingsActivity : AppCompatActivity() {
         finish()
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshAllFilesButton()
+    }
+
+    /** Optional all-files access (Android 11+). Shows the current state; the user decides on the system screen. */
+    private fun refreshAllFilesButton() {
+        val b = binding.btnAllFilesAccess
+        if (!khaled.benzo.ui.common.AllFilesAccess.isApplicable()) { b.visibility = android.view.View.GONE; return }
+        b.visibility = android.view.View.VISIBLE
+        val granted = khaled.benzo.ui.common.AllFilesAccess.isGranted()
+        b.text = getString(if (granted) khaled.benzo.R.string.allfiles_state_on else khaled.benzo.R.string.allfiles_state_off)
+        b.setOnClickListener { khaled.benzo.ui.common.AllFilesAccess.explainAndRequest(this) }
+    }
+
     override fun onBackPressed() {
         saveAndFinish()
     }

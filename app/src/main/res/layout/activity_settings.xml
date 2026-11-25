@@ -80,6 +80,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/pref_folder_names" />
 
+            <Button
+                android:id="@+id/btnAllFilesAccess"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/allfiles_settings_button" />
+
             <TextView
                 android:id="@+id/txtErrorRetries"
                 android:layout_width="match_parent"

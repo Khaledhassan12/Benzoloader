@@ -148,6 +148,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getString(KEY_BROWSER_TABS, null)
         set(value) = (if (value.isNullOrEmpty()) prefs.edit().remove(KEY_BROWSER_TABS) else prefs.edit().putString(KEY_BROWSER_TABS, value)).apply()
 
+    /** The user said no to the optional all-files access request. Not part of the settings backup. Settings still offers it. */
+    var allFilesDeclined: Boolean
+        get() = prefs.getBoolean(KEY_ALLFILES_DECLINED, false)
+        set(value) = prefs.edit().putBoolean(KEY_ALLFILES_DECLINED, value).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -217,6 +222,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_TORRENT_SEED = "torrent_seed_after_finish"
         private const val KEY_SEED_RATIO = "torrent_seed_ratio_tenths"
         private const val KEY_SEED_MINUTES = "torrent_seed_minutes"
+        private const val KEY_ALLFILES_DECLINED = "allfiles_declined"
         private const val KEY_KEEP_SCREEN = "keep_screen_on"
         private const val KEY_CLEAR_FINISHED = "clear_finished_on_start"
         private const val KEY_NOTIF_LOCK = "notif_lock_screen"

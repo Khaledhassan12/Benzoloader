@@ -200,4 +200,13 @@
     <string name="folder_dialog_use_app_folder">Use the app folder</string>
     <string name="folder_dialog_app_folder_note">The app folder is private to Benzoloader. Files saved there are deleted when the app is uninstalled, and other apps and the Downloads folder do not show them. Nothing is moved: only this download uses it, and you can still change it.</string>
     <string name="folder_app_folder_selected">Folder set to the app folder. Press Add or Start again to continue.</string>
+    <string name="allfiles_title">Allow access to all files?</string>
+    <string name="allfiles_message">Benzoloader saves downloads to folders you choose, such as the Downloads folder. On Android 11 and newer, the system only lets an app write there if you allow "all files access". This is optional. You choose on the next screen, and you can change it later in the system settings or in Benzoloader settings. The app only writes the downloads you start and the folders you pick. If you decline, you can still use the app folder, but its files are deleted when the app is uninstalled.</string>
+    <string name="allfiles_open">Continue</string>
+    <string name="allfiles_decline">Not now</string>
+    <string name="allfiles_unavailable">This device has no settings screen for all files access.</string>
+    <string name="allfiles_settings_button">Files access: not allowed (tap to review)</string>
+    <string name="allfiles_state_on">Files access: allowed (tap to review)</string>
+    <string name="allfiles_state_off">Files access: not allowed (tap to review)</string>
+    <string name="folder_dialog_allow_access">Allow access to all files</string>
 </resources>

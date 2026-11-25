@@ -120,19 +120,29 @@ class EditorActivity : AppCompatActivity() {
 
     private fun showFolderProblem(verdict: khaled.benzo.core.storage.FolderCheck.Verdict, startNow: Boolean) {
         val appFolder = getExternalFilesDir(null)?.absolutePath
-        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle(R.string.folder_dialog_title)
-            .setMessage(getString(khaled.benzo.ui.common.FolderMessages.res(verdict)) +
-                if (appFolder != null) "\n\n" + getString(R.string.folder_dialog_app_folder_note) else "")
-            .setNegativeButton(android.R.string.cancel, null)
-            .setNeutralButton(R.string.folder_dialog_add_anyway) { _, _ -> folderChecked = true; submitDownload(startNow) }
+        val offerAccess = khaled.benzo.ui.common.AllFilesAccess.shouldOfferInDialog(this)
+        val labels = ArrayList<String>()
+        val actions = ArrayList<() -> Unit>()
+        if (offerAccess) {
+            labels.add(getString(R.string.folder_dialog_allow_access))
+            actions.add { khaled.benzo.ui.common.AllFilesAccess.explainAndRequest(this) }
+        }
         if (appFolder != null) {
-            builder.setPositiveButton(R.string.folder_dialog_use_app_folder) { _, _ ->
+            labels.add(getString(R.string.folder_dialog_use_app_folder))
+            actions.add {
                 binding.edtPath.setText(appFolder)
                 Toast.makeText(this, R.string.folder_app_folder_selected, Toast.LENGTH_LONG).show()
             }
         }
-        builder.show()
+        labels.add(getString(R.string.folder_dialog_add_anyway))
+        actions.add { folderChecked = true; submitDownload(startNow) }
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.folder_dialog_title)
+            .setMessage(getString(khaled.benzo.ui.common.FolderMessages.res(verdict)) +
+                if (appFolder != null) "\n\n" + getString(R.string.folder_dialog_app_folder_note) else "")
+            .setItems(labels.toTypedArray()) { _, i -> actions[i]() }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun submitDownload(startNow: Boolean) {
