@@ -19,7 +19,7 @@ class SiteManagerActivity : AppCompatActivity() {
     private lateinit var adapter: SiteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate()
+        super.onCreate(savedInstanceState)
         binding = ActivitySiteManagerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
