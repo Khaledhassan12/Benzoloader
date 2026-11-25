@@ -153,4 +153,7 @@
     <string name="nav_images">صور</string>
     <string name="nav_other">أخرى</string>
     <string name="pref_folder_names">أسماء المجلدات لكل نوع</string>
+    <string name="notif_permission_why">الإشعارات بتعرض تقدم التحميل ونتيجته. من غيرها التحميل بيكمل لكن مش هتشوف التقدم.</string>
+    <string name="notif_permission_settings">الإشعارات مقفولة للتطبيق، فتقدم التحميل مخفي. تقدر تفتحها من إعدادات التطبيق.</string>
+    <string name="notif_open_settings">فتح الإعدادات</string>
 </resources>

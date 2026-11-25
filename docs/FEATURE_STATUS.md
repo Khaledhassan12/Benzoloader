@@ -35,3 +35,8 @@ instrumented (device) tests, UI match against the reference screens.
 - BencodeValidator: iterative structural check (depth 64, 500k items, string lengths inside the buffer, integer form, dictionary keys, no trailing data). It replaces the old first/last byte check, which was only a precheck.
 - Content URIs served by this app's own providers are refused. Files are limited to shared storage.
 - libtorrent still parses afterwards (TorrentInfo.bdecode in a try/catch). Its own internal limits were not verified: the load_torrent_limits class is not in the jar's Java API.
+
+## Permissions review (android/skills permissions-security, read to section 6 of the file; the remainder not read)
+- Found: POST_NOTIFICATIONS was declared but never requested at runtime, so on Android 13+ the progress notification would be hidden. Added NotificationPermissionFlow (check, rationale dialog, request, settings offer after a permanent denial; state read each time, once per fresh launch) with a pure NotificationPermissionPolicy and 5 tests. Written, not built, not run, never shown on a device. Arabic and English strings added.
+- Already fine: provider, service and the three internal receivers are not exported; PendingIntents are immutable; exact alarm is checked with canScheduleExactAlarms before use; the exported boot receiver checks the action.
+- Declared but no code uses them (decision for Khaled, not changed): SYSTEM_ALERT_WINDOW, MANAGE_EXTERNAL_STORAGE, REQUEST_INSTALL_PACKAGES. Sensitive permissions that are unused are over-privilege and have Play policy review implications. Also usesCleartextTraffic=true (http downloads are a feature, so kept).

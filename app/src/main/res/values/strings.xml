@@ -153,4 +153,7 @@
     <string name="nav_images">Images</string>
     <string name="nav_other">Other</string>
     <string name="pref_folder_names">Folder names for each type</string>
+    <string name="notif_permission_why">Notifications show download progress and results. Without them, downloads still run but you will not see progress.</string>
+    <string name="notif_permission_settings">Notifications are off for this app, so download progress is hidden. You can turn them on in the app settings.</string>
+    <string name="notif_open_settings">Open settings</string>
 </resources>
