@@ -93,6 +93,34 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     /** Text of the current list (what the user sees, after filters). Contains no cookies or headers. */
     fun exportText(): String = khaled.benzo.core.data.ListTransfer.format(downloads.value)
 
+    private fun db() = khaled.benzo.data.db.BenzoDatabase.getInstance(getApplication())
+
+    /** Bookmarks as transfer text (read from the database; no cookies, no credentials). */
+    suspend fun exportBookmarksText(): String = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+        khaled.benzo.core.data.PageListTransfer.format(
+            khaled.benzo.core.data.PageListTransfer.BOOKMARKS_HEADER,
+            db().bookmarkDao().getAllOnce().map { khaled.benzo.core.data.PageEntry(it.url, it.title, it.createdAt) })
+    }
+
+    /** Visit history as transfer text. */
+    suspend fun exportHistoryText(): String = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+        khaled.benzo.core.data.PageListTransfer.format(
+            khaled.benzo.core.data.PageListTransfer.HISTORY_HEADER,
+            db().historyDao().recent(Int.MAX_VALUE).map { khaled.benzo.core.data.PageEntry(it.url, it.title, it.visitedAt) })
+    }
+
+    /** Adds bookmarks that are not saved yet (matched by URL). Returns (added, skipped). */
+    suspend fun importBookmarksText(text: String): Pair<Int, Int> = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+        val dao = db().bookmarkDao()
+        var added = 0; var skipped = 0
+        for (e in khaled.benzo.core.data.PageListTransfer.parse(text)) {
+            if (dao.countByUrl(e.url) > 0) { skipped++; continue }
+            dao.insertBookmark(khaled.benzo.data.db.BookmarkEntity(title = e.title.ifEmpty { e.url }, url = e.url, createdAt = if (e.time > 0) e.time else System.currentTimeMillis()))
+            added++
+        }
+        added to skipped
+    }
+
     /** Adds imported URLs as paused downloads (the user starts them). */
     fun importText(text: String, onDone: (added: Int, skipped: Int) -> Unit) {
         viewModelScope.launch {
