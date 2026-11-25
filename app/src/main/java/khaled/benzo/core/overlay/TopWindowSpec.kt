@@ -10,7 +10,9 @@ data class TopWindowSample(
     val downloadedBytes: Long,
     val totalBytes: Long,
     val speedBytesPerSec: Long,
-    val elapsedSeconds: Long
+    val elapsedSeconds: Long,
+    /** File name shown after the statistics (Video 9 shows it, cut with an ellipsis). Empty = not shown. */
+    val name: String = ""
 )
 
 /** The Top window settings as stored. Colours are ARGB ints. Pixel values are raw pixels, as the reference rows show them. */
@@ -53,7 +55,7 @@ object TopWindowSpec {
         for (stat in TopStat.values()) {
             if (stat !in config.stats) continue
             parts += when (stat) {
-                TopStat.PERCENT -> if (s.totalBytes > 0L) "%.1f%%".format(s.downloadedBytes * 100.0 / s.totalBytes) else "?"
+                TopStat.PERCENT -> if (s.totalBytes > 0L) "%d%%".format(((s.downloadedBytes * 100L) / s.totalBytes).coerceIn(0L, 100L)) else "?"
                 TopStat.DOWNLOADED -> SpeedTracker.formatSize(s.downloadedBytes)
                 TopStat.SIZE -> if (s.totalBytes > 0L) SpeedTracker.formatSize(s.totalBytes) else "?"
                 TopStat.SPEED -> SpeedTracker.formatSize(s.speedBytesPerSec) + "/s"
@@ -62,6 +64,7 @@ object TopWindowSpec {
                     clock((s.totalBytes - s.downloadedBytes).coerceAtLeast(0L) / s.speedBytesPerSec) else "--:--"
             }
         }
+        if (s.name.isNotEmpty()) parts += s.name
         return parts.joinToString(" \u00B7 ")
     }
 

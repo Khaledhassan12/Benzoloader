@@ -315,7 +315,7 @@ class DownloadService : Service() {
         val started = topWindowStart.getOrPut(first.id) { now }
         topWindow.update(
             settings.topWindowConfig(), running.size,
-            khaled.benzo.core.overlay.TopWindowSample(first.downloadedBytes, first.totalBytes, first.speed, (now - started) / 1000L)
+            khaled.benzo.core.overlay.TopWindowSample(first.downloadedBytes, first.totalBytes, first.speed, (now - started) / 1000L, first.fileName)
         )
     }
 

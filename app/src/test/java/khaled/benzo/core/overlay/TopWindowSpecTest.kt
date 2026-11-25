@@ -27,7 +27,8 @@ class TopWindowSpecTest {
     }
     @Test fun textFollowsFixedOrderAndSelection() {
         val c = TopWindowConfig(stats = setOf(TopStat.LEFT, TopStat.PERCENT, TopStat.ELAPSED))
-        assertEquals("50.0% \u00B7 01:05 \u00B7 00:05", TopWindowSpec.text(c, sample))
+        assertEquals("50% \u00B7 01:05 \u00B7 00:05", TopWindowSpec.text(c, sample))
+        assertEquals("50% \u00B7 01:05 \u00B7 00:05 \u00B7 a.apk", TopWindowSpec.text(c, sample.copy(name = "a.apk")))
         assertEquals("", TopWindowSpec.text(TopWindowConfig(stats = emptySet()), sample))
     }
     @Test fun unknownTotalAndSpeed() {

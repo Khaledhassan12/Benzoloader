@@ -53,6 +53,7 @@ class TopWindowOverlay(private val context: Context) {
         v.gravity = Gravity.CENTER_VERTICAL or Gravity.START
         v.setPadding(8, 0, 8, 0)
         v.maxLines = 1
+        v.ellipsize = android.text.TextUtils.TruncateAt.END
         v.isClickable = false
         val bar = ClipDrawable(ColorDrawable(c.barColor), Gravity.START, ClipDrawable.HORIZONTAL)
         v.background = LayerDrawable(arrayOf(ColorDrawable(c.backgroundColor), bar))
