@@ -68,7 +68,9 @@ class ChunkWorker(
                     chunk.status = 3
                     return@withContext Result.failure(e)
                 }
-                delay(retryBaseDelayMs shl attempt)
+                // The wait is a coroutine delay, so pausing or cancelling the download ends it at once.
+                val hint = (e as? TransientHttpException)?.retryAfterMs ?: 0L
+                delay(maxOf(retryBaseDelayMs shl attempt, hint))
                 attempt++
             }
         }
@@ -95,8 +97,10 @@ class ChunkWorker(
                 if (isDone()) return
                 throw PermanentDownloadException("Server rejected range (HTTP 416); file may have changed")
             }
+            if (TransientStatus.isTransient(code)) {
+                throw TransientHttpException(code, RetryAfter.parseMs(resp.header("Retry-After"), System.currentTimeMillis()))
+            }
             if (code in 400..499) throw PermanentDownloadException("HTTP $code")
-            if (code >= 500) throw IOException("HTTP $code")
             val ranged = sized && (!wholeFile || resuming)
             var writeFrom = chunk.currentByte
             when {

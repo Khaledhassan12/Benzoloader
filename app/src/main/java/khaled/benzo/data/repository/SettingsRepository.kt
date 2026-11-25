@@ -88,9 +88,9 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_PAUSE_AFTER_ERROR, false)
         set(value) = prefs.edit().putBoolean(KEY_PAUSE_AFTER_ERROR, value).apply()
 
-    /** A download that failed for a reason that may pass (dropped connection) is queued again by itself, a few times. */
+    /** A download that failed for a reason that may pass (dropped connection) is queued again by itself, a few times. Off by default: opt-in, so existing installs keep their behaviour. */
     var autoResume: Boolean
-        get() = prefs.getBoolean(KEY_AUTO_RESUME, true)
+        get() = prefs.getBoolean(KEY_AUTO_RESUME, false)
         set(value) = prefs.edit().putBoolean(KEY_AUTO_RESUME, value).apply()
 
     var isDarkMode: Boolean

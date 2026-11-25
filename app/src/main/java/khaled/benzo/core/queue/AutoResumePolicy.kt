@@ -16,6 +16,8 @@ object AutoResumePolicy {
         enabled &&
             attemptsSoFar < MAX_AUTOMATIC_ATTEMPTS &&
             failure !is PermanentDownloadException &&
+            // The engine already falls back to a single connection when Range is ignored; if that also failed,
+            // the server cannot resume the file and another attempt would fail the same way.
             failure !is RangeIgnoredException &&
             failure?.message?.startsWith("Not enough free storage") != true
 
