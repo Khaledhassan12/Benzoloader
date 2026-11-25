@@ -26,6 +26,7 @@ class EditorActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupDefaultFields()
+        setupCategory()
         setupListeners()
         handleIncomingIntent(autoAdd = savedInstanceState == null)
         // Video 8: a short sound plays when the Editor opens (matches the add sound by length and envelope; INFERRED, not an exact-audio claim).
@@ -50,6 +51,27 @@ class EditorActivity : AppCompatActivity() {
                 binding.edtUrl.setText(clipText)
                 extractFileNameFromUrl(clipText)
             }
+        }
+    }
+
+    /** First entry = automatic (from the file name, as before). A picked category is used as chosen; with Cataloging on it also picks the type folder. */
+    private var pickedCategory: khaled.benzo.data.model.FileCategory? = null
+    private val pickable = listOf(
+        khaled.benzo.data.model.FileCategory.VIDEO to R.string.nav_video,
+        khaled.benzo.data.model.FileCategory.MUSIC to R.string.nav_music,
+        khaled.benzo.data.model.FileCategory.DOCUMENT to R.string.nav_documents,
+        khaled.benzo.data.model.FileCategory.ARCHIVE to R.string.nav_archives,
+        khaled.benzo.data.model.FileCategory.PROGRAM to R.string.nav_programs,
+        khaled.benzo.data.model.FileCategory.IMAGE to R.string.nav_images,
+        khaled.benzo.data.model.FileCategory.OTHER to R.string.nav_other
+    )
+
+    private fun setupCategory() {
+        val labels = listOf(getString(R.string.editor_category_auto)) + pickable.map { getString(it.second) }
+        binding.edtCategory.setAdapter(android.widget.ArrayAdapter(this, android.R.layout.simple_list_item_1, labels))
+        binding.edtCategory.setText(labels[0], false)
+        binding.edtCategory.setOnItemClickListener { _, _, pos, _ ->
+            pickedCategory = if (pos == 0) null else pickable[pos - 1].first
         }
     }
 
@@ -197,6 +219,7 @@ class EditorActivity : AppCompatActivity() {
             referer = binding.edtReferer.text.toString().ifEmpty { null },
             cookies = binding.edtCookies.text.toString().ifEmpty { null },
             startNow = startNow,
+            category = pickedCategory,
             onError = { Toast.makeText(this, R.string.secrets_save_failed, Toast.LENGTH_LONG).show() }
         ) { downloadId ->
             if (startNow) {
