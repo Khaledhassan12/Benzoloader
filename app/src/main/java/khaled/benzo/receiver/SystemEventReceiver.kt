@@ -17,6 +17,11 @@ class SystemEventReceiver : BroadcastReceiver() {
             // (developer.android.com/about/versions/15/changes/foreground-service-types), so only the schedule alarm is
             // re-armed here. Queued downloads continue when the app is opened or the next scheduled alarm fires.
             ScheduleManager.rearm(context)
+            val pending = goAsync()
+            Thread {
+                try { notifyIfDownloadsWaiting(context) } catch (e: Exception) { /* nothing more to do at boot */ }
+                finally { pending.finish() }
+            }.start()
         }
     }
 }

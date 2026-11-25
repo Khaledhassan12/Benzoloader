@@ -156,6 +156,28 @@ class NotificationHelper(private val context: Context) {
         notificationManager.notify(item.id.toInt() + 10000, notification)
     }
 
+    /**
+     * Shown when the system does not let us start the download service on our own (after a reboot, or when a background
+     * start is refused). Tapping it opens the app, which is an allowed way to start the service.
+     */
+    fun showResumePrompt(pendingCount: Int) {
+        val open = PendingIntent.getActivity(
+            context, 20001,
+            Intent(context, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val n = NotificationCompat.Builder(context, CHANNEL_COMPLETED)
+            .setSmallIcon(R.drawable.stat_success)
+            .setContentTitle(context.getString(R.string.notif_resume_title))
+            .setContentText(context.getString(R.string.notif_resume_text, pendingCount))
+            .setContentIntent(open)
+            .setAutoCancel(true)
+            .build()
+        notificationManager.notify(RESUME_PROMPT_ID, n)
+    }
+
+    fun cancelResumePrompt() = notificationManager.cancel(RESUME_PROMPT_ID)
+
     fun playSound(rawResId: Int) {
         try {
             val mediaPlayer = MediaPlayer.create(context, rawResId)
@@ -168,6 +190,7 @@ class NotificationHelper(private val context: Context) {
 
     companion object {
         const val NOTIFICATION_ID_FOREGROUND = 1001
+        const val RESUME_PROMPT_ID = 20001
         const val CHANNEL_ACTIVE = "benzo_channel_active"
         const val CHANNEL_COMPLETED = "benzo_channel_completed"
         const val CHANNEL_ERROR = "benzo_channel_error"

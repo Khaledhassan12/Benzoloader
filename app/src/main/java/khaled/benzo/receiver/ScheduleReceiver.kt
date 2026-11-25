@@ -19,7 +19,12 @@ class ScheduleReceiver : BroadcastReceiver() {
             }
         } catch (e: RuntimeException) {
             // Background foreground-service start can be refused by the system (ForegroundServiceStartNotAllowedException
-            // is a RuntimeException). Downloads then resume when the user opens the app.
+            // is a RuntimeException). Tell the user, so the queue is not silently stuck.
+            val pending = goAsync()
+            Thread {
+                try { notifyIfDownloadsWaiting(context) } catch (e: Exception) { }
+                finally { pending.finish() }
+            }.start()
         }
     }
 }

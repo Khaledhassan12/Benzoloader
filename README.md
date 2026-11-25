@@ -48,32 +48,38 @@ Per-feature detail: [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md).
 
 ```
 Benzoloader/
-├── build.gradle.kts            plugin versions (Android Gradle Plugin, Kotlin, KSP)
-├── settings.gradle.kts         repositories (Google, Maven Central, jlibtorrent repo)
-├── gradle/ gradlew             Gradle wrapper
-├── docs/FEATURE_STATUS.md      per-feature implemented / tested table
+├── build.gradle.kts        plugin versions (AGP, Kotlin, KSP)
+├── settings.gradle.kts     repositories
+├── gradle/, gradlew        Gradle wrapper
+├── docs/FEATURE_STATUS.md  per-feature implemented / tested table
 └── app/
-    ├── build.gradle.kts        dependencies, ABIs, packaging
+    ├── build.gradle.kts    dependencies, ABIs, packaging
     └── src/
         ├── main/
         │   ├── AndroidManifest.xml
-        │   ├── java/khaled/benzo/
-        │   │   ├── BenzoApp.kt               Application class
-        │   │   ├── core/
-        │   │   │   ├── download/             DownloadEngine · ChunkWorker · TokenBucketLimiter · SpeedTracker · ResumePolicy
-        │   │   │   ├── queue/                QueuePolicy (what may run now)
-        │   │   │   ├── torrent/              TorrentEngine (jlibtorrent) · TorrentMapping
-        │   │   │   └── sniffer/              MediaSniffer · DetectedMedia
-        │   │   ├── service/                  DownloadService · DeviceConditions · ScheduleManager · NotificationHelper · WakeLockManager
-        │   │   ├── receiver/                 boot, schedule and notification-action receivers
-        │   │   ├── data/
-        │   │   │   ├── db/                   Room: downloads, chunks, torrents, bookmarks, sites
-        │   │   │   ├── model/                DownloadItem · DownloadStatus · FileCategory · TorrentItem · SiteProfile
-        │   │   │   └── repository/           DownloadRepository · SettingsRepository (SharedPreferences)
-        │   │   ├── provider/                 BenzoFileProvider
-        │   │   └── ui/                       main · editor · browser · torrent · site · settings · props · common
-        │   └── res/                          layouts, menus, drawables, strings (en, ar), raw sounds
-        └── test/                             QueuePolicyTest · DownloadEngineTest · TorrentMappingTest · ResumePolicyTest
+        │   ├── res/        layouts, menus, drawables, strings (en, ar), raw
+        │   └── java/khaled/benzo/
+        │       ├── BenzoApp.kt
+        │       ├── core/
+        │       │   ├── download/  DownloadEngine, ChunkWorker,
+        │       │   │              TokenBucketLimiter, SpeedTracker,
+        │       │   │              ResumePolicy
+        │       │   ├── queue/     QueuePolicy
+        │       │   ├── torrent/   TorrentEngine, TorrentMapping
+        │       │   └── sniffer/   MediaSniffer, DetectedMedia
+        │       ├── service/       DownloadService, DeviceConditions,
+        │       │                  ScheduleManager, NotificationHelper,
+        │       │                  WakeLockManager
+        │       ├── receiver/      boot, schedule, notification actions
+        │       ├── data/
+        │       │   ├── db/        Room entities and DAOs
+        │       │   ├── model/     DownloadItem, FileCategory, TorrentItem...
+        │       │   └── repository/ DownloadRepository, SettingsRepository
+        │       ├── provider/      BenzoFileProvider
+        │       └── ui/            main, editor, browser, torrent, site,
+        │                          settings, props, common
+        └── test/                  QueuePolicyTest, DownloadEngineTest,
+                                   TorrentMappingTest, ResumePolicyTest
 ```
 
 ## 📚 Libraries and what they do
@@ -92,30 +98,38 @@ Benzoloader/
 ## 🏗️ Architecture
 
 ```
- UI (Activities + ViewModels)
-        │ insert / update rows                       Settings (SharedPreferences)
-        ▼                                                   │
-   Room database ◄──────────── progress, status ───────┐    │
-        ▲                                              │    ▼
-        │ read queue                          ┌────────┴────────────────────┐
-        └──────────────────────────────────── │  DownloadService (1 s tick) │
-                                              │  DeviceConditions ──► QueuePolicy
-                                              └───────┬─────────────┬───────┘
-                                       HTTP rows      │             │     torrent rows
-                                                      ▼             ▼
-                                       DownloadEngine + ChunkWorker   TorrentEngine
-                                       (OkHttp, Range, retry,         (jlibtorrent session,
-                                        limiter, validators)           real stats)
++------------------------------+      +----------------------------+
+| UI: Activities + ViewModels  |      | Settings (SharedPrefs)     |
++---------------+--------------+      +--------------+-------------+
+                | insert/update rows                 |
+                v                                    v
++------------------------------+      +----------------------------+
+| Room database                |<-----| DownloadService (1 s tick) |
+| downloads, chunks, torrents  | rows | + DeviceConditions         |
++------------------------------+      +--------------+-------------+
+                ^                                    |
+                |  read queue                        v
+                +--------------------------- QueuePolicy: what may run
+                                                     |
+                      +------------------------------+--------------+
+                      | HTTP rows                    | torrent rows |
+                      v                              v              
+        +---------------------------+     +------------------------+
+        | DownloadEngine            |     | TorrentEngine          |
+        | + ChunkWorker             |     | jlibtorrent session,   |
+        | OkHttp, Range, retry,     |     | real stats             |
+        | limiter, resume checks    |     +------------------------+
+        +---------------------------+
 ```
 
 - The UI writes a row and starts `DownloadService`. Every second the service reads network, battery and schedule,
   asks `QueuePolicy` what may run, and starts or requeues tasks.
 - A torrent is a normal row (`isTorrent`, info hash). The `.torrent` file and file priorities are stored in the app
   files directory, so the same queue rules apply to it.
-- `ScheduleManager` sets an inexact alarm at the next schedule edge; `ScheduleReceiver` wakes the service.
+- `ScheduleManager` sets an alarm at the next schedule edge (exact when the exact-alarm permission is granted, otherwise inexact); `ScheduleReceiver` wakes the service.
 - Android 15+ rules (checked against developer.android.com): a `dataSync` foreground service cannot be started from a
   `BOOT_COMPLETED` receiver for apps targeting 35+, and it is limited to 6 hours per 24 hours. The boot receiver
-  therefore only re-arms the alarm, and the service handles the timeout by requeueing downloads and stopping. ✍️ 📱
+  therefore re-arms the alarm and posts a "tap to resume" notification when downloads are waiting. Opening the app starts the service (an allowed route). The service handles the 6-hour timeout by requeueing downloads and stopping. ✍️ 📱
 
 ## 🛠️ Build and run
 
@@ -133,7 +147,7 @@ Set `sdk.dir` in `local.properties` or `ANDROID_HOME`.
 - 📱 No device or emulator run yet. The native torrent library has only been checked statically (all 3168 Java native
   methods have matching symbols in the arm64 library); it has not been loaded.
 - Start, stop and exit receivers exist in code but are not registered in the manifest.
-- After a boot, downloads continue only when the app is opened or a schedule alarm manages to start the service.
+- After a boot, downloads continue after the user taps the "resume" notification or opens the app (✍️, depends on notification permission). Whether the schedule alarm may start the service on its own is unverified; if refused, the same notification appears.
 - Cookies and headers are stored unencrypted.
 - Unknown-size downloads that drop mid-stream fail safely instead of resuming.
 - `res/raw` contains audio plus ad/billing/OMSDK files of unknown origin. They are untouched; licensing needs a

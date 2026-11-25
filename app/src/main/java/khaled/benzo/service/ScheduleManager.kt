@@ -9,7 +9,7 @@ import khaled.benzo.data.repository.SettingsRepository
 import khaled.benzo.receiver.ScheduleReceiver
 import java.util.Calendar
 
-/** Arms one inexact alarm at the next schedule boundary so the queue is re-evaluated even if the service was stopped. */
+/** Arms one alarm (exact when permitted) at the next schedule boundary so the queue is re-evaluated even if the service was stopped. */
 object ScheduleManager {
     private const val REQUEST_CODE = 4107
 
@@ -25,6 +25,14 @@ object ScheduleManager {
         val minute = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
         val wait = ScheduleWindow(settings.scheduleStartMinute, settings.scheduleStopMinute).minutesToNextBoundary(minute)
         val triggerAt = now.timeInMillis - now.get(Calendar.SECOND) * 1000L - now.get(Calendar.MILLISECOND) + wait * 60_000L
-        am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi)
+        // An exact alarm for an action the user asked for (their schedule) is one of the documented exemptions that lets
+        // the receiver start a foreground service. Without the exact-alarm permission fall back to an inexact alarm.
+        val exactOk = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S || am.canScheduleExactAlarms()
+        try {
+            if (exactOk) am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi)
+            else am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi)
+        } catch (e: SecurityException) {
+            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi)
+        }
     }
 }

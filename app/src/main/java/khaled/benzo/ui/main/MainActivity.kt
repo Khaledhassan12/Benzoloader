@@ -147,6 +147,21 @@ class MainActivity : AppCompatActivity() {
         popup.show()
     }
 
+    override fun onStart() {
+        super.onStart()
+        // Opening the app is an allowed way to start the service: pick up queued downloads (for example after a reboot).
+        khaled.benzo.service.NotificationHelper(this).cancelResumePrompt()
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            val pending = khaled.benzo.data.db.BenzoDatabase.getInstance(this@MainActivity)
+                .downloadDao().getPendingAndActiveDownloads().size
+            if (pending > 0) {
+                startService(Intent(this@MainActivity, DownloadService::class.java).apply {
+                    action = DownloadService.ACTION_PROCESS_QUEUE
+                })
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
