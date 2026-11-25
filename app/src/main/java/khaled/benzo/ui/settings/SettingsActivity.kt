@@ -53,6 +53,12 @@ class SettingsActivity : AppCompatActivity() {
             current / 60, current % 60, true).show()
     }
 
+    private fun updateConnectionsLabel() {
+        val v = binding.sliderTorrentConnections.value.toInt()
+        binding.txtTorrentConnections.text = getString(R.string.pref_torrent_connections) + ": " +
+            if (v == 0) getString(R.string.pref_torrent_connections_default) else v.toString()
+    }
+
     private fun updateBatteryLabel() {
         val t = binding.sliderBattery.value.toInt()
         binding.txtBatteryThreshold.text = getString(R.string.pref_battery_threshold_fmt, t, khaled.benzo.core.queue.QueuePolicy.restartBelowOrAt(t) + 1)
@@ -91,6 +97,10 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchTorrentSeed.isChecked = repo.torrentSeedAfterFinish
         binding.sliderSeedRatio.value = repo.seedRatioTenths.toFloat()
         binding.sliderSeedMinutes.value = repo.seedMinutes.toFloat()
+        binding.switchTorrentDht.isChecked = repo.torrentDht
+        binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
+        updateConnectionsLabel()
+        binding.sliderTorrentConnections.addOnChangeListener { _, _, _ -> updateConnectionsLabel() }
         updateSeedLabels()
         binding.sliderSeedRatio.addOnChangeListener { _, _, _ -> updateSeedLabels() }
         binding.sliderBattery.addOnChangeListener { _, _, _ -> updateBatteryLabel() }
@@ -125,6 +135,8 @@ class SettingsActivity : AppCompatActivity() {
             torrentSeed = binding.switchTorrentSeed.isChecked,
             seedRatioTenths = binding.sliderSeedRatio.value.toInt(),
             seedMinutes = binding.sliderSeedMinutes.value.toInt(),
+            torrentDht = binding.switchTorrentDht.isChecked,
+            torrentConnections = binding.sliderTorrentConnections.value.toInt(),
             browserHistory = binding.switchBrowserHistory.isChecked,
             browserSaveTabs = binding.switchBrowserSaveTabs.isChecked
         )

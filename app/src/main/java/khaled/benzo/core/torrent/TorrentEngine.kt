@@ -23,8 +23,30 @@ class TorrentEngine(context: Context? = null) {
 
     fun initEngine(@Suppress("UNUSED_PARAMETER") storageDir: File? = null) {
         synchronized(lock) {
-            if (!session.isRunning) session.start()
+            if (!session.isRunning) {
+                session.start()
+                libraryConnectionsDefault = session.settings().connectionsLimit()
+                applyNetwork()
+            }
         }
+    }
+
+    private var libraryConnectionsDefault = 0
+    private var wantDht = true
+    private var wantConnections = 0
+
+    /** Network settings. Applied at once when the session runs, otherwise right after it starts. Cheap to call repeatedly. */
+    fun configureNetwork(dht: Boolean, connectionsLimit: Int) = synchronized(lock) {
+        if (dht == wantDht && connectionsLimit == wantConnections) return@synchronized
+        wantDht = dht; wantConnections = connectionsLimit
+        if (session.isRunning) applyNetwork()
+    }
+
+    private fun applyNetwork() {
+        val pack = session.settings()
+        pack.enableDht(wantDht)
+        pack.connectionsLimit(TorrentNetworkPolicy.connectionsToApply(wantConnections, libraryConnectionsDefault))
+        session.applySettings(pack)
     }
 
     private fun ensureStarted() = initEngine(null)

@@ -339,6 +339,28 @@
                 android:valueTo="4320.0" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchTorrentDht"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_torrent_dht" />
+
+            <TextView
+                android:id="@+id/txtTorrentConnections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_torrent_connections"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderTorrentConnections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stepSize="50.0"
+                android:value="0.0"
+                android:valueFrom="0.0"
+                android:valueTo="1000.0" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switchBrowserHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

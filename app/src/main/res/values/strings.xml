@@ -223,4 +223,7 @@
     <string name="wait_schedule">Waiting for schedule</string>
     <string name="wait_slot">Waiting for a free slot</string>
     <string name="pref_battery_threshold_fmt">Stop at or below %1$d%% battery. Waiting downloads start again at %2$d%% or more, or when charging (this also applies to a new download started between the two levels).</string>
+    <string name="pref_torrent_dht">Find torrent peers with DHT (magnet links need it)</string>
+    <string name="pref_torrent_connections">Torrent connection limit</string>
+    <string name="pref_torrent_connections_default">library default</string>
 </resources>
