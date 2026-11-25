@@ -23,6 +23,8 @@ class CatalogPolicyTest {
         assertEquals(root, CatalogPolicy.targetFolder(root, root, FileCategory.ALL, true))
 
     @Test fun fileNameCategoriesResolveFromFullName() {
+        for ((cat, exts) in FileCategory.EXTENSIONS) for (e in exts) assertEquals(cat, FileCategory.fromExtension(e))
+        assertEquals(FileCategory.OTHER, FileCategory.fromExtension("unknownthing"))
         assertEquals(FileCategory.VIDEO, FileCategory.fromExtension("clip.MP4"))
         assertEquals(FileCategory.ARCHIVE, FileCategory.fromExtension(".zip"))
         assertEquals(FileCategory.PROGRAM, FileCategory.fromExtension("app.apk"))

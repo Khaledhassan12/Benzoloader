@@ -107,6 +107,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.settings.CatalogCategoryActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.settings.SettingsHubActivity"
             android:exported="false" />
 

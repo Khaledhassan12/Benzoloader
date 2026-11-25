@@ -276,4 +276,8 @@
     <string name="val_threads">%1$d threads</string>
     <string name="val_kbps">%1$d KB/s</string>
     <string name="val_percent">%1$d%%</string>
+    <string name="cat_folder_name">Folder name</string>
+    <string name="cat_extensions">Extensions</string>
+    <string name="cat_extensions_other">Any file type not listed in the other categories</string>
+    <string name="cat_folder_for_files">Folder for files</string>
 </resources>

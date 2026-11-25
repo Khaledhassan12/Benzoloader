@@ -276,4 +276,8 @@
     <string name="val_threads">%1$d خيوط</string>
     <string name="val_kbps">%1$d KB/s</string>
     <string name="val_percent">%1$d%%</string>
+    <string name="cat_folder_name">اسم المجلد</string>
+    <string name="cat_extensions">الامتدادات</string>
+    <string name="cat_extensions_other">أي نوع ملف غير موجود في التصنيفات الأخرى</string>
+    <string name="cat_folder_for_files">مجلد الملفات</string>
 </resources>

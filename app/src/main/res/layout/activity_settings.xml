@@ -53,7 +53,7 @@
       </LinearLayout>
       <LinearLayout android:id="@+id/section_cataloging" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchCatalog" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_catalog" />
-        <Button android:id="@+id/btnFolderNames" style="?attr/materialButtonOutlinedStyle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_folder_names" />
+        <LinearLayout android:id="@+id/catalogCategoryList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
       </LinearLayout>
       <LinearLayout android:id="@+id/section_scheduler" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchSchedule" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_schedule_enable" />

@@ -22,7 +22,7 @@ class SettingsActivity : AppCompatActivity() {
         loadCurrentSettings()
         showOnlyRequestedSection()
         bindDependents(binding.switchTorrentSeed, binding.txtSeedRatio, binding.sliderSeedRatio, binding.txtSeedMinutes, binding.sliderSeedMinutes)
-        bindDependents(binding.switchCatalog, binding.btnFolderNames)
+        bindDependents(binding.switchCatalog, binding.catalogCategoryList)
         bindDependents(binding.switchSchedule, binding.btnScheduleStart, binding.btnScheduleStop)
     }
 
@@ -68,6 +68,21 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun updateBatteryLabel() = refreshValueRows()
 
+    /** One row per cataloging category, each opens its own screen. Rebuilt in onResume so renamed folders show. */
+    private fun buildCatalogRows(names: khaled.benzo.core.catalog.FolderNames) {
+        val list = binding.catalogCategoryList
+        list.removeAllViews()
+        for (cat in khaled.benzo.core.catalog.FolderNames.editable) {
+            val row = layoutInflater.inflate(khaled.benzo.R.layout.item_nav_row, list, false)
+            row.findViewById<android.widget.TextView>(khaled.benzo.R.id.navTitle).text = names.nameFor(cat)
+            row.setOnClickListener {
+                startActivity(android.content.Intent(this, CatalogCategoryActivity::class.java).putExtra(CatalogCategoryActivity.EXTRA_CATEGORY, cat.key))
+            }
+            row.isEnabled = binding.switchCatalog.isChecked
+            list.addView(row)
+        }
+    }
+
     private var valueRows: List<ValueRow> = emptyList()
     private fun refreshValueRows() = valueRows.forEach { it.refresh() }
 
@@ -104,9 +119,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderSpeedLimit.addOnChangeListener { _, _, _ -> updateSpeedLabel() }
         binding.switchSchedule.isChecked = repo.scheduleEnabled
         binding.switchCatalog.isChecked = repo.catalogEnabled
-        binding.btnFolderNames.setOnClickListener {
-            FolderNamesDialog.show(this, repo.catalogFolderNames) { repo.catalogFolderNames = it }
-        }
+        buildCatalogRows(repo.catalogFolderNames)
         binding.sliderErrorRetries.value = repo.errorRetries.toFloat()
         binding.switchPauseAfterError.isChecked = repo.pauseAfterError
         binding.switchAutoResume.isChecked = repo.autoResume
@@ -195,6 +208,7 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        buildCatalogRows(khaled.benzo.data.repository.SettingsRepository(this).catalogFolderNames)
         refreshAllFilesButton()
     }
 
