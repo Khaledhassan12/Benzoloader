@@ -19,3 +19,12 @@ Date of check: Nov 25 2026. Sources fetched live: repo1.maven.org maven-metadata
 | Material Components | 1.12.0 | 1.14.0 (Central metadata) | minor | Theme and style behaviour changes are possible; needs a visual check. |
 
 Decision: nothing changed. Raising these blind could force a compileSdk change and break the first build, and without a build I cannot tell which break is mine. Proposed order at the build phase: (1) first green build on the current set, (2) AndroidX + Material + coroutines bump with compileSdk checked against each release note, (3) OkHttp 5, (4) jlibtorrent 2.1.2.1 migration as its own change with the torrent tests. Items 3 and 4 are the load-bearing tradeoffs: behaviour risk for downloads and torrents.
+
+## Follow-up: compileSdk and tool requirements (read from official pages, no build)
+- AGP 9.5 requires Gradle 9.6.0 (developer.android.com/build/releases/about-agp, table). The project already uses AGP 9.5.0 with Gradle 9.6.0, so the pair matches the page.
+- AGP page lists the minimum AGP for API 36.1 as 8.13.0, so AGP 9.5.0 supports compileSdk 36.1. The SDK platform 36.1 itself must be installed where the build runs; the build environment I used has the platform for 36, and I have not checked whether 36.1 is present.
+- androidx.core: the 1.18.0 release (11 Mar 2026) notes say its own compileSdk changed from 36 to 36.1. Whether that is enforced as a minimum for apps through library metadata is NOT confirmed by the page. Treat core 1.18 and later as needing compileSdk 36.1 until a build shows otherwise.
+- androidx.recyclerview 1.4.0: "will only compile against API 35 or higher" (page). Our compileSdk 36 is fine.
+- activity/lifecycle: the compileSdk 37 notes are for their Compose libraries, which we do not use. No statement found that activity-ktx or lifecycle-*-ktx need more than 36. Activity 1.12 needs lifecycle-runtime 2.10 or later (page, for lint with AGP 9.5), which the staged bump covers.
+- constraintlayout, fragment, appcompat, material: no compileSdk statement found on the pages I searched. Unconfirmed, not a guarantee.
+Staged plan stays: first green build, then bump AndroidX in one commit and set compileSdk 36.1 only if the build or the dependency metadata asks for it.
