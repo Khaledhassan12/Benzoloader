@@ -158,6 +158,7 @@ class DownloadService : Service() {
         activeItems[id] = item.copy(status = DownloadStatus.RUNNING)
 
         if (item.isTorrent) { startTorrentTask(item); return }
+        downloadEngine.maxRetries = settings.errorRetries
 
         val job = serviceScope.launch {
             val existingChunks = repository.getChunks(id)

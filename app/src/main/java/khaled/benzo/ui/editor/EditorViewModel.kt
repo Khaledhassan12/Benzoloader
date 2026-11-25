@@ -29,13 +29,18 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
     ) {
         viewModelScope.launch {
             val category = FileCategory.fromExtension(fileName)
+            val root = settingsRepository.defaultDownloadPath.ifEmpty {
+                android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).absolutePath
+            }
+            val finalPath = khaled.benzo.core.catalog.CatalogPolicy.targetFolder(
+                savePath, root, category, settingsRepository.catalogEnabled)
             val status = if (startNow) DownloadStatus.QUEUED else DownloadStatus.PAUSED
 
             val item = DownloadItem(
                 id = 0L,
                 url = url,
                 fileName = fileName,
-                savePath = savePath,
+                savePath = finalPath,
                 totalBytes = -1L,
                 downloadedBytes = 0L,
                 status = status,

@@ -20,6 +20,9 @@ class DownloadEngine(
     private val client: OkHttpClient = createDefaultClient()
 ) {
 
+    /** Retries per part before the download fails (set from Settings by the service). */
+    @Volatile var maxRetries: Int = 4
+
     data class ServerFileInfo(
         val contentLength: Long,
         val supportsRange: Boolean,
@@ -149,7 +152,7 @@ class DownloadEngine(
                         async {
                             ChunkWorker(
                                 client = client, url = item.url, chunk = chunk, outputFile = targetFile,
-                                limiter = limiter, headers = headers, wholeFile = wholeFile,
+                                limiter = limiter, headers = headers, wholeFile = wholeFile, maxRetries = maxRetries.coerceIn(0, 20),
                                 onProgress = { _, bytes ->
                                     downloaded.addAndGet(bytes.toLong())
                                     speedTracker.recordBytes(bytes.toLong())

@@ -131,4 +131,6 @@
     <string name="pref_speed_limit_value">Speed limit: %1$d KB/s</string>
     <string name="notif_resume_title">Downloads are waiting</string>
     <string name="notif_resume_text">%1$d download(s) in the queue. Tap to resume.</string>
+    <string name="pref_catalog">Sort downloads into folders by type</string>
+    <string name="pref_error_retries">Retries per part on errors (0-10)</string>
 </resources>

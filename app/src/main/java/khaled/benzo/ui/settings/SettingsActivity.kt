@@ -55,6 +55,8 @@ class SettingsActivity : AppCompatActivity() {
         updateSpeedLabel()
         binding.sliderSpeedLimit.addOnChangeListener { _, _, _ -> updateSpeedLabel() }
         binding.switchSchedule.isChecked = repo.scheduleEnabled
+        binding.switchCatalog.isChecked = repo.catalogEnabled
+        binding.sliderErrorRetries.value = repo.errorRetries.toFloat()
         startMinute = repo.scheduleStartMinute
         stopMinute = repo.scheduleStopMinute
         updateScheduleLabels()
@@ -76,7 +78,9 @@ class SettingsActivity : AppCompatActivity() {
             speedLimitKBps = binding.sliderSpeedLimit.value.toInt(),
             scheduleEnabled = binding.switchSchedule.isChecked,
             scheduleStartMinute = startMinute,
-            scheduleStopMinute = stopMinute
+            scheduleStopMinute = stopMinute,
+            catalogEnabled = binding.switchCatalog.isChecked,
+            errorRetries = binding.sliderErrorRetries.value.toInt()
         )
         finish()
     }

@@ -21,28 +21,31 @@ HTTP/HTTPS multi-connection downloads · resume · BitTorrent · in-app browser 
 | 📱 | Device-tested. **Nothing in this project has been run on a device or emulator.** |
 | 📝 | Planned / not implemented. |
 
-Last full build and test run: 40 of 40 unit tests passed at commit `fd59931`. Later commits are ✍️ until a final build.
+Every status is also written in words, so nothing depends on the icons displaying. Last full build and test run: 40 of 40 unit tests passed at commit `fd59931`. Later commits are ✍️ until a final build.
 No speed or reliability measurements exist; this document makes no performance claim.
 Per-feature detail: [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md).
 
 ## ✨ Features
 
-| | Feature | State |
+| | Feature | State (in words) |
 |---|---|---|
-| 🌐 | Single connection and up to 16 parallel parts, minimum 512 KB per part | ✅ engine (min part size ✍️) |
-| 🛡️ | Range validation (HTTP 206 + `Content-Range` start); servers without Range fall back to one connection | ✅ |
-| 🔁 | Retry with exponential backoff; a short body is never marked complete | ✅ |
-| ⏯️ | Pause/resume from saved chunk progress | ✅ engine · 📱 not tested |
-| 🔍 | Resume check: ETag (strong) / Last-Modified / length compared with start values; mismatch restarts clean | ✍️ |
-| ✔️ | Final size verification before "completed" | ✅ |
-| 🚦 | Speed limit (token bucket), live from Settings; fix for limits below one read | ✅ limiter basics · ✍️ fix and live apply |
-| 📂 | Safe file names (no escape from target folder), free-space check, editor user-agent/referer/cookies sent | ✅ names/headers · 🔨 space check |
-| 🗂️ | Queue rules: max concurrent, Wi-Fi only, battery threshold, stop on unplug, schedule window (crosses midnight) | ✅ policy · 🔨 service wiring |
-| 🧲 | Torrent: `.torrent` or magnet, file selection, runs through the same queue | 🔨 engine/service wired · ✍️ later edits · 📱 never run |
-| 🌍 | In-app browser, media sniffer, bookmarks, site manager, per-site profiles | 🔨 |
-| ⚙️ | Settings: threads, concurrency, Wi-Fi only, battery, unplug, speed limit, schedule, sounds | ✍️ newest items |
-| 🔔 | Foreground notification, completion sound | 🔨 |
-| 📝 | Sort-into-folders cataloging, error limit / pause after error, HLS download and merge, seeding limits, DHT/port settings | planned |
+| 🌐 | Single connection and up to 16 parallel parts, minimum part size 512 KB | tested (engine); min part size not built |
+| 🛡️ | Range validation (HTTP 206 + `Content-Range` start); servers without Range fall back to one connection | tested |
+| 🔁 | Retry with exponential backoff; a short body is never marked complete | tested |
+| ⏯️ | Pause/resume from saved chunk progress | tested (engine); not run on a device |
+| 🔍 | Resume check: ETag (strong), Last-Modified and length compared with start values; mismatch restarts clean | not built |
+| ✔️ | Final size verification before "completed" | tested |
+| 🚦 | Speed limit (token bucket), live from Settings; fix for limits below one read | tested (basic limiter); fix and live apply not built |
+| 📂 | Safe file names, free-space check, editor user-agent/referer/cookies sent | tested (names, headers); space check compiled only |
+| 🗂️ | Queue rules: max concurrent, Wi-Fi only, battery threshold, stop on unplug, schedule window (crosses midnight) | tested (policy); service wiring compiled only |
+| 🧲 | Torrent: `.torrent` or magnet, file selection, same queue as other downloads | compiled; later edits not built; never run |
+| 🌍 | In-app browser, media sniffer, bookmarks, site manager, per-site profiles | compiled only |
+| ⚙️ | Settings: threads, concurrency, Wi-Fi only, battery, unplug, speed limit, schedule, sounds | newest items not built |
+| 🔔 | Foreground notification, completion sound | compiled only |
+| 🔄 | Boot / schedule recovery: "tap to resume" notification, resume on app open, exact alarm when permitted | not built; not run on a device |
+| 🗃️ | Sort new downloads into Video / Music / Documents / Archives / Programs / Torrents folders (Settings switch, off by default; skipped when the user picked another folder) | not built |
+| 🔂 | Retries per part on errors, 0 to 10 (Settings) | not built |
+| 📝 | HLS download and merge, seeding limits, DHT/port settings | planned, not implemented |
 
 ## 🗺️ Project layout
 
@@ -61,6 +64,7 @@ Benzoloader/
         │   └── java/khaled/benzo/
         │       ├── BenzoApp.kt
         │       ├── core/
+        │       │   ├── catalog/   CatalogPolicy
         │       │   ├── download/  DownloadEngine, ChunkWorker,
         │       │   │              TokenBucketLimiter, SpeedTracker,
         │       │   │              ResumePolicy
@@ -79,7 +83,8 @@ Benzoloader/
         │       └── ui/            main, editor, browser, torrent, site,
         │                          settings, props, common
         └── test/                  QueuePolicyTest, DownloadEngineTest,
-                                   TorrentMappingTest, ResumePolicyTest
+                                   TorrentMappingTest, ResumePolicyTest,
+                                   CatalogPolicyTest
 ```
 
 ## 📚 Libraries and what they do
@@ -98,28 +103,22 @@ Benzoloader/
 ## 🏗️ Architecture
 
 ```
-+------------------------------+      +----------------------------+
-| UI: Activities + ViewModels  |      | Settings (SharedPrefs)     |
-+---------------+--------------+      +--------------+-------------+
-                | insert/update rows                 |
-                v                                    v
-+------------------------------+      +----------------------------+
-| Room database                |<-----| DownloadService (1 s tick) |
-| downloads, chunks, torrents  | rows | + DeviceConditions         |
-+------------------------------+      +--------------+-------------+
-                ^                                    |
-                |  read queue                        v
-                +--------------------------- QueuePolicy: what may run
-                                                     |
-                      +------------------------------+--------------+
-                      | HTTP rows                    | torrent rows |
-                      v                              v              
-        +---------------------------+     +------------------------+
-        | DownloadEngine            |     | TorrentEngine          |
-        | + ChunkWorker             |     | jlibtorrent session,   |
-        | OkHttp, Range, retry,     |     | real stats             |
-        | limiter, resume checks    |     +------------------------+
-        +---------------------------+
+UI (Activities, ViewModels)
+  |  writes rows
+  v
+Room database (downloads, chunks, torrents)
+  ^                     
+  |  reads queue, writes progress
+DownloadService  (1 second tick)
+  |  reads: DeviceConditions (network, battery), Settings, schedule
+  v
+QueuePolicy  -> decides which rows may run now
+  |
+  +--> HTTP row ----> DownloadEngine + ChunkWorker
+  |                   (OkHttp, Range, retry, limiter, resume checks)
+  |
+  +--> torrent row -> TorrentEngine
+                      (jlibtorrent session, real stats)
 ```
 
 - The UI writes a row and starts `DownloadService`. Every second the service reads network, battery and schedule,
@@ -144,7 +143,7 @@ Set `sdk.dir` in `local.properties` or `ANDROID_HOME`.
 
 ## ⚠️ Known limitations
 
-- 📱 No device or emulator run yet. The native torrent library has only been checked statically (all 3168 Java native
+- No device or emulator run yet. The native torrent library has only been checked statically (all 3168 Java native
   methods have matching symbols in the arm64 library); it has not been loaded.
 - Start, stop and exit receivers exist in code but are not registered in the manifest.
 - After a boot, downloads continue after the user taps the "resume" notification or opens the app (✍️, depends on notification permission). Whether the schedule alarm may start the service on its own is unverified; if refused, the same notification appears.

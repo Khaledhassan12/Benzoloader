@@ -131,4 +131,6 @@
     <string name="pref_speed_limit_value">حد السرعة: %1$d KB/s</string>
     <string name="notif_resume_title">في تحميلات منتظرة</string>
     <string name="notif_resume_text">%1$d تحميل في الطابور. اضغط للاستكمال.</string>
+    <string name="pref_catalog">ترتيب التحميلات في مجلدات حسب النوع</string>
+    <string name="pref_error_retries">عدد إعادة المحاولة عند الأخطاء (0-10)</string>
 </resources>

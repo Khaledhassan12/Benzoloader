@@ -18,7 +18,9 @@ enum class FileCategory(val key: String) {
     companion object {
         fun fromExtension(ext: String?): FileCategory {
             if (ext.isNullOrBlank()) return DOCUMENT
-            val clean = ext.lowercase(Locale.ROOT).trimStart('.')
+            // Callers pass either an extension ("mp4", ".mp4") or a whole file name ("clip.mp4").
+            val lower = ext.lowercase(Locale.ROOT).trim()
+            val clean = if (lower.contains('.')) lower.substringAfterLast('.') else lower
             return when (clean) {
                 "mp4", "mkv", "avi", "mov", "wmv", "flv", "webm", "m4v", "3gp", "ts", "m3u8", "mpd" -> VIDEO
                 "mp3", "m4a", "flac", "wav", "aac", "ogg", "wma", "opus" -> MUSIC
