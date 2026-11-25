@@ -56,10 +56,19 @@ class EditorActivity : AppCompatActivity() {
             else -> intent.getStringExtra("extra_url")
         }
 
-        if (!intentUrl.isNullOrEmpty()) {
-            binding.edtUrl.setText(intentUrl)
-            extractFileNameFromUrl(intentUrl)
+        // Only http and https are downloadable. The form is pre-filled only; nothing starts without the user.
+        val clean = intentUrl?.trim()?.takeIf { it.startsWith("http://", true) || it.startsWith("https://", true) }
+        if (!clean.isNullOrEmpty()) {
+            binding.edtUrl.setText(clean)
+            extractFileNameFromUrl(clean)
         }
+    }
+
+    /** The editor is singleTask: a link shared while it is open arrives here and must not be dropped. */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIncomingIntent()
     }
 
     private fun extractFileNameFromUrl(url: String) {

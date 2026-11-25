@@ -20,7 +20,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ConcurrentHashMap
 
 class DownloadService : Service() {
@@ -277,8 +276,8 @@ class DownloadService : Service() {
         updateNotification()
     }
 
-    private fun torrentHashOf(id: Long): String? =
-        runCatching { kotlinx.coroutines.runBlocking { repository.getDownload(id) } }.getOrNull()
+    private suspend fun torrentHashOf(id: Long): String? =
+        runCatching { repository.getDownload(id) }.getOrNull()
             ?.takeIf { it.isTorrent }?.torrentInfoHash
 
     private fun pauseTask(id: Long) {
@@ -331,10 +330,12 @@ class DownloadService : Service() {
      * stop within seconds. Running downloads go back to the queue (progress is saved) and the service stops.
      */
     override fun onTimeout(startId: Int, fgsType: Int) {
-        runBlocking {
-            for (id in activeJobs.keys.toList()) requeueTask(id)
+        // Not on the main thread: the database writes must not block it. The service still stops right after them.
+        val ids = activeJobs.keys.toList()
+        serviceScope.launch {
+            try { for (id in ids) requeueTask(id) }
+            finally { android.os.Handler(android.os.Looper.getMainLooper()).post { stopAllAndExit() } }
         }
-        stopAllAndExit()
     }
 
     override fun onDestroy() {
