@@ -20,6 +20,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ConcurrentHashMap
 
 class DownloadService : Service() {
@@ -322,6 +323,17 @@ class DownloadService : Service() {
         wakeLockManager.release()
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
+    }
+
+    /**
+     * Android 15+ limits dataSync foreground services to 6 hours per 24 hours and then calls this; the service must
+     * stop within seconds. Running downloads go back to the queue (progress is saved) and the service stops.
+     */
+    override fun onTimeout(startId: Int, fgsType: Int) {
+        runBlocking {
+            for (id in activeJobs.keys.toList()) requeueTask(id)
+        }
+        stopAllAndExit()
     }
 
     override fun onDestroy() {

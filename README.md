@@ -1,98 +1,146 @@
-# Benzoloader
+<div align="center">
 
-Android download manager written in Kotlin (package `khaled.benzo`). It downloads HTTP/HTTPS files with several
-parallel connections, resumes interrupted downloads, runs BitTorrent downloads, and has an in-app browser that can
-detect downloadable media. The UI is in English and Arabic.
+# 📥 Benzoloader
 
-This README describes what the code does and how far it has been checked. Read the **Status** section before relying
-on any feature.
+**Android download manager in Kotlin** · package `khaled.benzo` · minSdk 26 · target/compileSdk 36
 
-> The project is a from-scratch implementation of behaviour the owner wants in a download manager. It does not contain
-> code from, and has no access to the internals of, any other download manager.
+HTTP/HTTPS multi-connection downloads · resume · BitTorrent · in-app browser with media detection · English + Arabic
 
-## Status (honest summary)
+</div>
 
-| Level | What it means here |
+> Independent implementation of the behaviour the owner wants. It contains no code from, and has no access to the
+> internals of, any other download manager.
+
+## 🚦 Read this first: verification state
+
+| Icon | Meaning |
 |---|---|
-| Unit-tested | JVM tests run under Gradle, using a local mock HTTP server. No phone involved. |
-| Compiled | Builds, but no test covers it. |
-| Code present | Written, not compiled or run in the latest changes. |
-| Device-tested | Run on a real phone or emulator. **Nothing in this project has been device-tested yet.** |
+| ✅ | Unit-tested: JVM tests passed under Gradle (local mock HTTP server, no phone). |
+| 🔨 | Compiled, no test covers it. |
+| ✍️ | Code written but **not compiled or run yet** (written while builds were paused on the `refactor` branch). |
+| 📱 | Device-tested. **Nothing in this project has been run on a device or emulator.** |
+| 📝 | Planned / not implemented. |
 
-See [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md) for the per-feature table. Some commits on the `refactor` branch
-were written while building was paused, so a full build and test pass is still required at the end of that work.
-No speed or reliability measurements exist yet; do not read any performance claim into this document.
+Last full build and test run: 40 of 40 unit tests passed at commit `fd59931`. Later commits are ✍️ until a final build.
+No speed or reliability measurements exist; this document makes no performance claim.
+Per-feature detail: [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md).
 
-## Features
+## ✨ Features
 
-HTTP/HTTPS engine (`core/download`)
-- Single connection or up to 16 parallel parts (parts are never smaller than 512 KB).
-- Range responses are validated (HTTP 206 and the `Content-Range` start). A server that ignores Range gets a single
-  connection from scratch instead of a corrupted file.
-- Retries with exponential backoff, resuming from the last byte written. A short body is never marked complete.
-- Resume from saved chunk progress. On resume the server's ETag / Last-Modified / length are compared with those saved
-  at start; a positive mismatch restarts the download clean. If the check cannot be made, progress is kept.
-- Final size verification before a download is marked completed.
-- Speed limit (token bucket, applies live from Settings).
-- Safe file names (cannot escape the target folder) and a free-space check.
-- User agent, referer and cookies from the editor are sent with requests.
+| | Feature | State |
+|---|---|---|
+| 🌐 | Single connection and up to 16 parallel parts, minimum 512 KB per part | ✅ engine (min part size ✍️) |
+| 🛡️ | Range validation (HTTP 206 + `Content-Range` start); servers without Range fall back to one connection | ✅ |
+| 🔁 | Retry with exponential backoff; a short body is never marked complete | ✅ |
+| ⏯️ | Pause/resume from saved chunk progress | ✅ engine · 📱 not tested |
+| 🔍 | Resume check: ETag (strong) / Last-Modified / length compared with start values; mismatch restarts clean | ✍️ |
+| ✔️ | Final size verification before "completed" | ✅ |
+| 🚦 | Speed limit (token bucket), live from Settings; fix for limits below one read | ✅ limiter basics · ✍️ fix and live apply |
+| 📂 | Safe file names (no escape from target folder), free-space check, editor user-agent/referer/cookies sent | ✅ names/headers · 🔨 space check |
+| 🗂️ | Queue rules: max concurrent, Wi-Fi only, battery threshold, stop on unplug, schedule window (crosses midnight) | ✅ policy · 🔨 service wiring |
+| 🧲 | Torrent: `.torrent` or magnet, file selection, runs through the same queue | 🔨 engine/service wired · ✍️ later edits · 📱 never run |
+| 🌍 | In-app browser, media sniffer, bookmarks, site manager, per-site profiles | 🔨 |
+| ⚙️ | Settings: threads, concurrency, Wi-Fi only, battery, unplug, speed limit, schedule, sounds | ✍️ newest items |
+| 🔔 | Foreground notification, completion sound | 🔨 |
+| 📝 | Sort-into-folders cataloging, error limit / pause after error, HLS download and merge, seeding limits, DHT/port settings | planned |
 
-Queue and rules (`core/queue`, `service`)
-- Foreground service with a queue and notifications.
-- Max concurrent downloads, Wi-Fi only, battery threshold, stop when unplugged, and a daily schedule window (can cross
-  midnight). Running downloads return to the queue when a rule blocks them and start again when it clears.
-
-Torrent (`core/torrent`)
-- Real engine on jlibtorrent 1.2.0.18 (libtorrent): open `.torrent` files or magnet links, choose files, run through the
-  same queue as other downloads. Native libraries for arm64-v8a, armeabi-v7a, x86 and x86_64 come from the matching
-  `jlibtorrent-android-*` artifacts.
-- Not done: seeding limits, DHT/port settings, per-peer UI, resume-data files.
-
-App
-- Download list with categories, add/edit screen, in-app browser with media sniffer, bookmarks, site manager,
-  settings (threads, concurrency, Wi-Fi only, battery, unplug, speed limit, schedule, sounds).
-
-## Architecture
+## 🗺️ Project layout
 
 ```
-app/src/main/java/khaled/benzo/
-  core/download   DownloadEngine, ChunkWorker, TokenBucketLimiter, ResumePolicy (validators, chunk planning)
-  core/queue      QueuePolicy: which downloads may run now
-  core/torrent    TorrentEngine (jlibtorrent), TorrentMapping (pure helpers)
-  core/sniffer    media link detection for the browser
-  service         DownloadService, DeviceConditions, ScheduleManager, notifications, wake lock
-  receiver        boot, schedule and notification-action receivers
-  data            Room database (downloads, chunks, torrents, bookmarks, sites), repositories, SharedPreferences settings
-  ui              main list, editor, browser, torrent editor, site manager, settings, properties
+Benzoloader/
+├── build.gradle.kts            plugin versions (Android Gradle Plugin, Kotlin, KSP)
+├── settings.gradle.kts         repositories (Google, Maven Central, jlibtorrent repo)
+├── gradle/ gradlew             Gradle wrapper
+├── docs/FEATURE_STATUS.md      per-feature implemented / tested table
+└── app/
+    ├── build.gradle.kts        dependencies, ABIs, packaging
+    └── src/
+        ├── main/
+        │   ├── AndroidManifest.xml
+        │   ├── java/khaled/benzo/
+        │   │   ├── BenzoApp.kt               Application class
+        │   │   ├── core/
+        │   │   │   ├── download/             DownloadEngine · ChunkWorker · TokenBucketLimiter · SpeedTracker · ResumePolicy
+        │   │   │   ├── queue/                QueuePolicy (what may run now)
+        │   │   │   ├── torrent/              TorrentEngine (jlibtorrent) · TorrentMapping
+        │   │   │   └── sniffer/              MediaSniffer · DetectedMedia
+        │   │   ├── service/                  DownloadService · DeviceConditions · ScheduleManager · NotificationHelper · WakeLockManager
+        │   │   ├── receiver/                 boot, schedule and notification-action receivers
+        │   │   ├── data/
+        │   │   │   ├── db/                   Room: downloads, chunks, torrents, bookmarks, sites
+        │   │   │   ├── model/                DownloadItem · DownloadStatus · FileCategory · TorrentItem · SiteProfile
+        │   │   │   └── repository/           DownloadRepository · SettingsRepository (SharedPreferences)
+        │   │   ├── provider/                 BenzoFileProvider
+        │   │   └── ui/                       main · editor · browser · torrent · site · settings · props · common
+        │   └── res/                          layouts, menus, drawables, strings (en, ar), raw sounds
+        └── test/                             QueuePolicyTest · DownloadEngineTest · TorrentMappingTest · ResumePolicyTest
 ```
 
-Flow: the UI inserts a row in Room and starts `DownloadService`. Every second the service reads device conditions,
-asks `QueuePolicy` what may run, and starts or requeues tasks. HTTP rows go to `DownloadEngine`; torrent rows go to
-`TorrentEngine`. Progress is written back to the row.
+## 📚 Libraries and what they do
 
-## Build and run
+| Library | Version | Role in this project |
+|---|---|---|
+| Kotlin + Coroutines | 2.2.10 / 1.8.1 | Language, async I/O, cancellation of downloads |
+| OkHttp | 4.12.0 | HTTP/HTTPS client for the download engine (`logging-interceptor` is declared as well) |
+| Room (+ KSP compiler) | 2.8.5 | Local database for downloads, chunk progress, torrents, bookmarks, sites |
+| jlibtorrent (FrostWire) | 1.2.0.18 | Java binding of libtorrent for the torrent engine |
+| `jlibtorrent-android-{arm64,arm,x86,x86_64}` | 1.2.0.18 | Native `.so` per ABI, same version as the Java API |
+| AndroidX (core, appcompat, lifecycle, activity, fragment, recyclerview, constraintlayout, drawerlayout, swiperefreshlayout, documentfile) | see `app/build.gradle.kts` | UI framework, ViewModels, lists, folder access |
+| Material Components | 1.12.0 | Sliders, switches, toolbar, theming |
+| JUnit, MockWebServer, kotlinx-coroutines-test | 4.13.2 / 4.12.0 / 1.8.1 | Unit tests against a local HTTP server |
 
-Requirements: JDK 17, Android SDK platform 36 (compileSdk and targetSdk 36, minSdk 26). Gradle is provided by the wrapper.
+## 🏗️ Architecture
 
 ```
-./gradlew :app:assembleDebug          # debug APK in app/build/outputs/apk/debug/
+ UI (Activities + ViewModels)
+        │ insert / update rows                       Settings (SharedPreferences)
+        ▼                                                   │
+   Room database ◄──────────── progress, status ───────┐    │
+        ▲                                              │    ▼
+        │ read queue                          ┌────────┴────────────────────┐
+        └──────────────────────────────────── │  DownloadService (1 s tick) │
+                                              │  DeviceConditions ──► QueuePolicy
+                                              └───────┬─────────────┬───────┘
+                                       HTTP rows      │             │     torrent rows
+                                                      ▼             ▼
+                                       DownloadEngine + ChunkWorker   TorrentEngine
+                                       (OkHttp, Range, retry,         (jlibtorrent session,
+                                        limiter, validators)           real stats)
+```
+
+- The UI writes a row and starts `DownloadService`. Every second the service reads network, battery and schedule,
+  asks `QueuePolicy` what may run, and starts or requeues tasks.
+- A torrent is a normal row (`isTorrent`, info hash). The `.torrent` file and file priorities are stored in the app
+  files directory, so the same queue rules apply to it.
+- `ScheduleManager` sets an inexact alarm at the next schedule edge; `ScheduleReceiver` wakes the service.
+- Android 15+ rules (checked against developer.android.com): a `dataSync` foreground service cannot be started from a
+  `BOOT_COMPLETED` receiver for apps targeting 35+, and it is limited to 6 hours per 24 hours. The boot receiver
+  therefore only re-arms the alarm, and the service handles the timeout by requeueing downloads and stopping. ✍️ 📱
+
+## 🛠️ Build and run
+
+Requirements: JDK 17, Android SDK platform 36, Gradle through the wrapper.
+
+```
+./gradlew :app:assembleDebug          # APK in app/build/outputs/apk/debug/ (about 43 MB with 4 native ABIs)
 ./gradlew :app:testDebugUnitTest      # JVM unit tests
 ```
 
-Set `sdk.dir` in `local.properties` or `ANDROID_HOME` before building. The debug APK is about 43 MB because of the
-four torrent native libraries.
+Set `sdk.dir` in `local.properties` or `ANDROID_HOME`.
 
-## Known limitations
+## ⚠️ Known limitations
 
-- Never run on a device or emulator. Foreground-service start from the boot receiver on newer Android versions is not
-  verified and may need a change.
-- Download start, stop and exit receivers exist in the code but are not registered in the manifest.
+- 📱 No device or emulator run yet. The native torrent library has only been checked statically (all 3168 Java native
+  methods have matching symbols in the arm64 library); it has not been loaded.
+- Start, stop and exit receivers exist in code but are not registered in the manifest.
+- After a boot, downloads continue only when the app is opened or a schedule alarm manages to start the service.
 - Cookies and headers are stored unencrypted.
-- No HLS download or segment merge. No sort-into-folders cataloging (categories only filter the list).
-- The `res/raw` audio and ad/billing/OMSDK files have unknown origin and are left untouched. Their licensing needs a
-  decision before any release.
+- Unknown-size downloads that drop mid-stream fail safely instead of resuming.
+- `res/raw` contains audio plus ad/billing/OMSDK files of unknown origin. They are untouched; licensing needs a
+  decision before any release. A stale `libjlibtorrent-2.0.12.9.so` remains in `app/src/main/jniLibs` but is excluded
+  from the APK.
 - Backup/import/export, overlay window and widget are not verified.
 
-## Contributing
+## 🤝 Contributing
 
-Work on a branch and open a pull request. `main` holds the original project state; development is on `refactor`.
+Work on a branch and open a pull request. `main` is the original state; current development is on `refactor`.

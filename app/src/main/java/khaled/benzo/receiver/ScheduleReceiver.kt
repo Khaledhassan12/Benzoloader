@@ -11,10 +11,15 @@ class ScheduleReceiver : BroadcastReceiver() {
         val serviceIntent = Intent(context, DownloadService::class.java).apply {
             action = DownloadService.ACTION_PROCESS_QUEUE
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            context.startForegroundService(serviceIntent)
-        } else {
-            context.startService(serviceIntent)
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent)
+            } else {
+                context.startService(serviceIntent)
+            }
+        } catch (e: RuntimeException) {
+            // Background foreground-service start can be refused by the system (ForegroundServiceStartNotAllowedException
+            // is a RuntimeException). Downloads then resume when the user opens the app.
         }
     }
 }
