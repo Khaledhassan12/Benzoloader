@@ -143,4 +143,22 @@ class DownloadEngineTest {
         assertEquals(10L, c.downloadedSize)
         assertEquals(2_147_483_648L, c.totalSize)
     }
+
+    @Test fun folderSavePathAndHostileNamesStayInsideTheFolder() = runBlocking {
+        // the Editor passes the destination folder in savePath
+        val folder = File(dir, "dl").also { it.mkdirs() }
+        val it1 = DownloadItem(id = 1, url = url("/range"), fileName = "../../evil.bin", savePath = folder.absolutePath, threadsCount = 2)
+        assertTrue(DownloadEngine().runDownload(it1, emptyList(), TokenBucketLimiter(0), emptyMap(), onChunkCreated = { it }, onProgress = { _, _ -> }).isSuccess)
+        assertTrue(File(folder, "evil.bin").exists())
+        assertFalse(File(dir, "evil.bin").exists())
+        assertEquals(sha(data), sha(File(folder, "evil.bin").readBytes()))
+    }
+
+    @Test fun requestHeadersReachTheServer() = runBlocking {
+        val r = DownloadEngine().runDownload(item("/range", 1), emptyList(), TokenBucketLimiter(0),
+            mapOf("User-Agent" to "UA-Test", "Cookie" to "a=b"), onChunkCreated = { it }, onProgress = { _, _ -> })
+        assertTrue(r.isSuccess)
+        val seen = generateSequence { server.takeRequest(200, TimeUnit.MILLISECONDS) }.toList()
+        assertTrue(seen.isNotEmpty() && seen.all { it.getHeader("User-Agent") == "UA-Test" && it.getHeader("Cookie") == "a=b" })
+    }
 }

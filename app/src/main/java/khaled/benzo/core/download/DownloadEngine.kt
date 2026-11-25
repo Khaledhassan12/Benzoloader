@@ -70,7 +70,7 @@ class DownloadEngine(
         onProgress: suspend (downloadedBytes: Long, speed: Long) -> Unit,
         forceSingle: Boolean = false
     ): Result<Unit> = withContext(Dispatchers.IO) {
-        val targetFile = File(item.savePath)
+        val targetFile = resolveTarget(item)
         targetFile.parentFile?.mkdirs()
 
         // 1. Determine chunks (resume from persisted ones when present)
@@ -178,6 +178,19 @@ class DownloadEngine(
         Result.success(Unit)
     }
 
+    /**
+     * The Editor stores the destination *folder* in savePath. Accept either a folder or a full file path,
+     * sanitise the server/user supplied name and never let it escape the folder.
+     */
+    internal fun resolveTarget(item: DownloadItem): File {
+        val base = File(item.savePath)
+        if (!base.isDirectory && base.name == item.fileName) return base
+        val safe = sanitizeFileName(item.fileName)
+        val target = File(base, safe)
+        require(target.canonicalFile.toPath().startsWith(base.canonicalFile.toPath())) { "Invalid file name" }
+        return target
+    }
+
     private fun extractFileName(contentDisposition: String?, url: String): String? {
         if (!contentDisposition.isNullOrBlank()) {
             val patterns = listOf("filename*=", "filename=")
@@ -203,6 +216,12 @@ class DownloadEngine(
     }
 
     companion object {
+        fun sanitizeFileName(raw: String): String {
+            var n = raw.substringAfterLast('/').substringAfterLast('\\').trim()
+            n = n.replace(Regex("[\u0000-\u001f<>:\"|?*]"), "_").trim('.', ' ')
+            return (if (n.isEmpty()) "download" else n).take(200)
+        }
+
         fun createDefaultClient(): OkHttpClient {
             return OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)

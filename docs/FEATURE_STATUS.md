@@ -19,7 +19,8 @@ Last updated on branch feature/engine-hardening. Tests: `./gradlew :app:testDebu
 | Scheduler, Wi-Fi only, battery stop | existing code | no | |
 | Browser, tabs, history, bookmarks, sniffer | existing code | no | |
 | Torrent (jlibtorrent) | existing code | no | only arm64 native lib is bundled |
-| Site profiles / headers / cookies | existing code | no | service passes empty headers to the engine today |
+| Editor user-agent / referer / cookie reach requests | yes (service now passes them) | yes (engine receives headers) | not encrypted at rest yet |
+| Folder savePath + safe file names | yes | yes | Editor stores a folder; engine used it as a file path before |
 | Backup / import / export | not verified | no | |
 | Top window overlay, widget | not verified | no | |
 
