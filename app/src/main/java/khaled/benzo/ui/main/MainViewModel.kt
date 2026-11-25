@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = DownloadRepository(application)
-    private val _state = MutableStateFlow(ListState())
+    private val _state = MutableStateFlow(ListState(ascending = khaled.benzo.data.repository.SettingsRepository(application).listAddToBottom))
     private val _selectedCategory = MutableStateFlow<FileCategory?>(FileCategory.ALL)
 
     val downloads: StateFlow<List<DownloadItem>> = MutableStateFlow<List<DownloadItem>>(emptyList())

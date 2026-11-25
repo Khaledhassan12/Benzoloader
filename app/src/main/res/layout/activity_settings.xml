@@ -51,6 +51,7 @@
       </LinearLayout>
       <LinearLayout android:id="@+id/section_automation" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchNewestFirst" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_newest_first" app:prefSummary="@string/sum_newest_first" />
+        <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchListBottom" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_list_bottom" app:prefSummary="@string/sum_list_bottom" />
         <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="8dp" android:background="@color/divider" />
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchWifiOnly" app:prefSummary="@string/sum_wifi_only" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/pref_wifi_only" />
         <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="16dp" android:background="@color/divider" />
