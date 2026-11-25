@@ -49,6 +49,8 @@ object ListTransfer {
         entry.fileName?.let { return it }
         val path = entry.url.substringAfter("://").substringBefore('?').substringBefore('#')
         val seg = path.substringAfter('/', "").trimEnd('/').substringAfterLast('/')
-        return if (seg.isEmpty()) "download" else java.net.URLDecoder.decode(seg.replace("+", "%2B"), "UTF-8")
+        if (seg.isEmpty()) return "download"
+        // A stray "%" that is not an escape (for example "100%.zip") makes the decoder throw: keep the raw text then.
+        return try { java.net.URLDecoder.decode(seg.replace("+", "%2B"), "UTF-8") } catch (e: IllegalArgumentException) { seg }
     }
 }

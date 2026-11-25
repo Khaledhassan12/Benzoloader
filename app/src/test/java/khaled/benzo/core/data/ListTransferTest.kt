@@ -46,6 +46,7 @@ class ListTransferNameTest {
     @Test fun nameFromUrl() {
         assertEquals("a b.zip", ListTransfer.nameFor(ImportEntry("https://h.com/d/a%20b.zip?x=1", null)))
         assertEquals("download", ListTransfer.nameFor(ImportEntry("https://h.com", null)))
+        assertEquals("100%.zip", ListTransfer.nameFor(ImportEntry("https://h.com/100%.zip", null)))
         assertEquals("given.bin", ListTransfer.nameFor(ImportEntry("https://h.com/z", "given.bin")))
     }
 }
