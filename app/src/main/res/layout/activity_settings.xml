@@ -270,6 +270,20 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/pref_notif_pause_all" />
 
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchKeepScreenOn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/pref_keep_screen_on" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchClearFinished"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/pref_clear_finished" />
+
         </LinearLayout>
 
     </LinearLayout>

@@ -28,6 +28,8 @@ class DownloadRepository(context: Context) {
         return flow.map { list -> list.map { it.toModel() } }
     }
 
+    suspend fun getAllOnce(): List<DownloadItem> = downloadDao.getAllOnce().map { it.toModel() }
+
     suspend fun getDownload(id: Long): DownloadItem? {
         return downloadDao.getDownloadById(id)?.toModel()
     }

@@ -44,7 +44,30 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         setupListeners()
         observeViewModel()
-        if (savedInstanceState == null) notificationPermission.start()
+        if (savedInstanceState == null) {
+            notificationPermission.start()
+            clearFinishedIfEnabled()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Applied on every return to the screen so a change in Settings takes effect without a restart.
+        if (khaled.benzo.data.repository.SettingsRepository(this).keepScreenOn) {
+            window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
+    /** "Clear finished downloads": removes finished list entries at app start. Files stay on disk. */
+    private fun clearFinishedIfEnabled() {
+        val enabled = khaled.benzo.data.repository.SettingsRepository(this).clearFinishedOnStart
+        if (!enabled) return
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            val repo = khaled.benzo.data.repository.DownloadRepository(applicationContext)
+            khaled.benzo.core.housekeeping.ClearFinishedPolicy.idsToClear(repo.getAllOnce(), true).forEach { repo.deleteDownload(it) }
+        }
     }
 
     private fun setupNavigationDrawer() {

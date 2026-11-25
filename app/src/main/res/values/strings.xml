@@ -84,6 +84,8 @@
     <string name="notification_cancel">Cancel</string>
     <string name="notification_open">Open</string>
     <string name="notification_exit">Exit</string>
+    <string name="pref_keep_screen_on">Keep the screen on while the app is open</string>
+    <string name="pref_clear_finished">Remove finished downloads from the list when the app starts (files are kept)</string>
     <string name="notification_pause_all">Pause all</string>
     <string name="pref_notif_lock_screen">Show download notification content on the lock screen</string>
     <string name="pref_notif_pause_all">Add a "Pause all" button to the download notification</string>

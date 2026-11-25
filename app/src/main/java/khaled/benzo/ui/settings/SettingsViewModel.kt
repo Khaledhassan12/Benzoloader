@@ -25,7 +25,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         pauseAfterError: Boolean,
         autoResume: Boolean,
         notifLockScreen: Boolean,
-        notifPauseAll: Boolean
+        notifPauseAll: Boolean,
+        keepScreenOn: Boolean,
+        clearFinished: Boolean
     ) {
         repository.maxConcurrentDownloads = maxDownloads
         repository.defaultPartsCount = defaultThreads
@@ -44,6 +46,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         repository.autoResume = autoResume
         repository.notifOnLockScreen = notifLockScreen
         repository.notifPauseAllButton = notifPauseAll
+        repository.keepScreenOn = keepScreenOn
+        repository.clearFinishedOnStart = clearFinished
         khaled.benzo.service.ScheduleManager.rearm(getApplication())
     }
 }

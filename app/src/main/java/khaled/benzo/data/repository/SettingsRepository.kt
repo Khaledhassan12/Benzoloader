@@ -103,6 +103,16 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_NOTIF_PAUSE_ALL, false)
         set(value) = prefs.edit().putBoolean(KEY_NOTIF_PAUSE_ALL, value).apply()
 
+    /** Keep the screen on while the app is open. Off by default. */
+    var keepScreenOn: Boolean
+        get() = prefs.getBoolean(KEY_KEEP_SCREEN, false)
+        set(value) = prefs.edit().putBoolean(KEY_KEEP_SCREEN, value).apply()
+
+    /** Remove finished downloads from the list (not the files) when the app starts. Off by default. */
+    var clearFinishedOnStart: Boolean
+        get() = prefs.getBoolean(KEY_CLEAR_FINISHED, false)
+        set(value) = prefs.edit().putBoolean(KEY_CLEAR_FINISHED, value).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -128,6 +138,8 @@ class SettingsRepository(context: Context) {
         private const val KEY_ERROR_RETRIES = "error_retries"
         private const val KEY_PAUSE_AFTER_ERROR = "pause_after_error"
         private const val KEY_AUTO_RESUME = "auto_resume"
+        private const val KEY_KEEP_SCREEN = "keep_screen_on"
+        private const val KEY_CLEAR_FINISHED = "clear_finished_on_start"
         private const val KEY_NOTIF_LOCK = "notif_lock_screen"
         private const val KEY_NOTIF_PAUSE_ALL = "notif_pause_all_button"
         private const val KEY_DARK_MODE = "dark_mode"

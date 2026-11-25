@@ -71,6 +71,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchVibrateComplete.isChecked = repo.vibrateOnComplete
         binding.switchNotifLockScreen.isChecked = repo.notifOnLockScreen
         binding.switchNotifPauseAll.isChecked = repo.notifPauseAllButton
+        binding.switchKeepScreenOn.isChecked = repo.keepScreenOn
+        binding.switchClearFinished.isChecked = repo.clearFinishedOnStart
     }
 
     private fun saveAndFinish() {
@@ -91,7 +93,9 @@ class SettingsActivity : AppCompatActivity() {
             pauseAfterError = binding.switchPauseAfterError.isChecked,
             autoResume = binding.switchAutoResume.isChecked,
             notifLockScreen = binding.switchNotifLockScreen.isChecked,
-            notifPauseAll = binding.switchNotifPauseAll.isChecked
+            notifPauseAll = binding.switchNotifPauseAll.isChecked,
+            keepScreenOn = binding.switchKeepScreenOn.isChecked,
+            clearFinished = binding.switchClearFinished.isChecked
         )
         finish()
     }
