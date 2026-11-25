@@ -55,10 +55,14 @@ class TorrentEditorActivity : AppCompatActivity() {
 
         binding.btnStartTorrent.setOnClickListener {
             val defaultPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-            val infoHash = intent.dataString ?: "sample_hash"
-            viewModel.startDownload(infoHash, defaultPath)
-            Toast.makeText(this, R.string.toast_download_added, Toast.LENGTH_SHORT).show()
-            finish()
+            viewModel.startDownload(defaultPath) { hash ->
+                if (hash != null) {
+                    Toast.makeText(this, R.string.toast_download_added, Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, viewModel.error.value ?: "Failed", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 }

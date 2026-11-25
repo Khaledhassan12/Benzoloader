@@ -48,6 +48,13 @@ android {
         viewBinding = true
     }
 
+    packaging {
+        jniLibs {
+            // Stale 2.0.12.9 library: its JNI symbols do not match jlibtorrent 1.2.0.18 (611 missing)
+            excludes += "**/libjlibtorrent-2.0.12.9.so"
+        }
+    }
+
     sourceSets {
         getByName("main") {
             jniLibs.srcDirs("src/main/jniLibs")
@@ -85,6 +92,11 @@ dependencies {
 
     // BitTorrent Engine (jlibtorrent)
     implementation("com.frostwire:jlibtorrent:1.2.0.18")
+    // Native libs matching the Java API version exactly (libjlibtorrent-1.2.0.18.so per ABI)
+    implementation("com.frostwire:jlibtorrent-android-arm64:1.2.0.18")
+    implementation("com.frostwire:jlibtorrent-android-arm:1.2.0.18")
+    implementation("com.frostwire:jlibtorrent-android-x86:1.2.0.18")
+    implementation("com.frostwire:jlibtorrent-android-x86_64:1.2.0.18")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
