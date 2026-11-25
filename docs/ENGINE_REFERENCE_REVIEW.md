@@ -35,3 +35,9 @@ Torrents use jlibtorrent 1.2.0.18 (libtorrent) with a torrent-specific runner, s
 
 ## Engine decision status
 No engine switch. The report itself says to choose from measured prototypes. The prototypes and benchmarks need builds and devices, so they wait for the final stage. The decision documents the report asks for (HTTP, torrent, native feasibility, licensing) are not written yet; this file is only the source check.
+
+## Fast-resume implementation notes (written 25 Nov, unbuilt, never run)
+- API used, read with javap from jlibtorrent 1.2.0.18: TorrentHandle.needSaveResumeData(), saveResumeData(flags) with FLUSH_DISK_CACHE | SAVE_INFO_DICT; SaveResumeDataAlert.params(); swig add_torrent_params.write_resume_data_buf / read_resume_data; SessionManager.swig().async_add_torrent(params); AlertListener on AlertType.SAVE_RESUME_DATA.
+- Stored in filesDir/torrents/<infohash>.fastresume through ResumeStore (temp file then rename; empty or over 4 MB means no data).
+- The saved paused flag is cleared on restore so that a user start works. The save path is set again from the item.
+- Unverified: whether the restored state skips the re-check on a real device, and whether the alert arrives before a quick stop. Needs a device or emulator run.

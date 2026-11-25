@@ -1,5 +1,6 @@
 package khaled.benzo.service
 
+import khaled.benzo.core.torrent.ResumeStore
 import khaled.benzo.core.torrent.TorrentEngine
 import khaled.benzo.core.torrent.StartGrace
 import khaled.benzo.core.torrent.TorrentMapping
@@ -29,6 +30,9 @@ class TorrentTaskRunner(
         var failed = false
         try {
             val engine = TorrentEngine.orNull() ?: return false // library cannot load: this torrent fails, HTTP downloads go on
+            val tdirForResume = File(filesDir, "torrents")
+            if (engine.resumeSink == null) engine.resumeSink = { h, bytes -> ResumeStore.save(ResumeStore.fileFor(tdirForResume, h), bytes) }
+            val resume = ResumeStore.load(ResumeStore.fileFor(tdirForResume, hash))
             if (engine.hasTorrent(hash)) {
                 engine.resumeTorrent(hash)
             } else {
@@ -37,14 +41,15 @@ class TorrentTaskRunner(
                 val tf = File(tdir, "$hash.torrent")
                 if (tf.exists()) {
                     val prios = TorrentMapping.decodePriorities(File(tdir, "$hash.prio").takeIf { it.exists() }?.readText())
-                    engine.addTorrentFile(tf, dir, prios)
+                    engine.addTorrentFile(tf, dir, prios, resume)
                 } else if (TorrentMapping.isMagnet(item.url)) {
-                    if (engine.addMagnet(item.url, dir) == null) failed = true
+                    if (engine.addMagnet(item.url, dir, resume) == null) failed = true
                 } else failed = true
             }
             val grace = StartGrace(START_GRACE_POLLS)
             var optionsApplied = false
             var metadataSaved = false
+            var lastResumeRequest = 0L
             while (!failed && currentCoroutineContext().isActive) {
                 val st = engine.getStats(hash)
                 when (grace.onPoll(st != null)) {
@@ -55,6 +60,10 @@ class TorrentTaskRunner(
                 if (st == null) { failed = true; break }
                 if (!optionsApplied) optionsApplied = engine.setSequential(hash, sequential())
                 if (!metadataSaved) metadataSaved = saveMetadataOnce(engine, hash)
+                if (System.currentTimeMillis() - lastResumeRequest >= RESUME_INTERVAL_MS || st.isFinished) {
+                    lastResumeRequest = System.currentTimeMillis()
+                    engine.requestResumeData(hash)
+                }
                 repository.updateProgress(id, st.downloaded, st.downloadSpeed)
                 onRunning(item.copy(downloadedBytes = st.downloaded, speed = st.downloadSpeed,
                     totalBytes = if (st.total > 0) st.total else item.totalBytes, status = DownloadStatus.RUNNING))
@@ -67,6 +76,7 @@ class TorrentTaskRunner(
             }
             currentCoroutineContext().ensureActive() // a cancelled job must never be reported as finished
         } catch (e: CancellationException) {
+            runCatching { TorrentEngine.orNull()?.requestResumeData(hash) } // paused or stopped: keep the latest state
             throw e
         } catch (e: Throwable) {
             failed = true
@@ -90,5 +100,5 @@ class TorrentTaskRunner(
         } catch (e: java.io.IOException) { false }
     }
 
-    private companion object { const val START_GRACE_POLLS = 20 }
+    private companion object { const val START_GRACE_POLLS = 20; const val RESUME_INTERVAL_MS = 60_000L }
 }

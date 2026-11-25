@@ -25,11 +25,48 @@ class TorrentEngine(context: Context? = null) {
         synchronized(lock) {
             if (!session.isRunning) {
                 session.start()
+                session.addListener(resumeListener)
                 libraryConnectionsDefault = session.settings().connectionsLimit()
                 libraryListenDefault = session.settings().listenInterfaces()
                 applyNetwork()
             }
         }
+    }
+
+    /** Receives (infoHash, resume bytes) whenever libtorrent hands over resume data; the caller stores it. Set once by the task runner. */
+    @Volatile var resumeSink: ((String, ByteArray) -> Unit)? = null
+
+    private val resumeListener = object : com.frostwire.jlibtorrent.AlertListener {
+        override fun types(): IntArray = intArrayOf(com.frostwire.jlibtorrent.alerts.AlertType.SAVE_RESUME_DATA.swig())
+        override fun alert(alert: com.frostwire.jlibtorrent.alerts.Alert<*>) {
+            val a = alert as? com.frostwire.jlibtorrent.alerts.SaveResumeDataAlert ?: return
+            try {
+                val buf = com.frostwire.jlibtorrent.swig.add_torrent_params.write_resume_data_buf(a.params().swig())
+                resumeSink?.invoke(a.handle().infoHash().toHex(), com.frostwire.jlibtorrent.Vectors.byte_vector2bytes(buf))
+            } catch (e: Exception) {
+                // Resume data is only a speed-up; losing one snapshot is not an error.
+            }
+        }
+    }
+
+    /** Asks libtorrent for fresh resume data of one torrent; it arrives later through [resumeSink]. Does nothing when nothing changed. */
+    fun requestResumeData(infoHash: String) {
+        val h = handle(infoHash)?.takeIf { it.isValid } ?: return
+        if (!h.needSaveResumeData()) return
+        h.saveResumeData(com.frostwire.jlibtorrent.TorrentHandle.FLUSH_DISK_CACHE.or_(com.frostwire.jlibtorrent.TorrentHandle.SAVE_INFO_DICT))
+    }
+
+    /** Adds a torrent from its saved resume data. Returns false (and adds nothing) when the data cannot be read. */
+    private fun addWithResume(resume: ByteArray, saveDir: File, ti: TorrentInfo?): Boolean {
+        val ec = com.frostwire.jlibtorrent.swig.error_code()
+        val params = com.frostwire.jlibtorrent.swig.add_torrent_params.read_resume_data(com.frostwire.jlibtorrent.Vectors.bytes2byte_vector(resume), ec)
+        if (ec.value() != 0) return false
+        params.setSave_path(saveDir.absolutePath)
+        if (ti != null) params.set_ti(ti.swig())
+        // A torrent saved while paused must still start when the user starts it.
+        params.setFlags(params.getFlags().and_(PAUSED_FLAG.inv()))
+        session.swig().async_add_torrent(params)
+        return true
     }
 
     private var libraryConnectionsDefault = 0
@@ -104,10 +141,11 @@ class TorrentEngine(context: Context? = null) {
         }
 
     /** Starts a download from .torrent bytes. priorities: per-file 0 skip, 1 normal ... 7 high. */
-    fun addTorrentBytes(torrentBytes: ByteArray, saveDir: File, priorities: List<Int>? = null): String {
+    fun addTorrentBytes(torrentBytes: ByteArray, saveDir: File, priorities: List<Int>? = null, resume: ByteArray? = null): String {
         ensureStarted()
         saveDir.mkdirs()
         val ti = TorrentInfo.bdecode(torrentBytes)
+        if (resume != null && addWithResume(resume, saveDir, ti)) return ti.infoHash().toHex()
         val prios = priorities?.let { list ->
             Array(ti.numFiles()) { i -> toPriority(list.getOrElse(i) { 1 }) }
         }
@@ -115,14 +153,15 @@ class TorrentEngine(context: Context? = null) {
         return ti.infoHash().toHex()
     }
 
-    fun addTorrentFile(torrentFile: File, saveDir: File, priorities: List<Int>? = null): String =
-        addTorrentBytes(torrentFile.readBytes(), saveDir, priorities)
+    fun addTorrentFile(torrentFile: File, saveDir: File, priorities: List<Int>? = null, resume: ByteArray? = null): String =
+        addTorrentBytes(torrentFile.readBytes(), saveDir, priorities, resume)
 
     /** Adds a magnet link; metadata is fetched by the session after adding. Returns the info hash. */
-    fun addMagnet(magnetUri: String, saveDir: File): String? {
+    fun addMagnet(magnetUri: String, saveDir: File, resume: ByteArray? = null): String? {
         val hash = TorrentMapping.magnetInfoHash(magnetUri) ?: return null
         ensureStarted()
         saveDir.mkdirs()
+        if (resume != null && addWithResume(resume, saveDir, null)) return hash
         session.download(magnetUri, saveDir)
         return hash
     }
