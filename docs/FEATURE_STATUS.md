@@ -70,3 +70,7 @@ Algorithm: AES-256-GCM (AES/GCM/NoPadding, 128-bit tag, 12-byte IV made by the c
 Covers: download cookies and headers, site passwords and site cookies. Does NOT cover: URLs (may hold tokens or user:password), referer, user-agent, the settings, browser history, torrent files, the downloaded files, or the database as a whole.
 Bug found by reading and fixed: the encrypt call passed its own IV, which the Keystore refuses for a randomized-encryption key (the default), so saving a cookie would have failed on a real device while the unit tests (software key) passed. Now the cipher makes the IV. Unverified until a device run.
 
+
+## Open policy and verification items (stated as unresolved)
+- allowBackup is true because that is the existing state of the project. Nobody has decided or approved a cloud-backup policy. Consequence if it stays: a restored database holds sealed values without their Keystore key, so cookies, headers and site secrets show the re-enter status. Decision open.
+- Database 1 to 2 (history table): the migration is hand-written and the real version-1 schema was never exported. At the first build the real v1 schema must be generated and the upgrade path from an actual v1 database validated (MigrationTestHelper plus a real upgrade). Absence of the JSON does not mean the migration is compatible.
