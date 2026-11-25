@@ -26,8 +26,8 @@ class EditorActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupDefaultFields()
-        handleIncomingIntent()
         setupListeners()
+        handleIncomingIntent(autoAdd = savedInstanceState == null)
     }
 
     private fun setupDefaultFields() {
@@ -49,7 +49,7 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleIncomingIntent() {
+    private fun handleIncomingIntent(autoAdd: Boolean) {
         val intentUrl = when (intent.action) {
             Intent.ACTION_VIEW -> intent.dataString
             Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
@@ -61,6 +61,12 @@ class EditorActivity : AppCompatActivity() {
         if (!clean.isNullOrEmpty()) {
             binding.edtUrl.setText(clean)
             extractFileNameFromUrl(clean)
+            // Only links from other apps (open or share) can skip the form, and only when the user turned that on.
+            // The folder check inside submitDownload still runs; a problem shows the usual dialog on this screen.
+            val external = intent.action == Intent.ACTION_VIEW || intent.action == Intent.ACTION_SEND
+            if (autoAdd && external && viewModel.settingsRepository.quickAddLinks) {
+                binding.root.post { submitDownload(startNow = true) }
+            }
         }
     }
 
@@ -68,7 +74,7 @@ class EditorActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        handleIncomingIntent()
+        handleIncomingIntent(autoAdd = true)
     }
 
     private fun extractFileNameFromUrl(url: String) {

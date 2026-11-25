@@ -200,6 +200,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
         binding.switchNewestFirst.isChecked = repo.newestFirst
+        binding.switchQuickAdd.isChecked = repo.quickAddLinks
         binding.switchListBottom.isChecked = repo.listAddToBottom
         binding.sliderMinThread.value = repo.minThreadKb.toFloat()
         binding.sliderVibSuccess.value = repo.vibrateSuccessMs.toFloat()
@@ -226,6 +227,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun saveAndFinish() {
         val repo = khaled.benzo.data.repository.SettingsRepository(this)
         repo.newestFirst = binding.switchNewestFirst.isChecked
+        repo.quickAddLinks = binding.switchQuickAdd.isChecked
         repo.listAddToBottom = binding.switchListBottom.isChecked
         repo.minThreadKb = binding.sliderMinThread.value.toInt()
         repo.vibrateSuccessMs = binding.sliderVibSuccess.value.toInt()

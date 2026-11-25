@@ -39,6 +39,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 |---|---|
 | Max simultaneous downloads, queue policy | BUILT+TESTED |
 | Newest-first start order (start priority only; not list insertion order) | WRITTEN, TESTS WRITTEN |
+| Quick add: links opened or shared from other apps skip the editor (`quick_add_links`, default OFF). Starts at once, runs the folder check, falls back to the editor with the dialog on a folder problem. Not applied to clipboard prefill or browser-sniffer picks. Security note: when on, any app can queue a download without a prompt | WRITTEN, UNBUILT, no test |
 | List display order: add new downloads to bottom (`list_add_to_bottom`, default off = top). Display order only. Applied at list creation, on return from Settings, and when the time sort is picked again; 2 tests written, not run | WRITTEN, TESTS WRITTEN, UNBUILT |
 | Queue wait reasons in the list | WRITTEN |
 | Battery threshold with hysteresis | WRITTEN, TESTS WRITTEN |
@@ -154,7 +155,7 @@ Implementation comes first. The one build happens at the end, after all of this.
 5. Browser: tab race fix, standalone bookmarks and history screens, desktop mode, pop-up tabs, clear cache, address-bar position.
 6. Interface: custom colour picker, value rows for pause-after-error and clear-finished, Top window, Data screen, side panel with graph, remaining Interface rows.
 7. Notifications: intercept and total-finish vibration, per-event sound choice (clear on Exit written).
-8. Automation: add to bottom or top of list (display order written; start order was already separate), after-finishing action, auto-open pages, auto-add without editor.
+8. Automation: add to bottom or top of list (display order written; start order was already separate), after-finishing action, auto-open pages (auto-add without editor written).
 9. Security and data: backup policy proposal, secrets in URLs, provenance check of `res/raw` files, access-test cleanup.
 10. Whole-diff static review of all written code.
 11. Final stage (verification options researched in `BUILD_REVIEW.md`; this sandbox has no emulator, a CI emulator job is plausible but untried): dependency and library upgrades (staged plan), edge-to-edge, Arabic review, then one CI build, fix its errors, then run the tests and publish the APK as an artifact (signing and retention reported at handoff).
