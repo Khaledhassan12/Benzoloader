@@ -152,7 +152,7 @@ class DownloadService : Service() {
             val r = QueuePolicy.blockReason(q, cond.copy(activeCount = running))
             if (r == khaled.benzo.core.queue.BlockReason.NONE) null else q.id to r
         }.toMap())
-        for (item in QueuePolicy.nextToStart(items, cond.copy(activeCount = running))) {
+        for (item in QueuePolicy.nextToStart(items, cond.copy(activeCount = running), settings.newestFirst)) {
             if (!activeJobs.containsKey(item.id)) startTask(item.id)
         }
 

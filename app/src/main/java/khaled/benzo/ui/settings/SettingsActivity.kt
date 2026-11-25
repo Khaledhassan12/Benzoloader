@@ -21,6 +21,16 @@ class SettingsActivity : AppCompatActivity() {
 
         loadCurrentSettings()
         showOnlyRequestedSection()
+        bindDependents(binding.switchTorrentSeed, binding.txtSeedRatio, binding.sliderSeedRatio, binding.txtSeedMinutes, binding.sliderSeedMinutes)
+        bindDependents(binding.switchCatalog, binding.btnFolderNames)
+        bindDependents(binding.switchSchedule, binding.btnScheduleStart, binding.btnScheduleStop)
+    }
+
+    /** Rows that only matter while [parent] is on are faded and disabled when it is off. Their values are still saved. */
+    private fun bindDependents(parent: android.widget.CompoundButton, vararg rows: android.view.View) {
+        fun apply(on: Boolean) = rows.forEach { it.isEnabled = on; it.alpha = if (on) 1f else 0.38f }
+        apply(parent.isChecked)
+        parent.setOnCheckedChangeListener { _, on -> apply(on) }
     }
 
     /** With [EXTRA_SECTION] only that category is shown (the hub opens it this way); without it every category stays visible. */
@@ -120,6 +130,7 @@ class SettingsActivity : AppCompatActivity() {
             if (index >= 0 && index != repo.themeColor) { repo.themeColor = index; recreate() }
         }
         binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
+        binding.switchNewestFirst.isChecked = repo.newestFirst
         binding.switchTorrentFixedPort.isChecked = repo.torrentFixedPort
         binding.switchTorrentAnonymous.isChecked = repo.torrentAnonymous
         binding.editTorrentPort.setText(repo.torrentPort.toString())
@@ -138,6 +149,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun saveAndFinish() {
         val repo = khaled.benzo.data.repository.SettingsRepository(this)
+        repo.newestFirst = binding.switchNewestFirst.isChecked
         repo.torrentFixedPort = binding.switchTorrentFixedPort.isChecked
         repo.torrentAnonymous = binding.switchTorrentAnonymous.isChecked
         // An empty or out-of-range port keeps the previous saved port.

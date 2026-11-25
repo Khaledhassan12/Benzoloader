@@ -11,6 +11,11 @@ class QueuePolicyTest {
 
     private val ok = Conditions(true, true, 80, false, false, 15, 1_000, null, 0, 2)
 
+    @Test fun newestFirstReversesStartOrder() {
+        val q = listOf(it(1), it(2), it(3))
+        assertEquals(listOf(1L, 2L), QueuePolicy.nextToStart(q, ok).map { it.id })
+        assertEquals(listOf(3L, 2L), QueuePolicy.nextToStart(q, ok, newestFirst = true).map { it.id })
+    }
     @Test fun startsWhenAllConditionsMet() = assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), ok))
     @Test fun noNetworkBlocks() = assertEquals(BlockReason.NO_NETWORK, QueuePolicy.blockReason(it(1), ok.copy(networkAvailable = false)))
     @Test fun perItemWifiOnlyWaitsOnMobileData() = assertEquals(BlockReason.WAITING_FOR_WIFI, QueuePolicy.blockReason(it(1, wifi = true), ok.copy(onWifi = false)))

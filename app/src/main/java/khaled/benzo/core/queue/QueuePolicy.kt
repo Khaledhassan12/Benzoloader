@@ -65,11 +65,12 @@ object QueuePolicy {
     fun restartBelowOrAt(threshold: Int): Int =
         if (threshold >= 99) threshold else minOf(threshold + LOW_BATTERY_RESUME_MARGIN, 99)
 
-    /** Next queued items to start, oldest first, respecting every rule and the concurrency limit. */
-    fun nextToStart(queued: List<DownloadItem>, c: Conditions): List<DownloadItem> {
+    /** Next queued items to start, oldest first (or newest first when [newestFirst], the "add to top" choice), respecting every rule and the concurrency limit. */
+    fun nextToStart(queued: List<DownloadItem>, c: Conditions, newestFirst: Boolean = false): List<DownloadItem> {
         var active = c.activeCount
         val out = mutableListOf<DownloadItem>()
-        for (item in queued.filter { it.status == DownloadStatus.QUEUED }.sortedBy { it.createdDate }) {
+        val waiting = queued.filter { it.status == DownloadStatus.QUEUED }.sortedBy { it.createdDate }
+        for (item in if (newestFirst) waiting.reversed() else waiting) {
             val r = blockReason(item, c.copy(activeCount = active))
             if (r == BlockReason.NONE) { out.add(item); active++ }
             else if (r == BlockReason.CONCURRENCY_LIMIT) break

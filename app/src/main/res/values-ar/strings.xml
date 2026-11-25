@@ -262,4 +262,6 @@
     <string name="pref_torrent_port">المنفذ (من 1024 إلى 65535)</string>
     <string name="pref_torrent_anonymous">الوضع المجهول</string>
     <string name="sum_torrent_anonymous">بيخفي بيانات التعريف عن الأقران والتراكرز، وبعض الميزات بتتعطل</string>
+    <string name="pref_newest_first">الأحدث يبدأ أولاً</string>
+    <string name="sum_newest_first">لو مقفول: التحميلات المنتظرة بتبدأ بترتيب إضافتها</string>
 </resources>
