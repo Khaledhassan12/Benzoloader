@@ -18,4 +18,13 @@ interface BookmarkDao {
 
     @Query("SELECT * FROM bookmarks ORDER BY created_at DESC")
     fun getAllBookmarksFlow(): Flow<List<BookmarkEntity>>
+
+    @Query("SELECT * FROM bookmarks ORDER BY created_at DESC")
+    suspend fun getAllOnce(): List<BookmarkEntity>
+
+    @Query("SELECT COUNT(*) FROM bookmarks WHERE url = :url")
+    suspend fun countByUrl(url: String): Int
+
+    @Query("DELETE FROM bookmarks WHERE id = :id")
+    suspend fun deleteById(id: Long): Int
 }

@@ -11,9 +11,10 @@ import androidx.room.RoomDatabase
         ChunkEntity::class,
         SiteEntity::class,
         TorrentEntity::class,
-        BookmarkEntity::class
+        BookmarkEntity::class,
+        HistoryEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class BenzoDatabase : RoomDatabase() {
@@ -23,6 +24,7 @@ abstract class BenzoDatabase : RoomDatabase() {
     abstract fun siteDao(): SiteDao
     abstract fun torrentDao(): TorrentDao
     abstract fun bookmarkDao(): BookmarkDao
+    abstract fun historyDao(): HistoryDao
 
     companion object {
         @Volatile
