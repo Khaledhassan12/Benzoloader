@@ -165,6 +165,9 @@ OBSERVED, end: the row shows a red stop icon, the subtitle disappears from the t
 NOT SEEN in video 7: the picker entry path, magnet links, the sort options dialog, completed download, seeding state, Properties screen of a torrent, peers/trackers pages, notifications, a failure; the red bar meaning; whether Add stores the torrent without starting (the Add button was not tapped).
 COMPARED WITH THE APP (docs only, nothing rendered or run): Editor torrent block, file selection dialog with folder navigation, Force recheck/announce, To seed and the Seeding filter exist in the earlier logs as written-unbuilt items or not at all; I make no parity claim and have not re-traced them for this video. The torrent engine choice is still open, so none of this can be run.
 
+## Scope rule (Khaled, 25 Nov 21:07, via Main)
+Everything in the videos and screenshots matters: the target is the same appearance, design and behaviour, not a subset. So this document lists differences openly and nothing is dropped silently. Items once treated as "not requested" (browser Block Ads with host sources and auto-update, the Data export sections) are now tracked as IN SCOPE, status NOT BUILT, with the open design questions kept: credentials in exports need a safe design (never exported in clear) and Block Ads needs a decision on host sources. Parity is claimed only after a rendered, running check, which has not happened since fd59931.
+
 ## Implementation status per area (honest; everything after commit fd59931 is written, unbuilt, unrendered)
 | Area seen in videos | App status | Where |
 |---|---|---|
