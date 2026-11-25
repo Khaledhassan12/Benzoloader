@@ -6,6 +6,7 @@ import android.os.IBinder
 import khaled.benzo.R
 import khaled.benzo.core.download.DownloadEngine
 import khaled.benzo.core.download.TokenBucketLimiter
+import khaled.benzo.core.queue.QueuePolicy
 import khaled.benzo.data.model.DownloadItem
 import khaled.benzo.data.model.DownloadStatus
 import khaled.benzo.data.repository.DownloadRepository
@@ -30,6 +31,7 @@ class DownloadService : Service() {
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var downloadEngine: DownloadEngine
     private lateinit var limiter: TokenBucketLimiter
+    private lateinit var deviceConditions: DeviceConditions
 
     private val activeJobs = ConcurrentHashMap<Long, Job>()
     private val activeItems = ConcurrentHashMap<Long, DownloadItem>()
@@ -42,6 +44,8 @@ class DownloadService : Service() {
         notificationHelper = NotificationHelper(this)
         downloadEngine = DownloadEngine()
         limiter = TokenBucketLimiter(settings.speedLimitBytesPerSec)
+        deviceConditions = DeviceConditions(this, settings)
+        ScheduleManager.rearm(this)
 
         val initialNotif = notificationHelper.buildForegroundNotification(emptyList(), 0L)
         startForeground(NotificationHelper.NOTIFICATION_ID_FOREGROUND, initialNotif)
@@ -103,25 +107,37 @@ class DownloadService : Service() {
         return START_STICKY
     }
 
+    /**
+     * Applies the queue policy: running downloads that hit a blocking rule (no network, Wi-Fi only on mobile data,
+     * low battery, unplugged, outside the schedule window) go back to the queue, and queued ones start when every rule
+     * allows it. Downloads the user paused stay paused.
+     */
     private suspend fun processQueue() {
-        val maxConcurrent = settings.maxConcurrentDownloads
-        if (activeJobs.size >= maxConcurrent) return
-
-        val pending = repository.getAllDownloads(null)
-        val pendingList = mutableListOf<DownloadItem>()
-        // Fetch pending items directly from DB
-        val pendingEntities = khaled.benzo.data.db.BenzoDatabase.getInstance(this)
+        val entities = khaled.benzo.data.db.BenzoDatabase.getInstance(this)
             .downloadDao().getPendingAndActiveDownloads()
+        val items = entities.map { it.toModel() }
+        val cond = deviceConditions.read(activeJobs.size)
 
-        for (entity in pendingEntities) {
-            if (activeJobs.size >= maxConcurrent) break
-            val item = entity.toModel()
-            if (item.status == DownloadStatus.QUEUED && !activeJobs.containsKey(item.id)) {
-                startTask(item.id)
-            }
+        for (id in activeJobs.keys.toList()) {
+            val item = items.firstOrNull { it.id == id } ?: continue
+            val reason = QueuePolicy.blockReason(item, cond.copy(activeCount = 0))
+            if (reason.pausesRunning) requeueTask(id)
+        }
+
+        val running = activeJobs.size
+        for (item in QueuePolicy.nextToStart(items, cond.copy(activeCount = running))) {
+            if (!activeJobs.containsKey(item.id)) startTask(item.id)
         }
 
         updateNotification()
+    }
+
+    /** Stops the transfer but keeps it in the queue so it resumes by itself when conditions allow. Progress is already saved. */
+    private suspend fun requeueTask(id: Long) {
+        activeJobs.remove(id)?.cancel()
+        activeItems.remove(id)
+        repository.updateStatusAndSpeed(id, DownloadStatus.QUEUED, 0L)
+        if (activeJobs.isEmpty()) wakeLockManager.release()
     }
 
     private suspend fun startTask(id: Long) {

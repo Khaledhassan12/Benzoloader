@@ -51,6 +51,19 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_VIBRATE_COMPLETE, true)
         set(value) = prefs.edit().putBoolean(KEY_VIBRATE_COMPLETE, value).apply()
 
+    var scheduleEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SCHEDULE_ENABLED, false)
+        set(value) = prefs.edit().putBoolean(KEY_SCHEDULE_ENABLED, value).apply()
+
+    /** Minutes since midnight. */
+    var scheduleStartMinute: Int
+        get() = prefs.getInt(KEY_SCHEDULE_START, 0)
+        set(value) = prefs.edit().putInt(KEY_SCHEDULE_START, value).apply()
+
+    var scheduleStopMinute: Int
+        get() = prefs.getInt(KEY_SCHEDULE_STOP, 0)
+        set(value) = prefs.edit().putInt(KEY_SCHEDULE_STOP, value).apply()
+
     var isDarkMode: Boolean
         get() = prefs.getBoolean(KEY_DARK_MODE, false)
         set(value) = prefs.edit().putBoolean(KEY_DARK_MODE, value).apply()
@@ -68,6 +81,9 @@ class SettingsRepository(context: Context) {
         private const val KEY_STOP_ON_UNPLUG = "stop_on_unplug"
         private const val KEY_SOUND_COMPLETE = "sound_complete"
         private const val KEY_VIBRATE_COMPLETE = "vibrate_complete"
+        private const val KEY_SCHEDULE_ENABLED = "schedule_enabled"
+        private const val KEY_SCHEDULE_START = "schedule_start_minute"
+        private const val KEY_SCHEDULE_STOP = "schedule_stop_minute"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_DOWNLOAD_PATH = "download_path"
     }

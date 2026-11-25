@@ -21,6 +21,38 @@ class QueuePolicyTest {
         assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), ok.copy(batteryPercent = 10, charging = true)))
         assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), ok.copy(batteryPercent = 10, lowBatteryThreshold = 0)))
     }
+    @Test fun unpluggedBlocksOnlyWhenRuleEnabled() {
+        assertEquals(BlockReason.NOT_CHARGING, QueuePolicy.blockReason(it(1), ok.copy(requireCharging = true, charging = false)))
+        assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), ok.copy(requireCharging = true, charging = true)))
+        assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), ok.copy(requireCharging = false, charging = false)))
+    }
+    @Test fun scheduleWindowSameDay() {
+        val w = ScheduleWindow(22 * 60, 23 * 60)
+        assertEquals(BlockReason.OUTSIDE_SCHEDULE, QueuePolicy.blockReason(it(1), ok.copy(scheduleWindow = w, minuteOfDay = 21 * 60)))
+        assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), ok.copy(scheduleWindow = w, minuteOfDay = 22 * 60)))
+        assertEquals(BlockReason.OUTSIDE_SCHEDULE, QueuePolicy.blockReason(it(1), ok.copy(scheduleWindow = w, minuteOfDay = 23 * 60)))
+    }
+    @Test fun scheduleWindowCrossingMidnight() {
+        val w = ScheduleWindow(23 * 60, 6 * 60)
+        assertEquals(true, w.contains(23 * 60 + 30)); assertEquals(true, w.contains(0)); assertEquals(true, w.contains(5 * 60 + 59))
+        assertEquals(false, w.contains(6 * 60)); assertEquals(false, w.contains(12 * 60))
+    }
+    @Test fun equalStartAndStopMeansNoRestriction() = assertEquals(true, ScheduleWindow(0, 0).contains(777))
+    @Test fun nextBoundaryMinutes() {
+        val w = ScheduleWindow(23 * 60, 6 * 60)
+        assertEquals(60, w.minutesToNextBoundary(22 * 60))      // opens in an hour
+        assertEquals(360, w.minutesToNextBoundary(0))            // closes at 06:00
+        assertEquals(1, w.minutesToNextBoundary(6 * 60 - 1))
+        assertEquals(1, w.minutesToNextBoundary(23 * 60 - 1))
+        assertEquals(1440, ScheduleWindow(5, 5).minutesToNextBoundary(10))
+    }
+    @Test fun pausesRunningOnlyForEnvironmentReasons() {
+        assertEquals(true, BlockReason.WAITING_FOR_WIFI.pausesRunning)
+        assertEquals(true, BlockReason.LOW_BATTERY.pausesRunning)
+        assertEquals(true, BlockReason.OUTSIDE_SCHEDULE.pausesRunning)
+        assertEquals(false, BlockReason.CONCURRENCY_LIMIT.pausesRunning)
+        assertEquals(false, BlockReason.NONE.pausesRunning)
+    }
     @Test fun scheduleWaitsForStartTime() {
         assertEquals(BlockReason.NOT_YET_SCHEDULED, QueuePolicy.blockReason(it(1), ok.copy(scheduleStartMillis = 5_000)))
         assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), ok.copy(scheduleStartMillis = 500)))

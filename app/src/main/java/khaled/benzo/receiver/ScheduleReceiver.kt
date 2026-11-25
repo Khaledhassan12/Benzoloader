@@ -7,6 +7,7 @@ import khaled.benzo.service.DownloadService
 
 class ScheduleReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        khaled.benzo.service.ScheduleManager.rearm(context)
         val serviceIntent = Intent(context, DownloadService::class.java).apply {
             action = DownloadService.ACTION_PROCESS_QUEUE
         }
