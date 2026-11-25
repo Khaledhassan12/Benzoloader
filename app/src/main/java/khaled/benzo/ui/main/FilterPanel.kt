@@ -111,7 +111,7 @@ class FilterPanel(
             FileCategory.IMAGE to R.string.nav_images, FileCategory.DOCUMENT to R.string.nav_documents, FileCategory.TORRENT to R.string.nav_torrent
         )
         for ((cat, label) in list) {
-            val count = if (cat == null) items.size else items.count { it.category == cat }
+            val count = if (cat == null) items.size else items.count { ListLogic.inCategory(it, cat) }
             row(context.getString(label), count, state.type == cat) { onType(cat) }
         }
     }

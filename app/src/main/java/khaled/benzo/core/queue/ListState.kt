@@ -50,5 +50,5 @@ data class ListState(
 
     /** Applies filters, search, sort and the file-type filter to the full list. */
     fun apply(all: List<khaled.benzo.data.model.DownloadItem>, nowMillis: Long = System.currentTimeMillis()): List<khaled.benzo.data.model.DownloadItem> =
-        ListLogic.apply(all, status, query, sort, ascending, time, nowMillis).let { list -> if (type == null) list else list.filter { it.category == type } }
+        ListLogic.apply(all, status, query, sort, ascending, time, nowMillis).let { list -> if (type == null) list else list.filter { ListLogic.inCategory(it, type) } }
 }

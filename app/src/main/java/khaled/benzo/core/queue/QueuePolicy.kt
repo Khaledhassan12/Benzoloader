@@ -85,6 +85,17 @@ enum class StatusFilter { ALL, ACTIVE, QUEUED, PAUSED, FAILED, COMPLETED, UNFINI
 enum class SortKey { TIME, NAME, SIZE, CATEGORY, ORDER }
 
 object ListLogic {
+    /**
+     * Category membership. OBSERVED in the reference video: the Torrents list holds rows of many file types and its count
+     * (879 of 979) overlaps the type counts, so Torrents means "came from a torrent", not a file type of its own.
+     * Every other category is the item's own type.
+     */
+    fun inCategory(item: DownloadItem, type: khaled.benzo.data.model.FileCategory): Boolean = when (type) {
+        khaled.benzo.data.model.FileCategory.TORRENT -> item.isTorrent || item.category == khaled.benzo.data.model.FileCategory.TORRENT
+        khaled.benzo.data.model.FileCategory.ALL -> true
+        else -> item.category == type
+    }
+
     fun matches(item: DownloadItem, f: StatusFilter) = when (f) {
         StatusFilter.ALL -> true
         StatusFilter.ACTIVE -> item.status == DownloadStatus.RUNNING || item.status == DownloadStatus.CONNECTING

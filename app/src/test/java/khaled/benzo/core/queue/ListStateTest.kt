@@ -100,5 +100,14 @@ class ListStateTest {
         assertFalse(ListState().timeIsCustom)
         assertTrue(ListState().withTime(TimeFilter.TODAY).timeIsCustom)
     }
+
+    // Written, not run.
+    @Test fun torrentCategoryIsOriginNotFileType() {
+        val t = d(9, "movie.mp4", DownloadStatus.COMPLETED, FileCategory.VIDEO).copy(isTorrent = true)
+        val all = items + t
+        assertEquals(setOf("movie.mp4"), ListState().withTypeOnly(FileCategory.TORRENT).apply(all).map { it.fileName }.toSet())
+        // The same row is still counted under its own type.
+        assertEquals(setOf("b.mp4", "movie.mp4"), ListState().withTypeOnly(FileCategory.VIDEO).apply(all).map { it.fileName }.toSet())
+    }
 }
 
