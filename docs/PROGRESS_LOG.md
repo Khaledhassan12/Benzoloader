@@ -84,7 +84,7 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | WebView, media detection | BUILT |
 | Tabs (in memory), history, bookmarks dialogs | WRITTEN, TESTS WRITTEN (tab model) |
 | Standalone bookmarks and history screens, desktop mode, clear cache | NOT STARTED |
-| Tab race | Static trace: single WebView, so a finish from a tab just left is the only stale event. `onPageFinished` already ignored it for the tab record (url must equal the WebView's current url); now history recording is inside the same guard, so a stale finish adds no history entry. onPageStarted is always for the page now loading. No unit test possible (WebView callback); runtime behaviour unverified. WRITTEN, UNBUILT |
+| Tab race | Traced one stale case: a page finish from the tab just left. Tab record was already guarded; history recording now sits in the same guard. Acceptance extracted to `PageEventPolicy.acceptFinish` with 3 unit tests (written, not run). This covers the traced case only; other stale events are not ruled out. An instrumented regression test (switch tabs during a slow load) is planned for the final build stage. Runtime behaviour unverified. WRITTEN, TESTS WRITTEN, UNBUILT |
 | Browser ad blocking | NOT STARTED, undecided. The owner ruled out advertising inside the app (nothing found in the audited source); browser ad blocking is a different, optional feature and has not been requested |
 
 ### Interface
