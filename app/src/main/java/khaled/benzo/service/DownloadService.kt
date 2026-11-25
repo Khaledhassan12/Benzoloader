@@ -153,7 +153,7 @@ class DownloadService : Service() {
         if (!khaled.benzo.core.queue.AutoResumePolicy.shouldResume(settings.autoResume, attempts, failure)) return
         autoResumeAttempts[id] = attempts + 1
         serviceScope.launch {
-            delay(khaled.benzo.core.queue.AutoResumePolicy.delayMs(attempts))
+            delay(khaled.benzo.core.queue.AutoResumePolicy.delayMs(attempts, failure))
             if (repository.getDownload(id)?.status == failedStatus) {
                 repository.updateStatusAndSpeed(id, DownloadStatus.QUEUED, 0L)
             }

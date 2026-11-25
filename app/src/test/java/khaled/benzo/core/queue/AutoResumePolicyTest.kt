@@ -24,4 +24,15 @@ class AutoResumePolicyTest {
         assertEquals(60_000L, AutoResumePolicy.delayMs(1))
         assertEquals(120_000L, AutoResumePolicy.delayMs(2))
     }
+
+    @Test fun serverWaitIsHonouredNeverShortened() {
+        val f = khaled.benzo.core.download.TransientHttpException(429, 300_000L)
+        assertTrue(AutoResumePolicy.shouldResume(true, 0, f))
+        assertEquals(300_000L, AutoResumePolicy.delayMs(0, f))      // server asked 5 min, backoff is 30 s
+        assertEquals(120_000L, AutoResumePolicy.delayMs(2, khaled.benzo.core.download.TransientHttpException(503, 10_000L)))
+    }
+    @Test fun serverWaitLongerThanFifteenMinutesStopsAutomaticRetry() {
+        assertTrue(AutoResumePolicy.shouldResume(true, 0, khaled.benzo.core.download.TransientHttpException(429, 15 * 60_000L)))
+        assertFalse(AutoResumePolicy.shouldResume(true, 0, khaled.benzo.core.download.TransientHttpException(429, 15 * 60_000L + 1)))
+    }
 }

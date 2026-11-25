@@ -2,6 +2,8 @@ package khaled.benzo.core.queue
 
 import khaled.benzo.core.download.PermanentDownloadException
 import khaled.benzo.core.download.RangeIgnoredException
+import khaled.benzo.core.download.RetryAfter
+import khaled.benzo.core.download.TransientHttpException
 
 /**
  * Decides whether a download that just failed is put back in the queue by itself ("auto-resume").
@@ -19,8 +21,13 @@ object AutoResumePolicy {
             // The engine already falls back to a single connection when Range is ignored; if that also failed,
             // the server cannot resume the file and another attempt would fail the same way.
             failure !is RangeIgnoredException &&
-            failure?.message?.startsWith("Not enough free storage") != true
+            failure?.message?.startsWith("Not enough free storage") != true &&
+            // A server that wants a very long wait is respected by not retrying automatically at all.
+            serverWaitMs(failure) <= RetryAfter.AUTO_RESUME_MAX_MS
+
+    private fun serverWaitMs(failure: Throwable?): Long = (failure as? TransientHttpException)?.retryAfterMs ?: 0L
 
     /** 30 s, 60 s, 120 s for the first three automatic attempts. */
-    fun delayMs(attemptsSoFar: Int): Long = BASE_DELAY_MS shl attemptsSoFar.coerceIn(0, 6)
+    fun delayMs(attemptsSoFar: Int, failure: Throwable? = null): Long =
+        maxOf(BASE_DELAY_MS shl attemptsSoFar.coerceIn(0, 6), serverWaitMs(failure))
 }
