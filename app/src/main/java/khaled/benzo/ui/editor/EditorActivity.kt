@@ -64,9 +64,9 @@ class EditorActivity : AppCompatActivity() {
             // Only links from other apps (open or share) can skip the form, and only when the user turned that on.
             // The folder check inside submitDownload still runs; a problem shows the usual dialog on this screen.
             val external = intent.action == Intent.ACTION_VIEW || intent.action == Intent.ACTION_SEND
-            if (autoAdd && external && viewModel.settingsRepository.quickAddLinks) {
-                binding.root.post { submitDownload(startNow = viewModel.settingsRepository.quickAddStart) }
-            }
+            val decision = khaled.benzo.core.queue.QuickAddPolicy.decide(
+                viewModel.settingsRepository.quickAddLinks, viewModel.settingsRepository.quickAddStart, external)
+            if (autoAdd && decision.skipEditor) binding.root.post { submitDownload(startNow = decision.startNow) }
         }
     }
 

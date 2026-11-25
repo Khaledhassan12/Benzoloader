@@ -41,7 +41,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
             val uniqueFileName = khaled.benzo.core.files.FileNaming.uniqueName(fileName) { candidate ->
                 candidate in queuedNames || java.io.File(finalPath, candidate).exists()
             }
-            val status = if (startNow) DownloadStatus.QUEUED else DownloadStatus.PAUSED
+            val status = khaled.benzo.core.queue.QuickAddPolicy.initialStatus(startNow)
 
             val item = DownloadItem(
                 id = 0L,
