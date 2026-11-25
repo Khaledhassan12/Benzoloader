@@ -12,12 +12,14 @@ enum class FileCategory(val key: String) {
     DOCUMENT("document"),
     ARCHIVE("archive"),
     PROGRAM("program"),
+    IMAGE("image"),
+    OTHER("other"),
     TORRENT("torrent"),
     TRASH("trash");
 
     companion object {
         fun fromExtension(ext: String?): FileCategory {
-            if (ext.isNullOrBlank()) return DOCUMENT
+            if (ext.isNullOrBlank()) return OTHER
             // Callers pass either an extension ("mp4", ".mp4") or a whole file name ("clip.mp4").
             val lower = ext.lowercase(Locale.ROOT).trim()
             val clean = if (lower.contains('.')) lower.substringAfterLast('.') else lower
@@ -27,11 +29,13 @@ enum class FileCategory(val key: String) {
                 "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "rtf", "epub" -> DOCUMENT
                 "zip", "rar", "7z", "tar", "gz", "bz2", "xz", "iso" -> ARCHIVE
                 "apk", "xapk", "apks", "exe", "msi", "dmg", "deb", "rpm" -> PROGRAM
+                "jpg", "jpeg", "png", "gif", "webp", "bmp", "heic", "heif", "svg", "tiff" -> IMAGE
                 "torrent" -> TORRENT
-                else -> DOCUMENT
+                else -> OTHER
             }
         }
 
+        val IMAGES: FileCategory get() = IMAGE
         val AUDIO: FileCategory get() = MUSIC
         val DOCUMENTS: FileCategory get() = DOCUMENT
         val ARCHIVES: FileCategory get() = ARCHIVE

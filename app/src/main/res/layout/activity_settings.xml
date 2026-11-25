@@ -73,6 +73,13 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/pref_catalog" />
 
+            <Button
+                android:id="@+id/btnFolderNames"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pref_folder_names" />
+
             <TextView
                 android:id="@+id/txtErrorRetries"
                 android:layout_width="match_parent"

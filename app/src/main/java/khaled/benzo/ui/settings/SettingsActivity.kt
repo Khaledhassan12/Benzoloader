@@ -56,6 +56,9 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderSpeedLimit.addOnChangeListener { _, _, _ -> updateSpeedLabel() }
         binding.switchSchedule.isChecked = repo.scheduleEnabled
         binding.switchCatalog.isChecked = repo.catalogEnabled
+        binding.btnFolderNames.setOnClickListener {
+            FolderNamesDialog.show(this, repo.catalogFolderNames) { repo.catalogFolderNames = it }
+        }
         binding.sliderErrorRetries.value = repo.errorRetries.toFloat()
         binding.switchPauseAfterError.isChecked = repo.pauseAfterError
         startMinute = repo.scheduleStartMinute

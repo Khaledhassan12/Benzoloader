@@ -69,6 +69,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_documents -> viewModel.setCategory(FileCategory.DOCUMENTS)
                 R.id.nav_archives -> viewModel.setCategory(FileCategory.ARCHIVES)
                 R.id.nav_programs -> viewModel.setCategory(FileCategory.PROGRAMS)
+                R.id.nav_images -> viewModel.setCategory(FileCategory.IMAGE)
+                R.id.nav_other -> viewModel.setCategory(FileCategory.OTHER)
                 R.id.nav_torrent -> viewModel.setCategory(FileCategory.TORRENT)
                 R.id.nav_browser -> startActivity(Intent(this, BrowserActivity::class.java))
                 R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))

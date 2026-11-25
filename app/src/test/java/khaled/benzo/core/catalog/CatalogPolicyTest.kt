@@ -26,6 +26,9 @@ class CatalogPolicyTest {
         assertEquals(FileCategory.VIDEO, FileCategory.fromExtension("clip.MP4"))
         assertEquals(FileCategory.ARCHIVE, FileCategory.fromExtension(".zip"))
         assertEquals(FileCategory.PROGRAM, FileCategory.fromExtension("app.apk"))
-        assertEquals(FileCategory.DOCUMENT, FileCategory.fromExtension("noextension"))
+        assertEquals(FileCategory.OTHER, FileCategory.fromExtension("noextension"))
+        assertEquals(FileCategory.OTHER, FileCategory.fromExtension("data.xyz"))
+        assertEquals(FileCategory.IMAGE, FileCategory.fromExtension("photo.JPG"))
+        assertEquals(FileCategory.DOCUMENT, FileCategory.fromExtension("a.pdf"))
     }
 }

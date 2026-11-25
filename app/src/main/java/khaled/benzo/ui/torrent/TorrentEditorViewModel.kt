@@ -102,7 +102,7 @@ class TorrentEditorViewModel(application: Application) : AndroidViewModel(applic
                     val settings = khaled.benzo.data.repository.SettingsRepository(getApplication())
                     val rootPath = settings.defaultDownloadPath.ifEmpty { savePath }
                     val savePath = khaled.benzo.core.catalog.CatalogPolicy.targetFolder(
-                        savePath, rootPath, khaled.benzo.data.model.FileCategory.TORRENT, settings.catalogEnabled)
+                        savePath, rootPath, khaled.benzo.data.model.FileCategory.TORRENT, settings.catalogEnabled, settings.catalogFolderNames)
                     val prios = TorrentMapping.effectivePriorities(files.map { it.isSelected }, files.map { it.priority })
                     val bytes = torrentBytes
                     val ctx = getApplication<Application>()

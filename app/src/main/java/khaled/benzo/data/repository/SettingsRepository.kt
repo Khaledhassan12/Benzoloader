@@ -70,6 +70,10 @@ class SettingsRepository(context: Context) {
         set(value) { speedLimitBytesPerSec = value.coerceAtLeast(0) * 1024L }
 
     /** Sort new downloads into Video/Music/Documents/... folders under the download folder. Off by default. */
+    var catalogFolderNames: khaled.benzo.core.catalog.FolderNames
+        get() = khaled.benzo.core.catalog.FolderNames.decode(prefs.getString(KEY_CATALOG_NAMES, null))
+        set(value) = prefs.edit().putString(KEY_CATALOG_NAMES, value.encode()).apply()
+
     var catalogEnabled: Boolean
         get() = prefs.getBoolean(KEY_CATALOG, false)
         set(value) = prefs.edit().putBoolean(KEY_CATALOG, value).apply()
@@ -105,6 +109,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_SCHEDULE_START = "schedule_start_minute"
         private const val KEY_SCHEDULE_STOP = "schedule_stop_minute"
         private const val KEY_CATALOG = "catalog_enabled"
+        private const val KEY_CATALOG_NAMES = "catalog_folder_names"
         private const val KEY_ERROR_RETRIES = "error_retries"
         private const val KEY_PAUSE_AFTER_ERROR = "pause_after_error"
         private const val KEY_DARK_MODE = "dark_mode"

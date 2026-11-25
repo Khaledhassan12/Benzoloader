@@ -67,7 +67,7 @@ Benzoloader/
         │   └── java/khaled/benzo/
         │       ├── BenzoApp.kt
         │       ├── core/
-        │       │   ├── catalog/   CatalogPolicy
+        │       │   ├── catalog/   CatalogPolicy, FolderNames
         │       │   ├── data/      ListTransfer (txt format), ListImporter
         │       │   ├── download/  DownloadEngine, ChunkWorker,
         │       │   │              TokenBucketLimiter, SpeedTracker,
@@ -92,7 +92,7 @@ Benzoloader/
         │                          settings, props, common
         └── test/                  QueuePolicyTest, DownloadEngineTest,
                                    TorrentMappingTest, ResumePolicyTest,
-                                   CatalogPolicyTest, FileNamingTest,
+                                   CatalogPolicyTest, FolderNamesTest, FileNamingTest,
                                    TorrentSourcePolicyTest,
                                    ListTransferTest, SecretsTest, SecretsMigrationTest, CredentialRepairTest,
                                    RequestHeadersTest

@@ -18,7 +18,7 @@ State words: **done-tested** (JVM tests passed), **done-compiled** (built, no te
 | 8.2 | Share integration | done-compiled | SEND text/plain |
 | 8.3 | Clipboard | partial | read in the editor (foreground only, as the spec requires) |
 | 8.4 | Manual URL entry | done-compiled | |
-| 9.1 | Categories | written-unbuilt | the category function had a bug (all files became Documents); fixed. Images and "Other" categories are missing |
+| 9.1 | Categories | written-unbuilt | the category function had a bug (all files became Documents); fixed. Images and "Other" categories added (written-unbuilt, see 12.5) |
 | 9.2 | Sorting (order, size, name, time, category, year) | written-unbuilt | name/size/date/type menu items wired to ListLogic through MainViewModel; repeat pick flips direction; no year sort; not compiled |
 | 9.3 | Filters (all, failed, completed, active, queued, paused) | written-unbuilt | drawer entries for all, downloading, completed, queued, paused, failed; search box filters by name; not compiled |
 | 9.4 | Storage | partial | free-space check and safe names done; duplicate names written-unbuilt; SAF, MediaStore, SD-card picker missing |
@@ -28,7 +28,7 @@ State words: **done-tested** (JVM tests passed), **done-compiled** (built, no te
 | 12.2 | Notifications settings | partial | sound, vibrate; missing: pop-up, lock screen, priority, command buttons |
 | 12.3 | Scheduler | written-unbuilt | start/stop times, window crossing midnight; no per-day, no network condition per schedule |
 | 12.4 | Automation | missing | auto-add without editor, auto-open pages in browser, auto-stop low battery restore |
-| 12.5 | Cataloging | written-unbuilt | per-type folders, off by default; per-category folder names and extension lists are not configurable; no "images" or "other" |
+| 12.5 | Cataloging | written-unbuilt | per-type folders, off by default; categories now include Images and Other (unknown extensions go to Other, not Documents); folder names editable in Settings (one folder level only, unsafe names fall back to defaults); drawer entries for Images and Other; extension lists are not configurable; moving already-downloaded files not done |
 | 12.6 | Top window overlay | missing | needs overlay permission; permission declared, no code |
 | 12.7 | Interface | partial | dark mode key exists; widget, single list, swap menus, colored icons missing |
 | 12.8 | Browser settings | missing | BookmarkEntity/BookmarkDao exist but nothing in the browser reads or writes them; no history storage; no options panel |

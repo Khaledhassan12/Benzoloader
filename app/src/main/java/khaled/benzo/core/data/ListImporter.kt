@@ -31,7 +31,7 @@ class ListImporter(private val context: Context, private val repository: Downloa
             if (e.url in knownUrls) continue
             val raw = ListTransfer.nameFor(e)
             val category = FileCategory.fromExtension(raw)
-            val folder = CatalogPolicy.targetFolder(root, root, category, settings.catalogEnabled)
+            val folder = CatalogPolicy.targetFolder(root, root, category, settings.catalogEnabled, settings.catalogFolderNames)
             val name = FileNaming.uniqueName(raw) { c -> (folder to c) in taken || File(folder, c).exists() }
             taken.add(folder to name)
             knownUrls.add(e.url)

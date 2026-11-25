@@ -150,4 +150,7 @@
     <string name="reenter_headers_hint">رؤوس إضافية (JSON)</string>
     <string name="reenter_save">حفظ</string>
     <string name="reenter_discard">المتابعة بدونها</string>
+    <string name="nav_images">صور</string>
+    <string name="nav_other">أخرى</string>
+    <string name="pref_folder_names">أسماء المجلدات لكل نوع</string>
 </resources>

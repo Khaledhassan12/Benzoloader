@@ -34,7 +34,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
                 android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).absolutePath
             }
             val finalPath = khaled.benzo.core.catalog.CatalogPolicy.targetFolder(
-                savePath, root, category, settingsRepository.catalogEnabled)
+                savePath, root, category, settingsRepository.catalogEnabled, settingsRepository.catalogFolderNames)
             val queuedNames = khaled.benzo.data.db.BenzoDatabase.getInstance(getApplication())
                 .downloadDao().getPendingAndActiveDownloads()
                 .filter { it.savePath == finalPath }.map { it.fileName }.toSet()
