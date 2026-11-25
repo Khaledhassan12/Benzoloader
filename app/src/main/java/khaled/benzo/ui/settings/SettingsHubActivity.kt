@@ -27,7 +27,8 @@ class SettingsHubActivity : AppCompatActivity() {
                 background = GradientDrawable().apply { shape = GradientDrawable.RECTANGLE; cornerRadius = 12f * resources.displayMetrics.density; setColor(section.tile) }
             }
             row.setOnClickListener {
-                startActivity(Intent(this, SettingsActivity::class.java).putExtra(SettingsActivity.EXTRA_SECTION, section.id))
+                if (section == SettingsSection.TOP_WINDOW) startActivity(Intent(this, TopWindowSettingsActivity::class.java))
+                else startActivity(Intent(this, SettingsActivity::class.java).putExtra(SettingsActivity.EXTRA_SECTION, section.id))
             }
             list.addView(row)
         }

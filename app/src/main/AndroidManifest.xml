@@ -116,6 +116,10 @@
             android:name=".ui.settings.SettingsHubActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.settings.TopWindowSettingsActivity"
+            android:exported="false" />
+
         <!-- Settings Activity -->
         <activity
             android:name=".ui.settings.SettingsActivity"
