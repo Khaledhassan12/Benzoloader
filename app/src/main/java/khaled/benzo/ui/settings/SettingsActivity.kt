@@ -70,7 +70,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchSoundComplete.isChecked = repo.soundOnComplete
         binding.switchVibrateComplete.isChecked = repo.vibrateOnComplete
         binding.switchNotifLockScreen.isChecked = repo.notifOnLockScreen
-        binding.switchNotifStopAll.isChecked = repo.notifStopAllButton
+        binding.switchNotifPauseAll.isChecked = repo.notifPauseAllButton
     }
 
     private fun saveAndFinish() {
@@ -91,7 +91,7 @@ class SettingsActivity : AppCompatActivity() {
             pauseAfterError = binding.switchPauseAfterError.isChecked,
             autoResume = binding.switchAutoResume.isChecked,
             notifLockScreen = binding.switchNotifLockScreen.isChecked,
-            notifStopAll = binding.switchNotifStopAll.isChecked
+            notifPauseAll = binding.switchNotifPauseAll.isChecked
         )
         finish()
     }

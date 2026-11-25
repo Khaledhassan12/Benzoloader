@@ -8,6 +8,6 @@ class NotificationPolicyTest {
     @Test fun lockScreenOnShowsFull() = assertEquals(LockScreenMode.FULL, NotificationPolicy.lockScreen(true))
     @Test fun exitAlwaysThere() {
         assertEquals(listOf(NotifButton.EXIT), NotificationPolicy.buttons(false))
-        assertEquals(listOf(NotifButton.STOP_ALL, NotifButton.EXIT), NotificationPolicy.buttons(true))
+        assertEquals(listOf(NotifButton.PAUSE_ALL, NotifButton.EXIT), NotificationPolicy.buttons(true))
     }
 }

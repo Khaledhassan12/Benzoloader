@@ -89,13 +89,13 @@ class NotificationHelper(private val context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val stopAllIntent = Intent(context, DownloadActionReceiver::class.java).apply {
+        val pauseAllIntent = Intent(context, DownloadActionReceiver::class.java).apply {
             action = DownloadActionReceiver.ACTION_PAUSE_ALL
         }
-        val stopAllPendingIntent = PendingIntent.getBroadcast(
+        val pauseAllPendingIntent = PendingIntent.getBroadcast(
             context,
             2,
-            stopAllIntent,
+            pauseAllIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -142,9 +142,9 @@ class NotificationHelper(private val context: Context) {
                     LockScreenMode.HIDE_CONTENT -> NotificationCompat.VISIBILITY_PRIVATE
                 }
             )
-        for (b in NotificationPolicy.buttons(settings.notifStopAllButton)) {
+        for (b in NotificationPolicy.buttons(settings.notifPauseAllButton)) {
             when (b) {
-                NotifButton.STOP_ALL -> builder.addAction(R.drawable.stat_stop, context.getString(R.string.notification_stop_all), stopAllPendingIntent)
+                NotifButton.PAUSE_ALL -> builder.addAction(R.drawable.stat_stop, context.getString(R.string.notification_pause_all), pauseAllPendingIntent)
                 NotifButton.EXIT -> builder.addAction(R.drawable.stat_stop, context.getString(R.string.notification_exit), exitPendingIntent)
             }
         }

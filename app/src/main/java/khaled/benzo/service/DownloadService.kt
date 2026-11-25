@@ -97,9 +97,16 @@ class DownloadService : Service() {
             DownloadActionReceiver.ACTION_EXIT_APP -> {
                 stopAllAndExit()
             }
-            ACTION_PAUSE_ALL_BATTERY, DownloadActionReceiver.ACTION_PAUSE_ALL -> {
+            ACTION_PAUSE_ALL_BATTERY -> {
                 serviceScope.launch {
                     repository.pauseAll()
+                    activeJobs.keys.toList().forEach { pauseTask(it) }
+                }
+            }
+            DownloadActionReceiver.ACTION_PAUSE_ALL -> {
+                // Queued downloads are paused too: otherwise the queue would start them the moment the running ones stop.
+                serviceScope.launch {
+                    repository.pauseAllByUser()
                     activeJobs.keys.toList().forEach { pauseTask(it) }
                 }
             }

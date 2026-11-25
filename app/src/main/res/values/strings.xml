@@ -84,9 +84,9 @@
     <string name="notification_cancel">Cancel</string>
     <string name="notification_open">Open</string>
     <string name="notification_exit">Exit</string>
-    <string name="notification_stop_all">Stop all</string>
+    <string name="notification_pause_all">Pause all</string>
     <string name="pref_notif_lock_screen">Show download notification content on the lock screen</string>
-    <string name="pref_notif_stop_all">Add a "Stop all" button to the download notification</string>
+    <string name="pref_notif_pause_all">Add a "Pause all" button to the download notification</string>
     <string name="notification_speed">%1$s/s</string>
     <string name="notification_eta">ETA: %1$s</string>
 

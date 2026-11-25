@@ -1,7 +1,7 @@
 package khaled.benzo.core.notify
 
 /** Buttons the ongoing download notification can carry, in display order. */
-enum class NotifButton { STOP_ALL, EXIT }
+enum class NotifButton { PAUSE_ALL, EXIT }
 
 /** What the lock screen may show of the ongoing notification. */
 enum class LockScreenMode { FULL, HIDE_CONTENT }
@@ -11,6 +11,6 @@ object NotificationPolicy {
     fun lockScreen(showOnLockScreen: Boolean): LockScreenMode =
         if (showOnLockScreen) LockScreenMode.FULL else LockScreenMode.HIDE_CONTENT
 
-    fun buttons(stopAllButton: Boolean): List<NotifButton> =
-        if (stopAllButton) listOf(NotifButton.STOP_ALL, NotifButton.EXIT) else listOf(NotifButton.EXIT)
+    fun buttons(pauseAllButton: Boolean): List<NotifButton> =
+        if (pauseAllButton) listOf(NotifButton.PAUSE_ALL, NotifButton.EXIT) else listOf(NotifButton.EXIT)
 }

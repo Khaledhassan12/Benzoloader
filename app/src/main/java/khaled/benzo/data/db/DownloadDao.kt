@@ -53,4 +53,7 @@ interface DownloadDao {
 
     @Query("UPDATE downloads SET status = :newStatus WHERE status = :oldStatus")
     suspend fun updateAllStatus(oldStatus: Int, newStatus: Int): Int
+
+    @Query("UPDATE downloads SET status = :newStatus WHERE status IN (:oldStatuses)")
+    suspend fun updateStatusIn(oldStatuses: List<Int>, newStatus: Int): Int
 }

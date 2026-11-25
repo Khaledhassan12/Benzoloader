@@ -73,6 +73,14 @@ class DownloadRepository(context: Context) {
         downloadDao.updateAllStatus(DownloadStatus.RUNNING.code, DownloadStatus.PAUSED.code)
     }
 
+    /** The user's "Pause all": running, connecting AND queued downloads become Paused, so the queue does not start the waiting ones. Nothing is deleted; each one resumes later. */
+    suspend fun pauseAllByUser() {
+        downloadDao.updateStatusIn(
+            listOf(DownloadStatus.RUNNING.code, DownloadStatus.CONNECTING.code, DownloadStatus.QUEUED.code),
+            DownloadStatus.PAUSED.code
+        )
+    }
+
     suspend fun resumeAll() {
         downloadDao.updateAllStatus(DownloadStatus.PAUSED.code, DownloadStatus.QUEUED.code)
     }
