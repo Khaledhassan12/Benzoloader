@@ -149,7 +149,7 @@ class DownloadService : Service() {
     private suspend fun requeueTask(id: Long) {
         activeJobs.remove(id)?.cancel()
         activeItems.remove(id)
-        torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.instance.pauseTorrent(it) }
+        torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.orNull()?.pauseTorrent(it) }
         repository.updateStatusAndSpeed(id, DownloadStatus.QUEUED, 0L)
         if (activeJobs.isEmpty()) wakeLockManager.release()
     }
@@ -244,7 +244,7 @@ class DownloadService : Service() {
         job?.cancel()
         activeItems.remove(id)
         serviceScope.launch {
-            torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.instance.pauseTorrent(it) }
+            torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.orNull()?.pauseTorrent(it) }
             repository.updateStatusAndSpeed(id, DownloadStatus.PAUSED, 0L)
             updateNotification()
         }
@@ -258,7 +258,7 @@ class DownloadService : Service() {
         job?.cancel()
         activeItems.remove(id)
         serviceScope.launch {
-            torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.instance.removeTorrent(it, false) }
+            torrentHashOf(id)?.let { khaled.benzo.core.torrent.TorrentEngine.orNull()?.removeTorrent(it, false) }
             repository.deleteDownload(id)
             updateNotification()
         }

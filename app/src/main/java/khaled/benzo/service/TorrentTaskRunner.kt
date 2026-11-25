@@ -21,7 +21,7 @@ class TorrentTaskRunner(private val repository: DownloadRepository, private val 
         val hash = item.torrentInfoHash ?: return false
         var failed = false
         try {
-            val engine = TorrentEngine.instance
+            val engine = TorrentEngine.orNull() ?: return false // library cannot load: this torrent fails, HTTP downloads go on
             if (engine.hasTorrent(hash)) {
                 engine.resumeTorrent(hash)
             } else {

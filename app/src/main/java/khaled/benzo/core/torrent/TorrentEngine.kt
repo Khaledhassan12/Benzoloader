@@ -162,7 +162,11 @@ class TorrentEngine(context: Context? = null) {
     )
 
     companion object {
-        val instance by lazy { TorrentEngine() }
+        private val capability = TorrentCapability { TorrentEngine() }
+        /** The engine, or null when the native torrent library cannot load on this device. */
+        fun orNull(): TorrentEngine? = capability.engineOrNull()
+        /** Why torrents are unavailable (null when they work). Shown instead of crashing. */
+        fun unavailableReason(): String? { capability.engineOrNull(); return capability.diagnostic() }
         private val SESSION_DELETE_FILES: remove_flags_t = com.frostwire.jlibtorrent.SessionHandle.DELETE_FILES
         private val PAUSED_FLAG = com.frostwire.jlibtorrent.TorrentFlags.PAUSED
     }

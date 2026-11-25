@@ -19,8 +19,6 @@ import java.io.File
 
 class TorrentEditorViewModel(application: Application) : AndroidViewModel(application) {
 
-    val torrentEngine = TorrentEngine.instance
-
     private val _torrentFiles = MutableStateFlow<List<TorrentFileEntry>>(emptyList())
     val torrentFiles: StateFlow<List<TorrentFileEntry>> = _torrentFiles.asStateFlow()
 
@@ -38,6 +36,13 @@ class TorrentEditorViewModel(application: Application) : AndroidViewModel(applic
         source = filePathOrUri
         viewModelScope.launch {
             _error.value = null
+            val torrentEngine = withContext(Dispatchers.IO) { TorrentEngine.orNull() }
+            if (torrentEngine == null) {
+                // Native library could not load: say so, keep the rest of the app working.
+                _error.value = "Torrents are not available on this device (${TorrentEngine.unavailableReason() ?: "native library"})"
+                _torrentFiles.value = emptyList()
+                return@launch
+            }
             val item = withContext(Dispatchers.IO) {
                 try {
                     if (TorrentMapping.isMagnet(filePathOrUri)) {
