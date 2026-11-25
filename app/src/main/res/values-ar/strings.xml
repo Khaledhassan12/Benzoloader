@@ -294,4 +294,8 @@
     <string name="trackers_note">عنوان في كل سطر (http أو https أو udp). يسري أثناء تشغيل التورنت داخل التطبيق ولا يُحفظ بعد إعادة التشغيل.</string>
     <string name="trackers_bad">عنوان تراكر غير صالح: %1$s</string>
     <string name="trackers_not_running">شغّل التورنت أولًا ثم عدّل التراكرز</string>
+    <string name="pref_theme_mode">فاتح أو داكن</string>
+    <string name="mode_system">حسب النظام</string>
+    <string name="mode_light">فاتح</string>
+    <string name="mode_dark">داكن</string>
 </resources>

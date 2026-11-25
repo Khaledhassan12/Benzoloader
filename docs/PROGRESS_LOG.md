@@ -84,7 +84,8 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 |---|---|
 | Settings hub with category screens | WRITTEN, NOT RENDERED |
 | Bottom navigation bar (Queue, Finished, badges), switchable in Interface | WRITTEN, NOT RENDERED |
-| Theme: device colours (Material You) plus four presets | WRITTEN, NOT RENDERED. PARTIAL: no custom colour picker, no manual light/dark switch |
+| Theme: device colours (Material You) plus four presets | WRITTEN, NOT RENDERED. PARTIAL: no custom colour picker |
+| Manual light / dark / follow-system choice (Interface) | WRITTEN, NOT RENDERED. Default follows the system, as before. The old stored `dark_mode` key stays unread |
 | Green value rows for 8 slider settings | WRITTEN, NOT RENDERED |
 | Cataloging: switch, one row per category, category screens | WRITTEN, NOT RENDERED. PARTIAL: extensions and folder per category are display only |
 | Dependent rows fade with their switch | WRITTEN, NOT RENDERED |
@@ -144,7 +145,7 @@ Implementation comes first. The one build happens at the end, after all of this.
 3. Storage: Play-variant storage writer behind a build-variant gate; editing the folder of an Error item.
 4. Network: smart download, proxy, per-connection profiles, multi-threading mode, user-agent presets.
 5. Browser: tab race fix, standalone bookmarks and history screens, desktop mode, pop-up tabs, clear cache, address-bar position.
-6. Interface: custom colour picker, manual light/dark switch, value rows for pause-after-error and clear-finished, Top window, Data screen, side panel with graph, remaining Interface rows.
+6. Interface: custom colour picker, value rows for pause-after-error and clear-finished, Top window, Data screen, side panel with graph, remaining Interface rows.
 7. Notifications: intercept and total-finish vibration, per-event sound choice, clear on close.
 8. Automation: add to bottom or top of list, after-finishing action, auto-open pages, auto-add without editor.
 9. Security and data: backup policy proposal, secrets in URLs, provenance check of `res/raw` files, access-test cleanup.

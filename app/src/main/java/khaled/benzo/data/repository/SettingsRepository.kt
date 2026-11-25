@@ -209,6 +209,11 @@ class SettingsRepository(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_BOTTOM_BAR, value).apply()
 
     /** 0 = device colours (Material You, Android 12+), 1 = green (Benzo default), 2 blue, 3 purple, 4 orange. */
+    /** 0 follow the system, 1 light, 2 dark. Separate from the old unread dark_mode key; a new install and an upgrade both start on 0 (follow the system, which is what the app did before). */
+    var themeMode: Int
+        get() = prefs.getInt(KEY_THEME_MODE, 0).coerceIn(0, 2)
+        set(value) = prefs.edit().putInt(KEY_THEME_MODE, value.coerceIn(0, 2)).apply()
+
     var themeColor: Int
         get() = prefs.getInt(KEY_THEME_COLOR, 0)
         set(value) = prefs.edit().putInt(KEY_THEME_COLOR, value).apply()
@@ -246,7 +251,7 @@ class SettingsRepository(context: Context) {
         KEY_NOTIF_LOCK to notifOnLockScreen, KEY_NOTIF_PAUSE_ALL to notifPauseAllButton,
         KEY_KEEP_SCREEN to keepScreenOn, KEY_CLEAR_FINISHED to clearFinishedOnStart,
         KEY_TORRENT_SEQ to torrentSequential, KEY_TORRENT_SEED to torrentSeedAfterFinish, KEY_SEED_RATIO to seedRatioTenths, KEY_SEED_MINUTES to seedMinutes, KEY_TORRENT_DHT to torrentDht, KEY_TORRENT_CONNECTIONS to torrentConnections, KEY_NEWEST_FIRST to newestFirst, KEY_MIN_THREAD_KB to minThreadKb, KEY_VIB_SUCCESS to vibrateSuccessMs, KEY_VIB_ERROR to vibrateErrorMs, KEY_VIB_ERROR_ON to vibrateOnError, KEY_DEFAULT_UA to defaultUserAgent, KEY_TORRENT_FIXED_PORT to torrentFixedPort, KEY_TORRENT_PORT to torrentPort, KEY_TORRENT_ANON to torrentAnonymous,
-        KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor,
+        KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor, KEY_THEME_MODE to themeMode,
         KEY_DOWNLOAD_PATH to defaultDownloadPath
     )
 
@@ -311,6 +316,7 @@ class SettingsRepository(context: Context) {
         private const val KEY_NOTIF_LOCK = "notif_lock_screen"
         private const val KEY_NOTIF_PAUSE_ALL = "notif_pause_all_button"
         private const val KEY_DARK_MODE = "dark_mode"
+        private const val KEY_THEME_MODE = "theme_mode"
         private const val KEY_BOTTOM_BAR = "bottom_bar"
         private const val KEY_THEME_COLOR = "theme_color"
         private const val KEY_DOWNLOAD_PATH = "download_path"

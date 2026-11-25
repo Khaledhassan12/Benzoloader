@@ -183,6 +183,15 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchTorrentDht.isChecked = repo.torrentDht
         binding.switchBottomBar.isChecked = repo.bottomBar
         binding.switchBottomBar.setOnCheckedChangeListener { _, on -> repo.bottomBar = on }
+        val modeIds = listOf(khaled.benzo.R.id.modeSystem, khaled.benzo.R.id.modeLight, khaled.benzo.R.id.modeDark)
+        binding.radioThemeMode.check(modeIds[repo.themeMode])
+        binding.radioThemeMode.setOnCheckedChangeListener { _, id ->
+            val index = modeIds.indexOf(id)
+            if (index >= 0 && index != repo.themeMode) {
+                repo.themeMode = index
+                khaled.benzo.ui.common.ThemeColors.applyNightMode(this)
+            }
+        }
         val themeIds = listOf(khaled.benzo.R.id.themeDevice, khaled.benzo.R.id.themeGreen, khaled.benzo.R.id.themeBlue, khaled.benzo.R.id.themePurple, khaled.benzo.R.id.themeOrange)
         binding.radioThemeColor.check(themeIds[repo.themeColor.coerceIn(0, 4)])
         binding.radioThemeColor.setOnCheckedChangeListener { _, id ->

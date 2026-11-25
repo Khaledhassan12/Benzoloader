@@ -75,6 +75,12 @@
       </LinearLayout>
       <LinearLayout android:id="@+id/section_interface" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchBottomBar" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_bottom_bar" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/pref_theme_mode" android:textAppearance="?attr/textAppearanceBodyLarge" />
+        <RadioGroup android:id="@+id/radioThemeMode" android:layout_width="match_parent" android:layout_height="wrap_content">
+          <RadioButton android:id="@+id/modeSystem" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/mode_system" />
+          <RadioButton android:id="@+id/modeLight" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/mode_light" />
+          <RadioButton android:id="@+id/modeDark" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/mode_dark" />
+        </RadioGroup>
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/pref_theme_color" android:textAppearance="?attr/textAppearanceBodyLarge" />
         <TextView android:id="@+id/textThemeColorNote" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_theme_color_note" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="?attr/hintGreen" />
         <RadioGroup android:id="@+id/radioThemeColor" android:layout_width="match_parent" android:layout_height="wrap_content">

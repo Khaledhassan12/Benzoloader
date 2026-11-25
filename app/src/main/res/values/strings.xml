@@ -294,4 +294,8 @@
     <string name="trackers_note">One address per line (http, https or udp). Applies while this torrent is running in the app; it is not remembered after a restart.</string>
     <string name="trackers_bad">Not a valid tracker address: %1$s</string>
     <string name="trackers_not_running">Start this torrent first, then edit its trackers</string>
+    <string name="pref_theme_mode">Light or dark</string>
+    <string name="mode_system">Follow the system</string>
+    <string name="mode_light">Light</string>
+    <string name="mode_dark">Dark</string>
 </resources>

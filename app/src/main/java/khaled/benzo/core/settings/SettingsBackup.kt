@@ -58,6 +58,7 @@ object SettingsBackup {
         "dark_mode" to Spec.Bool,
         "bottom_bar" to Spec.Bool,
         "theme_color" to Spec.IntRange(0, 4, 1),
+        "theme_mode" to Spec.IntRange(0, 2, 1),
         "download_path" to Spec.Text(512) { isPlausiblePath(it) }
     )
 

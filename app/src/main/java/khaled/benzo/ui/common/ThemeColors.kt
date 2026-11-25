@@ -22,7 +22,19 @@ object ThemeColors {
         else -> null
     }
 
+    /** AppCompat night mode for a stored choice: 0 follow system, 1 light, 2 dark. */
+    fun nightModeFor(mode: Int): Int = when (mode) {
+        1 -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+        2 -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+        else -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    }
+
+    /** Sets the app-wide light/dark mode; AppCompat recreates open activities itself when it changes. */
+    fun applyNightMode(context: android.content.Context) =
+        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(nightModeFor(SettingsRepository(context).themeMode))
+
     fun install(app: Application) {
+        applyNightMode(app)
         app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityPreCreated(activity: Activity, savedInstanceState: Bundle?) = apply(activity)
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
