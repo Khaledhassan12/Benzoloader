@@ -24,6 +24,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val downloads: StateFlow<List<DownloadItem>> = MutableStateFlow<List<DownloadItem>>(emptyList())
 
+    /** Every download, unfiltered: the side panel counts come from this. */
+    val allItems: StateFlow<List<DownloadItem>> = MutableStateFlow<List<DownloadItem>>(emptyList())
+
     /** Counts for the bottom bar badges: (unfinished, finished), over all downloads regardless of the current filter. */
     val counts: StateFlow<Pair<Int, Int>> = MutableStateFlow(0 to 0)
 
@@ -35,6 +38,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             repository.getAllDownloads(null).collect { all ->
                 val done = all.count { it.status == khaled.benzo.data.model.DownloadStatus.COMPLETED }
                 (counts as MutableStateFlow).value = (all.size - done) to done
+                (allItems as MutableStateFlow).value = all
             }
         }
         viewModelScope.launch {
@@ -57,6 +61,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Re-reads the stored display-order setting; called when the screen comes back from Settings. */
     fun setAddToBottom(bottom: Boolean) = _state.update { it.withAddToBottom(bottom) }
+
+    fun setStatusOnly(f: StatusFilter) = _state.update { it.withStatusOnly(f) }
+    fun setTypeOnly(c: FileCategory?) = _state.update { it.withTypeOnly(c) }
+    fun setTime(f: khaled.benzo.core.queue.TimeFilter) = _state.update { it.withTime(f) }
+    fun setSortDirection(key: SortKey, ascending: Boolean) = _state.update { it.withSortDirection(key, ascending) }
+    fun clearFilters() = _state.update { it.cleared() }
 
     fun setQuery(query: String) = _state.update { it.withQuery(query) }
 

@@ -70,4 +70,25 @@ class ListStateTest {
         val bySize = ListState().withSort(SortKey.SIZE)
         assertFalse(bySize.withAddToBottom(true).ascending)
     }
+
+    // Written, not run.
+    @Test fun panelFiltersCombineAndClear() {
+        val st = ListState().withTypeOnly(FileCategory.VIDEO).withStatusOnly(StatusFilter.ACTIVE).withTime(TimeFilter.ALL)
+        assertEquals(FileCategory.VIDEO, st.type)
+        assertEquals(StatusFilter.ACTIVE, st.status)
+        assertEquals(listOf("b.mp4"), st.apply(items).map { it.fileName })
+        // Picking a status keeps the chosen type, picking All for the type keeps the status.
+        assertEquals(FileCategory.VIDEO, st.withStatusOnly(StatusFilter.FAILED).type)
+        assertNull(st.withTypeOnly(FileCategory.ALL).type)
+        assertEquals(StatusFilter.ACTIVE, st.withTypeOnly(null).status)
+        val cleared = st.withTime(TimeFilter.WEEK).cleared()
+        assertEquals(StatusFilter.ALL, cleared.status); assertNull(cleared.type); assertEquals(TimeFilter.ALL, cleared.time)
+    }
+
+    @Test fun sortDirectionIsSetExactly() {
+        val st = ListState().withSortDirection(SortKey.SIZE, true)
+        assertEquals(listOf(50L, 100L, 200L, 300L), st.apply(items).map { it.totalBytes })
+        assertEquals(listOf(300L, 200L, 100L, 50L), st.withSortDirection(SortKey.SIZE, false).apply(items).map { it.totalBytes })
+    }
 }
+

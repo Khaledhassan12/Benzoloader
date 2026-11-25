@@ -13,6 +13,12 @@ data class ListState(
     val addToBottom: Boolean = false,
     val time: TimeFilter = TimeFilter.ALL
 ) {
+    /** Panel versions: change one dimension and keep the others, unlike the drawer entries above which replace the status or type. */
+    fun withStatusOnly(filter: StatusFilter): ListState = copy(status = filter)
+    fun withTypeOnly(category: FileCategory?): ListState = copy(type = category?.takeIf { it != FileCategory.ALL })
+    fun withSortDirection(key: SortKey, ascending: Boolean): ListState = copy(sort = key, ascending = ascending)
+    fun cleared(): ListState = copy(status = StatusFilter.ALL, type = null, time = TimeFilter.ALL)
+
     fun withTime(filter: TimeFilter): ListState = copy(time = filter)
 
     /** Applies the stored display-order choice. Only the time sort follows it, and only while the user has not flipped it by hand. */

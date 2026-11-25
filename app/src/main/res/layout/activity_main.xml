@@ -215,4 +215,19 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/drawer_menu" />
 
+    <!-- Side panel: Category, Status, Time, Sorting. Filled by FilterPanel. -->
+    <ScrollView
+        android:id="@+id/filterPanelScroll"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="?attr/colorSurface"
+        android:fitsSystemWindows="true">
+        <LinearLayout
+            android:id="@+id/filterPanelHost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
 </androidx.drawerlayout.widget.DrawerLayout>

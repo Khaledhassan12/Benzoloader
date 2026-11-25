@@ -9,6 +9,12 @@
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_nav_list"
+        android:title="@string/action_filter"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_browser"
         android:icon="@drawable/ic_browser"
         android:title="@string/action_browser"

@@ -308,4 +308,24 @@
     <string name="row_after_finish">After finishing</string>
     <string name="after_finish_nothing">Do nothing</string>
     <string name="after_finish_exit">Exit (stop the service)</string>
+    <string name="action_filter">Filter and sort</string>
+    <string name="panel_category">Category</string>
+    <string name="panel_status">Status</string>
+    <string name="panel_time">Time</string>
+    <string name="panel_sorting">Sorting</string>
+    <string name="panel_clear">Clear</string>
+    <string name="panel_stopped">Stopped</string>
+    <string name="panel_running">Running</string>
+    <string name="panel_successful">Finished</string>
+    <string name="panel_unfinished">Not finished</string>
+    <string name="panel_today">Today</string>
+    <string name="panel_yesterday">Yesterday</string>
+    <string name="panel_week">Week</string>
+    <string name="panel_month">Month</string>
+    <string name="panel_year">Year</string>
+    <string name="panel_sort_order">Order added</string>
+    <string name="panel_sort_size">Size</string>
+    <string name="panel_sort_name">Name</string>
+    <string name="panel_sort_time">Time</string>
+    <string name="panel_sort_category">Category</string>
 </resources>

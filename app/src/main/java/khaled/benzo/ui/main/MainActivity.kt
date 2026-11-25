@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         setupNavigationDrawer()
+        setupFilterPanel()
         setupRecyclerView()
         setupListeners()
         observeViewModel()
@@ -69,6 +70,35 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             val repo = khaled.benzo.data.repository.DownloadRepository(applicationContext)
             khaled.benzo.core.housekeeping.ClearFinishedPolicy.idsToClear(repo.getAllOnce(), true).forEach { repo.deleteDownload(it) }
+        }
+    }
+
+    private lateinit var filterPanel: FilterPanel
+
+    /** Builds the side panel and keeps it, the toolbar subtitle and the list in step with the list state. */
+    private fun setupFilterPanel() {
+        filterPanel = FilterPanel(
+            this,
+            onType = { viewModel.setTypeOnly(it) },
+            onStatus = { viewModel.setStatusOnly(it) },
+            onTime = { viewModel.setTime(it) },
+            onSort = { key, asc -> viewModel.setSortDirection(key, asc) },
+            onClear = { viewModel.clearFilters() }
+        )
+        binding.filterPanelHost.addView(filterPanel)
+        lifecycleScope.launch {
+            kotlinx.coroutines.flow.combine(viewModel.listState, viewModel.allItems) { s, all -> s to all }.collect { (s, all) ->
+                filterPanel.render(s, all)
+                supportActionBar?.subtitle = when (s.status) {
+                    khaled.benzo.core.queue.StatusFilter.ALL -> null
+                    khaled.benzo.core.queue.StatusFilter.PAUSED -> getString(R.string.panel_stopped)
+                    khaled.benzo.core.queue.StatusFilter.ACTIVE -> getString(R.string.panel_running)
+                    khaled.benzo.core.queue.StatusFilter.FAILED -> getString(R.string.nav_failed)
+                    khaled.benzo.core.queue.StatusFilter.COMPLETED -> getString(R.string.panel_successful)
+                    khaled.benzo.core.queue.StatusFilter.QUEUED -> getString(R.string.nav_queued)
+                    khaled.benzo.core.queue.StatusFilter.UNFINISHED -> getString(R.string.panel_unfinished)
+                }
+            }
         }
     }
 
@@ -288,6 +318,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_filter -> { binding.drawerLayout.openDrawer(GravityCompat.END); true }
             R.id.sort_by_name -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.NAME); true }
             R.id.sort_by_size -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.SIZE); true }
             R.id.sort_by_date -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.TIME); true }
