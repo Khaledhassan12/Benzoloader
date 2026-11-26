@@ -549,4 +549,9 @@
     <string name="row_per_torrent">Connections per torrent</string>
     <string name="row_upload_slots">Upload slots per torrent</string>
     <string name="size_units_title">Size units</string>
+    <string name="speed_show_title">Speed shown</string>
+    <string name="speed_current">Current speed</string>
+    <string name="speed_average">Average speed</string>
+    <string name="speed_bytes">Bytes per second</string>
+    <string name="speed_bits">Bits per second</string>
 </resources>

@@ -47,6 +47,7 @@ class DownloadAdapter(
     inner class ViewHolder(private val binding: ItemDownloadBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        private val firstSeen = HashMap<Long, Triple<Long, Long, Int>>()
         private val stockName = binding.txtFileName.textColors
         private val stockInfo = binding.txtStatusSubtitle.textColors
 
@@ -88,7 +89,14 @@ class DownloadAdapter(
             binding.txtSizes.text = if (item.status == DownloadStatus.COMPLETED) total
                 else formatBytes(item.downloadedBytes) + " / " + total
             val running = item.status == DownloadStatus.RUNNING
-            binding.txtSpeed.text = if (running) String.format(Locale.US, "%s/s", formatBytes(item.speed)) else ""
+            binding.txtSpeed.text = if (running) {
+                // Average since this row was first seen running in this session (INFERRED; no stored start time exists).
+                val now = System.currentTimeMillis()
+                val base = firstSeen.getOrPut(item.id) { Triple(now, item.downloadedBytes, 0) }
+                val secs = (now - base.first) / 1000
+                val avg = if (secs >= 3) ((item.downloadedBytes - base.second).coerceAtLeast(0L) / secs) else null
+                khaled.benzo.core.download.SpeedFormat.text(item.speed, avg, stats.speedShowMask)
+            } else { firstSeen.remove(item.id); "" }
             // remaining time from aggregate bytes and current speed only
             binding.txtEta.text = if (running && item.speed > 0 && item.totalBytes > 0) {
                 val seconds = (item.totalBytes - item.downloadedBytes).coerceAtLeast(0) / item.speed

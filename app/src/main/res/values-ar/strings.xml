@@ -549,4 +549,9 @@
     <string name="row_per_torrent">اتصالات كل تورنت</string>
     <string name="row_upload_slots">خانات الرفع لكل تورنت</string>
     <string name="size_units_title">وحدات الحجم</string>
+    <string name="speed_show_title">عرض السرعة</string>
+    <string name="speed_current">السرعة الحالية</string>
+    <string name="speed_average">متوسط السرعة</string>
+    <string name="speed_bytes">بايت في الثانية</string>
+    <string name="speed_bits">بت في الثانية</string>
 </resources>

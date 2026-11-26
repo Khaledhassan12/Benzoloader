@@ -323,7 +323,7 @@ class SettingsRepository(context: Context) {
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
         "torrent_per_connections" to torrentPerConnections, "torrent_upload_slots" to torrentUploadSlots,
-        "size_units" to sizeUnitsMask,
+        "size_units" to sizeUnitsMask, "speed_show" to speedShowMask,
         "torrent_lsd" to torrentLsd, "torrent_utp" to torrentUtp, "torrent_upnp" to torrentUpnp, "torrent_natpmp" to torrentNatpmp,
         "vib_total_ms" to vibrateTotalMs, "notif_buttons" to notifButtons, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible, "stat_added_time" to statAddedTime, "stat_finish_time" to statFinishTime,
         "ui_col_filename" to uiColFilename, "ui_col_info" to uiColInfo, "ui_col_progress" to uiColProgress, "ui_col_progress_bg" to uiColProgressBg, "ui_col_list" to uiColList,
@@ -404,6 +404,10 @@ class SettingsRepository(context: Context) {
     var uiColList: Int
         get() = prefs.getInt("ui_col_list", 0)
         set(value) = prefs.edit().putInt("ui_col_list", value).apply()
+    /** Speed row choices, bits 1 current, 2 average, 4 byte/sec, 8 bit/sec. */
+    var speedShowMask: Int
+        get() = khaled.benzo.core.download.SpeedFormat.sanitize(prefs.getInt("speed_show", khaled.benzo.core.download.SpeedFormat.DEFAULT))
+        set(value) = prefs.edit().putInt("speed_show", khaled.benzo.core.download.SpeedFormat.sanitize(value)).apply()
     /** Units used for sizes, bits 1 B, 2 KB, 4 MB, 8 GB. Never 0. */
     var sizeUnitsMask: Int
         get() = khaled.benzo.core.download.SizeFormat.sanitize(prefs.getInt("size_units", 15))

@@ -520,6 +520,15 @@ class SettingsActivity : AppCompatActivity() {
                 .setPositiveButton(android.R.string.ok) { _, _ -> r.sizeUnitsMask = bits.indices.sumOf { if (checked[it]) bits[it] else 0 } }
                 .setNegativeButton(android.R.string.cancel, null).show()
         }
+        binding.btnSpeedShow.setOnClickListener {
+            val r = viewModel.repository
+            val bits = intArrayOf(khaled.benzo.core.download.SpeedFormat.CURRENT, khaled.benzo.core.download.SpeedFormat.AVERAGE, khaled.benzo.core.download.SpeedFormat.BYTE, khaled.benzo.core.download.SpeedFormat.BIT)
+            val checked = BooleanArray(4) { r.speedShowMask and bits[it] != 0 }
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this).setTitle(R.string.speed_show_title)
+                .setMultiChoiceItems(arrayOf(getString(R.string.speed_current), getString(R.string.speed_average), getString(R.string.speed_bytes), getString(R.string.speed_bits)), checked) { _, i, c -> checked[i] = c }
+                .setPositiveButton(android.R.string.ok) { _, _ -> r.speedShowMask = bits.indices.sumOf { if (checked[it]) bits[it] else 0 } }
+                .setNegativeButton(android.R.string.cancel, null).show()
+        }
         binding.btnInterfaceColors.setOnClickListener { startActivity(android.content.Intent(this, InterfaceColorsActivity::class.java)) }
         val b = binding.btnAllFilesAccess
         if (!khaled.benzo.ui.common.AllFilesAccess.isApplicable()) { b.visibility = android.view.View.GONE; return }
