@@ -368,6 +368,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderSeedMinutes.value = repo.seedMinutes.toFloat()
         binding.switchTorrentDht.isChecked = repo.torrentDht
         binding.switchBottomBar.isChecked = repo.bottomBar
+        binding.switchTopBarBottom.isChecked = repo.topBarAtBottom
+        binding.switchTopBarBottom.setOnCheckedChangeListener { _, on -> repo.topBarAtBottom = on }
         binding.switchBottomBar.setOnCheckedChangeListener { _, on -> repo.bottomBar = on }
         binding.switchSwapMenus.isChecked = repo.swapSideMenus
         binding.switchSwapMenus.setOnCheckedChangeListener { _, on -> repo.swapSideMenus = on }

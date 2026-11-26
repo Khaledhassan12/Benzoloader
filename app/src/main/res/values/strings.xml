@@ -554,4 +554,5 @@
     <string name="speed_average">Average speed</string>
     <string name="speed_bytes">Bytes per second</string>
     <string name="speed_bits">Bits per second</string>
+    <string name="pref_top_bar_bottom">Top bar at bottom</string>
 </resources>

@@ -370,6 +370,25 @@ class MainActivity : AppCompatActivity() {
         val show = khaled.benzo.data.repository.SettingsRepository(this).bottomBar
         binding.bottomBar.visibility = if (show) View.VISIBLE else View.GONE
         binding.fabAdd.visibility = if (show) View.GONE else View.VISIBLE
+        applyTopBarPosition(show)
+    }
+
+    /** Top bar at bottom: the toolbar sits on the bottom edge (above the bottom bar when that is shown) and the list is inset instead of scrolling under it. */
+    private fun applyTopBarPosition(bottomBarShown: Boolean) {
+        val atBottom = khaled.benzo.data.repository.SettingsRepository(this).topBarAtBottom
+        val d = resources.displayMetrics.density
+        val barH = (56 * d).toInt()
+        val extra = if (bottomBarShown) barH else 0
+        val ab = binding.appBar.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
+        val list = binding.swipeRefresh.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
+        if (atBottom) {
+            ab.gravity = android.view.Gravity.BOTTOM; ab.bottomMargin = extra
+            list.behavior = null; list.topMargin = 0; list.bottomMargin = extra + barH
+        } else {
+            ab.gravity = android.view.Gravity.NO_GRAVITY; ab.bottomMargin = 0
+            list.behavior = com.google.android.material.appbar.AppBarLayout.ScrollingViewBehavior(); list.topMargin = 0; list.bottomMargin = 0
+        }
+        binding.appBar.layoutParams = ab; binding.swipeRefresh.layoutParams = list
     }
 
     private fun setupBottomBar() {

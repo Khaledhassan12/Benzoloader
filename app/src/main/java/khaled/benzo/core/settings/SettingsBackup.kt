@@ -82,6 +82,7 @@ object SettingsBackup {
         "torrent_encryption" to Spec.IntRange(0, 2),
         "torrent_per_connections" to Spec.IntRange(0, 500, 10),
         "torrent_upload_slots" to Spec.IntRange(0, 20, 1),
+        "top_bar_bottom" to Spec.Bool,
         "size_units" to Spec.IntRange(1, 15, 15),
         "speed_show" to Spec.IntRange(1, 15, 5),
         "torrent_lsd" to Spec.Bool,

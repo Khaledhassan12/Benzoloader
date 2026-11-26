@@ -554,4 +554,5 @@
     <string name="speed_average">متوسط السرعة</string>
     <string name="speed_bytes">بايت في الثانية</string>
     <string name="speed_bits">بت في الثانية</string>
+    <string name="pref_top_bar_bottom">الشريط العلوي في الأسفل</string>
 </resources>
