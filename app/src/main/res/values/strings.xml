@@ -285,7 +285,7 @@
     <string name="pref_torrent_anonymous">Anonymous mode</string>
     <string name="sum_torrent_anonymous">Hides identifying details from peers and trackers; some features stop working</string>
     <string name="pref_newest_first">Newest downloads start first</string>
-    <string name="sum_newest_first">Off: waiting downloads start in the order they were added</string>
+    <string name="sum_newest_first">Off: waiting downloads start in list order (hand-moved order if you moved items, otherwise oldest first). On: the reverse</string>
     <string name="row_max_downloads">Simultaneous downloads</string>
     <string name="row_threads">Threads per download</string>
     <string name="row_retries">Retries after an error</string>

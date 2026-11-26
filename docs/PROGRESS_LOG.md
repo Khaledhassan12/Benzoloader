@@ -373,6 +373,10 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 - OBSERVED (video 5): Interface has an "Additional statistics" value row (checkbox dialog; value text "addition time, finishing time"). Built: a button in the Interface section opening a two-entry checkbox dialog in my words (time added, time finished), stored as stat_added_time and stat_finish_time (both in backup, both default ON = the captured value, NOT a verified factory default). Time added is appended to the row's status line (new); time finished is the completed date already shown in the time column, now switchable.
 - DIFFERENCES / INFERRED: where the reference prints these is unseen (placement is my choice). Not built: Size unit and Speed dialogs (their meaning for units and average speed is not grounded; average speed needs start time we do not keep). Button, not a value row showing the choice.
 
+### Review of Khaled's screen recording of build 1 (26 Nov 11:35)
+- Recorded in docs/REFERENCE_VIDEOS.md as video 10 with 12 numbered differences, a priority order and the list of what the recording did NOT exercise (the list was empty throughout). No crash seen.
+- Fixes made right away (compiled, 386 tests pass, not rendered): Editor button row (the Start Now button was squeezed to a sliver), Automation row wording for "Newest downloads start first" (hand order now drives start; EN and AR).
+
 ## Known risks right now
 1. Code through `cfd04b8` compiled locally (see header). A CI build has not run and could differ (different toolchain).
 2. No screen has been rendered. Layout parity with the reference captures is unverified.

@@ -291,22 +291,37 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancel"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="12sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:text="@string/dialog_cancel" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnQueue"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="12sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:layout_marginStart="8dp"
                 android:text="@string/editor_add_to_queue" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStart"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="12sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:layout_marginStart="8dp"
                 android:text="@string/editor_start_now" />
 
