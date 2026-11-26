@@ -245,6 +245,7 @@ class MainActivity : AppCompatActivity() {
             menu.add(0, 1, 0, R.string.sel_delete).setIcon(R.drawable.ic_delete).setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
             menu.add(0, 2, 1, R.string.sel_info).setIcon(R.drawable.ic_info).setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
             menu.add(0, 7, 1, R.string.sel_edit).setIcon(R.drawable.ic_edit).setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
+            menu.add(0, 8, 2, R.string.sel_send); menu.add(0, 9, 2, R.string.sel_open)
             menu.add(0, 3, 2, R.string.sel_start); menu.add(0, 4, 3, R.string.sel_stop)
             menu.add(0, 5, 4, R.string.sel_select_all); menu.add(0, 6, 5, R.string.sel_invert)
             return true
@@ -266,6 +267,17 @@ class MainActivity : AppCompatActivity() {
                         mode.finish()
                     }.setNegativeButton(android.R.string.cancel, null).show()
                 2 -> chosen.firstOrNull()?.let { startActivity(Intent(this@MainActivity, FilePropertiesActivity::class.java).putExtra("download_id", it.id)) }
+                8 -> {
+                    val files = khaled.benzo.core.files.FileActionPolicy.usable(chosen) { d -> khaled.benzo.ui.main.ItemFileIntents.file(d).isFile }
+                    if (files.isEmpty()) android.widget.Toast.makeText(this@MainActivity, R.string.sel_no_file, android.widget.Toast.LENGTH_LONG).show()
+                    else startActivity(khaled.benzo.ui.main.ItemFileIntents.send(this@MainActivity, files))
+                }
+                9 -> {
+                    val one = khaled.benzo.core.files.FileActionPolicy.openTarget(chosen) { d -> khaled.benzo.ui.main.ItemFileIntents.file(d).isFile }
+                    if (one == null) android.widget.Toast.makeText(this@MainActivity, R.string.sel_open_one, android.widget.Toast.LENGTH_LONG).show()
+                    else try { startActivity(khaled.benzo.ui.main.ItemFileIntents.open(this@MainActivity, one)) }
+                        catch (e: android.content.ActivityNotFoundException) { android.widget.Toast.makeText(this@MainActivity, R.string.sel_no_app, android.widget.Toast.LENGTH_LONG).show() }
+                }
                 7 -> chosen.firstOrNull()?.let { startActivity(Intent(this@MainActivity, khaled.benzo.ui.editor.EditorActivity::class.java).putExtra(khaled.benzo.ui.editor.EditorActivity.EXTRA_EDIT_ID, it.id)); mode.finish() }
                 3 -> chosen.filter { it.status != DownloadStatus.RUNNING && it.status != DownloadStatus.COMPLETED }.forEach { toggleDownloadStatus(it) }
                 4 -> chosen.filter { it.status == DownloadStatus.RUNNING }.forEach { toggleDownloadStatus(it) }

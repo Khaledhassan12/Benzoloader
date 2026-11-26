@@ -463,4 +463,9 @@
     <string name="proxy_remove_msg">حذف %1$s من القائمة؟</string>
     <string name="proxy_scope_note">يُستخدم البروكسي في تنزيل الروابط وفحص الحجم في المحرر. التورنت والمتصفح لا يستخدمانه حتى الآن.</string>
     <string name="proxy_coverage">يُستخدم لتنزيل الروابط وفحص الحجم في المحرر. التورنت والمتصفح يتصلان مباشرة بدون البروكسي. التنزيلات الجارية تبقى على مسارها القديم حتى تُعاد.</string>
+    <string name="sel_send">إرسال</string>
+    <string name="sel_open">فتح</string>
+    <string name="sel_no_file">يمكن إرسال التنزيلات المكتملة التي ما زال ملفها على الجهاز فقط.</string>
+    <string name="sel_open_one">حدد تنزيلًا واحدًا مكتملًا ما زال ملفه على الجهاز.</string>
+    <string name="sel_no_app">لا يوجد تطبيق على الجهاز يستطيع فتح هذا الملف.</string>
 </resources>

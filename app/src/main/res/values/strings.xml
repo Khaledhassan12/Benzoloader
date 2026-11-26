@@ -463,4 +463,9 @@
     <string name="proxy_remove_msg">Remove %1$s from the list?</string>
     <string name="proxy_scope_note">The proxy is used for link downloads and the size check in the editor. Torrents and the browser do not use it yet.</string>
     <string name="proxy_coverage">Used for link downloads and the Editor size check. Torrents and the browser connect directly, without the proxy. Transfers already running keep their old route until restarted.</string>
+    <string name="sel_send">Send</string>
+    <string name="sel_open">Open</string>
+    <string name="sel_no_file">Only finished downloads whose file is still on the device can be sent.</string>
+    <string name="sel_open_one">Select one finished download whose file is still on the device.</string>
+    <string name="sel_no_app">No app on this device can open this file.</string>
 </resources>
