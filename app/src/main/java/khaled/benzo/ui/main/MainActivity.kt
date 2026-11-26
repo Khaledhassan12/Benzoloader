@@ -56,6 +56,10 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         applyBottomBar()
         applySideMenuSwap()
+        khaled.benzo.data.repository.SettingsRepository(this).uiColList.let { c ->
+            if (c != 0) binding.recyclerViewDownloads.setBackgroundColor(c) else binding.recyclerViewDownloads.background = null
+        }
+        adapter.notifyDataSetChanged()
         viewModel.setAddToBottom(khaled.benzo.data.repository.SettingsRepository(this).listAddToBottom)
         // Applied on every return to the screen so a change in Settings takes effect without a restart.
         if (khaled.benzo.data.repository.SettingsRepository(this).keepScreenOn) {

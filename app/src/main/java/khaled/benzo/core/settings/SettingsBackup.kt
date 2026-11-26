@@ -67,6 +67,11 @@ object SettingsBackup {
         "notif_buttons" to Spec.Text(100) { s -> s.all { it in 'a'..'z' || it == '_' || it == ',' } },
         "vib_total_ms" to Spec.IntRange(50, 1000, 50),
         "quick_graph_visible" to Spec.Bool,
+        "ui_col_filename" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
+        "ui_col_info" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
+        "ui_col_progress" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
+        "ui_col_progress_bg" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
+        "ui_col_list" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
         // Comma list of panel row keys (resource names). Unknown keys are harmless: the panel ignores keys it does not have.
         "quick_panel_hidden" to Spec.Text(600) { s -> s.all { it in 'a'..'z' || it in '0'..'9' || it == '_' || it == ',' } },
         "theme_color" to Spec.IntRange(0, 4, 1),

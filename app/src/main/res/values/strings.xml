@@ -338,6 +338,13 @@
     <string name="apply_sort_title">Apply sorting?</string>
     <string name="apply_sort_message">The list order becomes the order shown now. This also decides which waiting download starts first.</string>
     <string name="apply_sort_saved">Saved</string>
+    <string name="colors_title">Interface colours</string>
+    <string name="col_filename">Colour of file name</string>
+    <string name="col_info">Colour of information</string>
+    <string name="col_progress_bg">Background of progress bar</string>
+    <string name="col_progress">Colour of progress bar</string>
+    <string name="col_list_bg">Background of list</string>
+    <string name="col_stock">Stock colour</string>
     <string name="panel_sorting">Sorting</string>
     <string name="panel_clear">Clear</string>
     <string name="panel_stopped">Stopped</string>

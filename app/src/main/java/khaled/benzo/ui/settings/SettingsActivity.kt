@@ -485,6 +485,7 @@ class SettingsActivity : AppCompatActivity() {
 
     /** Optional all-files access (Android 11+). Shows the current state; the user decides on the system screen. */
     private fun refreshAllFilesButton() {
+        binding.btnInterfaceColors.setOnClickListener { startActivity(android.content.Intent(this, InterfaceColorsActivity::class.java)) }
         val b = binding.btnAllFilesAccess
         if (!khaled.benzo.ui.common.AllFilesAccess.isApplicable()) { b.visibility = android.view.View.GONE; return }
         b.visibility = android.view.View.VISIBLE

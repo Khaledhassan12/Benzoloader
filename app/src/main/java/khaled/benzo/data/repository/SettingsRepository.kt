@@ -323,6 +323,7 @@ class SettingsRepository(context: Context) {
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
         "vib_total_ms" to vibrateTotalMs, "notif_buttons" to notifButtons, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible,
+        "ui_col_filename" to uiColFilename, "ui_col_info" to uiColInfo, "ui_col_progress" to uiColProgress, "ui_col_progress_bg" to uiColProgressBg, "ui_col_list" to uiColList,
         "quick_panel_hidden" to quickPanelHidden.sorted().joinToString(","),
         "top_window_enabled" to topWindowEnabled, "top_window_stats" to topWindowStatsMask,
         "top_window_text_color" to topWindowTextColor, "top_window_bg_color" to topWindowBackgroundColor,
@@ -359,6 +360,26 @@ class SettingsRepository(context: Context) {
         set(v) = prefs.edit().putInt("torrent_encryption", v.coerceIn(0, 2)).apply()
 
     // Top window (overlay). Defaults: OFF, and the values seen in the reference captures where they are device independent.
+    /** 0 = not set (stock colour). A set colour is ARGB. */
+    var uiColFilename: Int
+        get() = prefs.getInt("ui_col_filename", 0)
+        set(value) = prefs.edit().putInt("ui_col_filename", value).apply()
+    /** 0 = not set (stock colour). A set colour is ARGB. */
+    var uiColInfo: Int
+        get() = prefs.getInt("ui_col_info", 0)
+        set(value) = prefs.edit().putInt("ui_col_info", value).apply()
+    /** 0 = not set (stock colour). A set colour is ARGB. */
+    var uiColProgress: Int
+        get() = prefs.getInt("ui_col_progress", 0)
+        set(value) = prefs.edit().putInt("ui_col_progress", value).apply()
+    /** 0 = not set (stock colour). A set colour is ARGB. */
+    var uiColProgressBg: Int
+        get() = prefs.getInt("ui_col_progress_bg", 0)
+        set(value) = prefs.edit().putInt("ui_col_progress_bg", value).apply()
+    /** 0 = not set (stock colour). A set colour is ARGB. */
+    var uiColList: Int
+        get() = prefs.getInt("ui_col_list", 0)
+        set(value) = prefs.edit().putInt("ui_col_list", value).apply()
     var topWindowEnabled: Boolean
         get() = prefs.getBoolean("top_window_enabled", false)
         set(v) = prefs.edit().putBoolean("top_window_enabled", v).apply()

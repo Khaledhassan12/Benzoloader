@@ -338,6 +338,13 @@
     <string name="apply_sort_title">تطبيق الترتيب؟</string>
     <string name="apply_sort_message">ترتيب القائمة هيبقى زي المعروض دلوقتي. وده كمان بيحدد أي تحميل منتظر يبدأ الأول.</string>
     <string name="apply_sort_saved">اتحفظ</string>
+    <string name="colors_title">ألوان الواجهة</string>
+    <string name="col_filename">لون اسم الملف</string>
+    <string name="col_info">لون المعلومات</string>
+    <string name="col_progress_bg">خلفية شريط التقدم</string>
+    <string name="col_progress">لون شريط التقدم</string>
+    <string name="col_list_bg">خلفية القائمة</string>
+    <string name="col_stock">اللون الافتراضي</string>
     <string name="panel_sorting">الترتيب</string>
     <string name="panel_clear">مسح</string>
     <string name="panel_stopped">متوقف</string>

@@ -47,7 +47,19 @@ class DownloadAdapter(
     inner class ViewHolder(private val binding: ItemDownloadBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        private val stockName = binding.txtFileName.textColors
+        private val stockInfo = binding.txtStatusSubtitle.textColors
+
+        /** Custom colours from Interface colours; 0 = stock. Applied on every bind so a change shows when the list redraws. */
+        private fun applyColors() {
+            val s = khaled.benzo.data.repository.SettingsRepository(binding.root.context)
+            if (s.uiColFilename != 0) binding.txtFileName.setTextColor(s.uiColFilename) else binding.txtFileName.setTextColor(stockName)
+            for (t in listOf(binding.txtStatusSubtitle, binding.txtSizes, binding.txtSpeed, binding.txtEta))
+                if (s.uiColInfo != 0) t.setTextColor(s.uiColInfo) else t.setTextColor(stockInfo)
+        }
+
         fun bind(item: DownloadItem) {
+            applyColors()
             binding.txtFileName.text = item.fileName
             binding.txtStatusSubtitle.text = "${khaled.benzo.ui.common.StatusText.of(binding.root.context, item.status, waiting[item.id])}"
 
@@ -62,6 +74,13 @@ class DownloadAdapter(
                 if (item.status == DownloadStatus.COMPLETED) R.drawable.bar_done else R.drawable.bar_running
             )
             binding.progressBar.isIndeterminate = false
+            // Custom bar colours apply to the running bar only; the finished bar keeps its own look (the reference showed no rule).
+            khaled.benzo.data.repository.SettingsRepository(binding.root.context).let { s ->
+                if (item.status != DownloadStatus.COMPLETED) {
+                    if (s.uiColProgress != 0) binding.progressBar.progressTintList = android.content.res.ColorStateList.valueOf(s.uiColProgress)
+                    if (s.uiColProgressBg != 0) binding.progressBar.progressBackgroundTintList = android.content.res.ColorStateList.valueOf(s.uiColProgressBg)
+                }
+            }
             val total = if (item.totalBytes > 0) formatBytes(item.totalBytes) else "?"
             binding.txtSizes.text = if (item.status == DownloadStatus.COMPLETED) total
                 else formatBytes(item.downloadedBytes) + " / " + total
