@@ -37,6 +37,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Transparent system bars: the drawer must not paint its own status-bar colour, and the two side panels
+        // take the bar sizes as padding so their first and last rows are not under the bars.
+        binding.drawerLayout.setStatusBarBackgroundColor(android.graphics.Color.TRANSPARENT)
+        for (panel in listOf<View>(binding.navigationView, binding.filterPanelScroll)) {
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(panel) { v, insets ->
+                val bars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                v.setPadding(v.paddingLeft, bars.top, v.paddingRight, bars.bottom)
+                insets
+            }
+        }
 
         setSupportActionBar(binding.toolbar)
 

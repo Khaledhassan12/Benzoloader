@@ -211,8 +211,7 @@
         android:id="@+id/navigationView"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true" />
+        android:layout_gravity="start" />
 
     <!-- Side panel: Category, Status, Time, Sorting. Filled by FilterPanel. -->
     <ScrollView
@@ -220,8 +219,7 @@
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:background="?attr/colorSurface"
-        android:fitsSystemWindows="true">
+        android:background="?attr/colorSurface">
         <LinearLayout
             android:id="@+id/filterPanelHost"
             android:layout_width="match_parent"
