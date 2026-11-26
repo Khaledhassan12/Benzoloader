@@ -367,9 +367,12 @@ class MainActivity : AppCompatActivity() {
 
     /** Bottom bar is shown or hidden from Settings > Interface. When it is shown its add button replaces the floating one. */
     private fun applyBottomBar() {
-        val show = khaled.benzo.data.repository.SettingsRepository(this).bottomBar
+        val repo = khaled.benzo.data.repository.SettingsRepository(this)
+        // Reference code (read for behaviour): with Top bar at bottom the toolbar takes the bottom bar's slot, so the
+        // bottom action bar is not built; the toolbar already carries the add button.
+        val show = repo.bottomBar && !repo.topBarAtBottom
         binding.bottomBar.visibility = if (show) View.VISIBLE else View.GONE
-        binding.fabAdd.visibility = if (show) View.GONE else View.VISIBLE
+        binding.fabAdd.visibility = if (show || repo.topBarAtBottom) View.GONE else View.VISIBLE
         applyTopBarPosition(show)
     }
 
