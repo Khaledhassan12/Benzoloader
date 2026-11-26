@@ -2,8 +2,8 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Head of branch when this entry was written:** see the first row of "Batch history" (the log's own commit comes right after it).
-**Last commit that was compiled and unit-tested:** `fd59931` (40 of 40 tests passed). Every commit after it is written code only.
+**Latest implementation commit when this entry was written:** `1887e2f` (26 Nov 02:26). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
 ## How to read the states
@@ -84,6 +84,141 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | WebView, media detection | BUILT |
 | Tabs (in memory), history, bookmarks dialogs | WRITTEN, TESTS WRITTEN (tab model) |
 | Standalone bookmarks and history screens, desktop mode, clear cache | NOT STARTED |
+| Tab race | Traced one stale case: a page finish from the tab just left. Tab record was already guarded; history recording now sits in the same guard. Acceptance extracted to `PageEventPolicy.acceptFinish` with 3 unit tests (written, not run). This covers the traced case only; other stale events are not ruled out. An instrumented regression test (switch tabs during a slow load) is planned for the final build stage. Runtime behaviour unverified. WRITTEN, TESTS WRITTEN, UNBUILT |
+| Browser Block Ads (switch, host sources, auto-update) | NOT STARTED. IN SCOPE (the user's rule: all reference features, 21:07/21:23). Separate from the "no advertising inside the app" rule. Open: source of host lists, update behaviour |
+
+### Interface
+| Item | State |
+|---|---|
+| Settings hub with category screens | WRITTEN, NOT RENDERED |
+| Bottom navigation bar (Queue, Finished, badges), switchable in Interface | WRITTEN, NOT RENDERED. Reconciled 20:01: badges exist (badgeQueue, badgeFinished in activity_main.xml, filled in MainActivity from MainViewModel counts over all downloads, hidden at zero, drawable back_badge, commit 1860a86). A stale "NOT done: badges" note in UI_PARITY_PLAN Step 2b caused a wrong later claim; corrected, no regression found in code |
+| Theme: device colours (Material You) plus four presets | WRITTEN, NOT RENDERED. PARTIAL: no custom colour picker |
+| Manual light / dark / follow-system choice (Interface) | WRITTEN, NOT RENDERED. Default follows the system, as before. The old stored `dark_mode` key stays unread |
+| Green value rows for 8 slider settings | WRITTEN, NOT RENDERED |
+| Cataloging: switch, one row per category, category screens | WRITTEN, NOT RENDERED. PARTIAL: extensions and folder per category are display only |
+| Dependent rows fade with their switch | WRITTEN, NOT RENDERED |
+| Pause-after-error and clear-finished as value rows | NOT STARTED (they are still switches) |
+| Top window overlay, Data screen, side panel with graph | NOT STARTED |
+| Main list | PARTIAL reference: the empty Queue shell capture was supplied and its bottom bar is written. No populated-row captures were supplied, so row layout is not matched |
+| Editor and properties screens | NOT CHECKED. No captures of them were supplied |
+
+### Data and security
+| Item | State |
+|---|---|
+| Settings export, import and reset (settings only) | WRITTEN, TESTS WRITTEN |
+| Cookies, headers and site passwords sealed with Keystore-backed AES-GCM | WRITTEN, TESTS WRITTEN. Device behaviour unverified |
+| `allowBackup` | Left as it was (true). Backup policy not decided; I must propose one with the tradeoff |
+| Secrets inside URLs | NOT STARTED. Audit and handling to be designed by me |
+| Old ad-named files and mp3s in `res/raw` | Origin unknown, not touched. Provenance check is pending |
+
+### Release
+| Item | State |
+|---|---|
+| Dependency upgrades (staged plan) | NOT STARTED. Plan in `DEPENDENCY_REVIEW.md` |
+| CI build and APK artifact | NOT STARTED (final stage). Signing and artifact retention to be reported at handoff |
+| Arabic wording review by a native speaker | NOT DONE. Strings are my own wording; no reviewer arranged yet |
+
+## Batch history (newest first)
+The table starts with the newest commit. Commits after `fdf6b4d` (the former top row) are listed first, with dates (25 or 26 Nov, Cairo time); the older rows below keep their 25 Nov times. Detail notes for the later batches are in "Change notes" at the end of this section.
+
+| Commit | Time (Cairo) | Change | State |
+|---|---|---|---|
+| `1887e2f` | 26 Nov 02:26 | Editor probe: cancel/stale guard, network rules, timeouts, tests (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `66dbb6b` | 26 Nov 02:25 | Editor: size label and suggested name probe (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `7f6ce75` | 26 Nov 02:07 | Checksum: unreadable vs mismatch (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `50324e2` | 26 Nov 02:06 | Chain per-download limiter to global cap; checksum sequencing notes (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `8ddc185` | 26 Nov 02:06 | Per-download speed limit and checksum, DB v3 migration (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `1e8be85` | 26 Nov 02:04 | Top window: colour swatch and reset (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `86f1f7a` | 26 Nov 01:44 | Editor: avoid name shadowing | WRITTEN, UNBUILT (never compiled or run) |
+| `c2012f2` | 26 Nov 01:44 | Editor: category dropdown (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `7d08d5e` | 26 Nov 01:24 | Notification: remaining time and queue sub-text (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `6b7fb02` | 26 Nov 01:04 | List row: flat row, single bar with overlay texts (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `69ecd17` | 26 Nov 00:46 | Docs: video 9 (Top window journey); overlay text matches (unbuilt) | docs only |
+| `f917aa1` | 26 Nov 00:43 | Finish toast (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `9204ef1` | 26 Nov 00:43 | Docs: video 8 not-seen list fix | docs only |
+| `959cd83` | 26 Nov 00:43 | Docs: soften video 8 sound/bar inferences | docs only |
+| `5c0b59e` | 26 Nov 00:42 | Video 8 audio and short-window review; play add sound on Editor open (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `8e5fda5` | 26 Nov 00:41 | Docs: video 8 review (full download journey) | docs only |
+| `5cd6a4b` | 26 Nov 00:23 | Torrent encryption mode row (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `b13a73d` | 26 Nov 00:03 | Torrent encryption mode setting and engine policy (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `e34c979` | 25 Nov 23:43 | Finished records round-trip, history import (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `a432c29` | 25 Nov 23:43 | Export dialog (4 entries) and bundle import wired (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `fed2f63` | 25 Nov 23:23 | Secrets export design + passphrase envelope (unbuilt, unwired) | WRITTEN, UNBUILT (never compiled or run) |
+| `a4c2cc0` | 25 Nov 23:22 | Export bundle format + tests (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `ed32199` | 25 Nov 23:01 | ViewModel bookmark/history export, bookmark import (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `d881a10` | 25 Nov 22:41 | Bookmarks/history transfer format + tests (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `8e3adcd` | 25 Nov 22:21 | Top window settings in backup and reset (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `93b7ff7` | 25 Nov 22:00 | Reset dialog: keep consequence disclosure (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `3831755` | 25 Nov 22:00 | Reset settings dialog matches reference (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `96710b4` | 25 Nov 21:53 | Export selection logic + tests (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `1c9f906` | 25 Nov 21:40 | Log: reset settings dialog difference | docs only |
+| `2a5e8bd` | 25 Nov 21:39 | Docs: video 5 dense re-review part 3 (Data) | docs only |
+| `c6ab337` | 25 Nov 21:39 | Docs: video 5 dense re-review part 2 (browser rows) | docs only |
+| `848131f` | 25 Nov 21:38 | Docs: video 5 dense re-review part 1 | docs only |
+| `e41d2ec` | 25 Nov 21:24 | Top window settings screen, hub row, strings EN/AR (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `6740a1a` | 25 Nov 21:21 | Docs: sound/vibration independent of Top window; user-supplied sound names | docs only |
+| `d6edc81` | 25 Nov 21:20 | Top window overlay engine, settings storage, permission, tests (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `b4386fa` | 25 Nov 21:19 | Docs: Top window semantics from user statement and screenshot | docs only |
+| `ea2a440` | 25 Nov 21:08 | Docs: scope rule, all reference content in scope | docs only |
+| `4bb2511` | 25 Nov 21:07 | Log: static resource cross-check | docs only |
+| `4bb25cb` | 25 Nov 20:59 | Log: pause-after-error semantics unresolved | docs only |
+| `d9101ba` | 25 Nov 20:58 | Docs: reference videos, video 7 (torrent file flow) | docs only |
+| `c9edc63` | 25 Nov 20:48 | Docs: reference videos, video 6 (browser interface) | docs only |
+| `2532aa1` | 25 Nov 20:41 | Docs: correct quick-add dependency statement; narrow coverage wording | docs only |
+| `4de7228` | 25 Nov 20:41 | Docs: reference videos, video 5 pass 5 (Browser, Data), coverage complete at 6 s spacing | docs only |
+| `1ccf677` | 25 Nov 20:40 | Docs: reference videos, video 5 pass 4 (Top window, Interface) with corrections | docs only |
+| `44286c3` | 25 Nov 20:40 | Docs: reference videos, video 5 pass 3 | docs only |
+| `b66c735` | 25 Nov 20:39 | Docs: reference videos, video 5 pass 2 (Torrent, Notifications, Automation start) | docs only |
+| `b748dd4` | 25 Nov 20:39 | Docs: reference videos, video 5 row-by-row pass 1 (Downloading) | docs only |
+| `f44a69f` | 25 Nov 20:38 | Docs: REFERENCE_VIDEOS.md (all 5 reference videos, observed vs inferred, status) | docs only |
+| `a56da63` | 25 Nov 20:19 | Settings: user-agent presets dialog with custom fallback (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `bd61f18` | 25 Nov 20:18 | Docs: download-list video review (observed vs inferred) | docs only |
+| `01e2019` | 25 Nov 20:08 | Docs: left-menu video part 2 review (observed vs inferred, compared with app) | docs only |
+| `4a7338c` | 25 Nov 20:04 | Docs: left-menu video part 1 review (observed vs inferred, compared with app) | docs only |
+| `a2deb67` | 25 Nov 20:00 | Docs: reconcile bottom-bar badge status (implemented in 1860a86; stale note fixed) | docs only |
+| `c5ab5bb` | 25 Nov 19:59 | Swap side menus: re-apply on return, visible wording; bottom-bar status reconciled (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `eff4a46` | 25 Nov 19:59 | Interface: swap side menus switch (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `b4fa64f` | 25 Nov 19:38 | Browser: extract page-finish acceptance policy with tests; scope log wording (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `087f88f` | 25 Nov 19:38 | Browser: history records only the page currently shown (tab race guard) (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `163bdde` | 25 Nov 19:34 | Torrents category by origin; dense-frame video findings recorded (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `d2cee83` | 25 Nov 19:33 | Panel: independent sections, category counts, title follows category, marks; video review notes (unbuilt, unrendered) | WRITTEN, UNBUILT (never compiled or run) |
+| `fc2bb2f` | 25 Nov 19:20 | UI: side panel with Category, Status, Time, Sorting, status subtitle (written, unbuilt, unrendered) | WRITTEN, UNBUILT (never compiled or run) |
+| `f2a5b49` | 25 Nov 19:18 | List: time filter and order sort logic, tests written not run; parity notes for 16 new captures | WRITTEN, UNBUILT (never compiled or run) |
+| `a005e25` | 25 Nov 18:57 | Automation: after-finishing action (exit service when all work is done), policy and tests written not run | WRITTEN, UNBUILT (never compiled or run) |
+| `13a9938` | 25 Nov 18:39 | QuickAddPolicy: skip-editor and start decisions, initial status; tests written not run | WRITTEN, UNBUILT (never compiled or run) |
+| `713c3a1` | 25 Nov 18:38 | Quick add: independent start-after-adding switch, dependent on the skip-editor switch (written, unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `78ce7ca` | 25 Nov 18:37 | Automation: optional quick add of links from other apps, default off (written, unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `fe88ef5` | 25 Nov 18:37 | List display order: carry add-to-bottom through time-sort restore and resume, tests written not run | WRITTEN, UNBUILT (never compiled or run) |
+| `78c9420` | 25 Nov 18:36 | Automation: list display order setting, add to bottom or top (written, unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `daeef9d` | 25 Nov 18:30 | Notifications: optional clear of finished-download notifications on Exit (written, unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
+| `9bb2f16` | 25 Nov 18:04 | log: batch row | WRITTEN, UNBUILT (never compiled or run) |
+| `fdf6b4d` | 18:06 | Failure-injection tests for resume: If-Range header, changed file restarts clean | TESTS WRITTEN |
+| `5ef01a9` | 18:05 | List Delete stops the running transfer first; removed torrents lose their stored files | WRITTEN, TESTS WRITTEN |
+| `69e6ead` | 17:50 | Torrent fast-resume (resume data saved and reused) | WRITTEN, TESTS WRITTEN (store) |
+| `c9d73af` | 17:34 | Manual light / dark / follow-system choice | WRITTEN, NOT RENDERED |
+| `2260b7b` | 17:30 | Disabling a container row now disables its child rows (Cataloging category rows) | WRITTEN, NOT RENDERED |
+| `8d66a24` | 17:29 | If-Range on resumed requests | WRITTEN, TESTS WRITTEN |
+| `2b5c204` | 17:25 | Tracker edit dialog on the Properties screen | WRITTEN |
+| `176eebb` | 17:25 | Tracker policy and engine accessors | WRITTEN, TESTS WRITTEN |
+| `0485df4` | 17:24 | Notes: notification and vibration API review | docs |
+| `931463b` | 17:24 | Error vibration is its own switch, default off | WRITTEN |
+| `5c83c48` | 17:23 | Vibration wired to success and error | WRITTEN, TESTS WRITTEN |
+| `0de0cad` | 17:22 | Minimum part size and default user agent | WRITTEN, TESTS WRITTEN |
+| `b940a94` | 17:20 | Cataloging category rows and screens | WRITTEN, NOT RENDERED |
+| `9cfc01b` | 17:19 | Green value rows with slider dialogs; fixed a missing import in my own code | WRITTEN, NOT RENDERED |
+| `8efc25d` | 17:17 | Dependent rows fade; newest-first start order | WRITTEN |
+| `9ee3d0d` | 17:10 | Fixed torrent port; anonymous mode | WRITTEN |
+| `c9e0546`, `3bd191d` | 16:29 to 16:30 | Theme with device colours and presets | WRITTEN |
+| `45c6c45`, `1860a86` | 16:25 to 16:26 | Bottom bar, Queue filter, badges | WRITTEN |
+| `b9af743`, `42ffce7` | 16:13 to 16:15 | Settings hub, first palette | WRITTEN |
+| `c926ef7`, `d5ca7c6` | 16:09 to 16:10 | Chunk flushing, magnet metadata saved | WRITTEN (durability unverified) |
+| `1e6a6a2` | 16:07 | Engine research notes (no engine change) | docs |
+| earlier | 14:11 to 15:55 | Service split, auto-resume, Retry-After, permissions flow, storage variants, reset, seeding, browser tabs and history, settings export, and other items | see `git log` and `SPEC_COVERAGE.md` |
+
+
+### Change notes since 25 Nov 18:06 (oldest first; the time is in the first column)
+| Item | Detail | State |
+|---|---|---|
 | Interface: Swap side menus | New switch `swap_side_menus` (default OFF, in backup and reset through the settings map). When on, MainActivity sets the navigation drawer to the end edge and the filter panel to the start edge at screen creation; the toolbar button, nav list button, drawer close and filter action use the chosen edge (the default toggle opens START only, so its click is overridden). Now re-applied in onResume (idempotent, closes open drawers first), so it takes effect on return from Settings; the summary says so. Still unverified at runtime: DrawerLayout accepting a runtime gravity change plus requestLayout (written from the API contract, not run); if it does not re-lay out, a recreate() on change is the fallback. Gaps: no unit test (gravity wiring; instrumented check planned for the final stage), RTL behaviour of START/END with Arabic unverified, not rendered. Other Interface switches (single list, coloured icons, top bar at bottom) still not built. Bottom action bar: NOT a regression. Our `bottom_bar` (Step 2b, Khaled 16:23, default ON, in backup and reset) is the closest match to the reference "Bottom action bar for list" row; the reference capture shows it OFF as a real-user example, our approved default stays ON. INFERRED, not proven, that they are the same control. Real remaining gap: reference also has "Bottom action bar in left menu" (on), "Buttons in menu" value row and "Swap buttons Exit and Browser" switch for the side-panel bottom bar; ours has fixed three buttons there with no options. WRITTEN, UNBUILT |
 | Left-menu video part 1 (20:03) | Reviewed (see UI_PARITY_PLAN, "Left-side menu video, part 1"): the left menu is the quick-settings panel, Settings > Downloading and Torrent row order/dialogs recorded as OBSERVED vs INFERRED, eye icon confirmed as a per-row visibility editor. Nothing built from it yet; part 2 may follow | REVIEWED, NOT BUILT |
 | Left-menu video part 2 (20:08) | Reviewed (UI_PARITY_PLAN, "Left-side menu video, part 2"): panel Notifications/Options/Interface/Tools/App sections, Notifications, Automation, Cataloging, Scheduler, Interface colour rows and picker, Site manager and Batch loading dialogs, quick-settings tile actions. Batch loading is not in our code. Nothing built from it yet | REVIEWED, NOT BUILT |
@@ -132,65 +267,6 @@ Screenshot review means looking at the reference pictures. It is not a rendered 
 | Top window colour rows (2:10am) | Colour rows now show a colour square and a Reset button in the edit dialog (resets to OUR defaults; the reference's factory defaults are UNKNOWN). Still hex entry, no picker. Not rendered | WRITTEN-UNBUILT |
 | Editor per-download speed limit + checksum, DB v3 (2:20am) | New item fields speedLimitKBps and expectedChecksum, entity columns, hand-written Migration 2->3 (ALTER TABLE ADD COLUMN, DEFAULT matches entity), DB version 3. Editor Advanced: speed slider (0 = global limit) and checksum field; a limited download gets its own bucket CHAINED to the global limiter (cannot bypass the global cap; the global budget stays shared; override meaning not stated in the videos, so no override); after a finished download the file is hashed and a mismatch sets ERROR and keeps the file; success toast, sound, vibration, status and after-finish run only after the check passes; hashing runs on the IO scope; this checksum path covers plain HTTP downloads only; torrents (incl. multi-file selection) stay IN app scope but their verification is a separate, UNFINISHED item. The Editor accepts only http/https links so no torrent can carry a checksum from it today (to re-check when magnet/.torrent entry reaches the Editor: then reject the field with an explanation). An unreadable file gives its own message (not a mismatch). Tests written, not run (ChecksumPolicyTest, TokenBucketLimiterChainTest). Migration never run on a real v2 database and no schema JSON exists: first build must be followed by a migration check. STILL UNFINISHED (not excluded): After finishing per item, per-item Scheduler, Proxy per item (semantics not yet grounded in the videos) | WRITTEN-UNBUILT |
 | Editor size label and suggested name (2:30am) | After the link is entered (700 ms pause) the Editor makes one small ranged request (no cookies) and shows the size, or 'Size unknown'. The server-suggested name fills the name field only while it is empty and the user has not typed a name. Reference's compact-then-tall layout and Name spinner (several name choices) NOT done: spinner semantics unproven. Hardened after review: superseded probes are cancelled and a result is applied only if its link is still current (ProbeGate); the same link is not probed twice; the request follows the download's network rules (no network or Wi-Fi-only unmet = no request; ProbePolicy); short timeouts (8 s connect/read, 10 s call) and only headers are read; typed-name protection kept. NO app proxy exists yet, so the probe uses the system network path only: when the Proxy feature is built the probe must share its client (OPEN, tracked). Tests written, not run (ProbePolicyTest); a fake-server test for the probe itself is still to be written. Network use on typing is a behaviour to review (privacy: the host sees the request before Start). Not rendered | WRITTEN-UNBUILT |
-| Tab race | Traced one stale case: a page finish from the tab just left. Tab record was already guarded; history recording now sits in the same guard. Acceptance extracted to `PageEventPolicy.acceptFinish` with 3 unit tests (written, not run). This covers the traced case only; other stale events are not ruled out. An instrumented regression test (switch tabs during a slow load) is planned for the final build stage. Runtime behaviour unverified. WRITTEN, TESTS WRITTEN, UNBUILT |
-| Browser ad blocking | NOT STARTED, undecided. The owner ruled out advertising inside the app (nothing found in the audited source); browser ad blocking is a different, optional feature and has not been requested |
-
-### Interface
-| Item | State |
-|---|---|
-| Settings hub with category screens | WRITTEN, NOT RENDERED |
-| Bottom navigation bar (Queue, Finished, badges), switchable in Interface | WRITTEN, NOT RENDERED. Reconciled 20:01: badges exist (badgeQueue, badgeFinished in activity_main.xml, filled in MainActivity from MainViewModel counts over all downloads, hidden at zero, drawable back_badge, commit 1860a86). A stale "NOT done: badges" note in UI_PARITY_PLAN Step 2b caused a wrong later claim; corrected, no regression found in code |
-| Theme: device colours (Material You) plus four presets | WRITTEN, NOT RENDERED. PARTIAL: no custom colour picker |
-| Manual light / dark / follow-system choice (Interface) | WRITTEN, NOT RENDERED. Default follows the system, as before. The old stored `dark_mode` key stays unread |
-| Green value rows for 8 slider settings | WRITTEN, NOT RENDERED |
-| Cataloging: switch, one row per category, category screens | WRITTEN, NOT RENDERED. PARTIAL: extensions and folder per category are display only |
-| Dependent rows fade with their switch | WRITTEN, NOT RENDERED |
-| Pause-after-error and clear-finished as value rows | NOT STARTED (they are still switches) |
-| Top window overlay, Data screen, side panel with graph | NOT STARTED |
-| Main list | PARTIAL reference: the empty Queue shell capture was supplied and its bottom bar is written. No populated-row captures were supplied, so row layout is not matched |
-| Editor and properties screens | NOT CHECKED. No captures of them were supplied |
-
-### Data and security
-| Item | State |
-|---|---|
-| Settings export, import and reset (settings only) | WRITTEN, TESTS WRITTEN |
-| Cookies, headers and site passwords sealed with Keystore-backed AES-GCM | WRITTEN, TESTS WRITTEN. Device behaviour unverified |
-| `allowBackup` | Left as it was (true). Backup policy not decided; I must propose one with the tradeoff |
-| Secrets inside URLs | NOT STARTED. Audit and handling to be designed by me |
-| Old ad-named files and mp3s in `res/raw` | Origin unknown, not touched. Provenance check is pending |
-
-### Release
-| Item | State |
-|---|---|
-| Dependency upgrades (staged plan) | NOT STARTED. Plan in `DEPENDENCY_REVIEW.md` |
-| CI build and APK artifact | NOT STARTED (final stage). Signing and artifact retention to be reported at handoff |
-| Arabic wording review by a native speaker | NOT DONE. Strings are my own wording; no reviewer arranged yet |
-
-## Batch history (newest first)
-| Commit | Time (25 Nov, Cairo) | Change | State |
-|---|---|---|---|
-| `fdf6b4d` | 18:06 | Failure-injection tests for resume: If-Range header, changed file restarts clean | TESTS WRITTEN |
-| `5ef01a9` | 18:05 | List Delete stops the running transfer first; removed torrents lose their stored files | WRITTEN, TESTS WRITTEN |
-| `69e6ead` | 17:50 | Torrent fast-resume (resume data saved and reused) | WRITTEN, TESTS WRITTEN (store) |
-| `c9d73af` | 17:34 | Manual light / dark / follow-system choice | WRITTEN, NOT RENDERED |
-| `2260b7b` | 17:30 | Disabling a container row now disables its child rows (Cataloging category rows) | WRITTEN, NOT RENDERED |
-| `8d66a24` | 17:29 | If-Range on resumed requests | WRITTEN, TESTS WRITTEN |
-| `2b5c204` | 17:25 | Tracker edit dialog on the Properties screen | WRITTEN |
-| `176eebb` | 17:25 | Tracker policy and engine accessors | WRITTEN, TESTS WRITTEN |
-| `0485df4` | 17:24 | Notes: notification and vibration API review | docs |
-| `931463b` | 17:24 | Error vibration is its own switch, default off | WRITTEN |
-| `5c83c48` | 17:23 | Vibration wired to success and error | WRITTEN, TESTS WRITTEN |
-| `0de0cad` | 17:22 | Minimum part size and default user agent | WRITTEN, TESTS WRITTEN |
-| `b940a94` | 17:20 | Cataloging category rows and screens | WRITTEN, NOT RENDERED |
-| `9cfc01b` | 17:19 | Green value rows with slider dialogs; fixed a missing import in my own code | WRITTEN, NOT RENDERED |
-| `8efc25d` | 17:17 | Dependent rows fade; newest-first start order | WRITTEN |
-| `9ee3d0d` | 17:10 | Fixed torrent port; anonymous mode | WRITTEN |
-| `c9e0546`, `3bd191d` | 16:29 to 16:30 | Theme with device colours and presets | WRITTEN |
-| `45c6c45`, `1860a86` | 16:25 to 16:26 | Bottom bar, Queue filter, badges | WRITTEN |
-| `b9af743`, `42ffce7` | 16:13 to 16:15 | Settings hub, first palette | WRITTEN |
-| `c926ef7`, `d5ca7c6` | 16:09 to 16:10 | Chunk flushing, magnet metadata saved | WRITTEN (durability unverified) |
-| `1e6a6a2` | 16:07 | Engine research notes (no engine change) | docs |
-| earlier | 14:11 to 15:55 | Service split, auto-resume, Retry-After, permissions flow, storage variants, reset, seeding, browser tabs and history, settings export, and other items | see `git log` and `SPEC_COVERAGE.md` |
 
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.

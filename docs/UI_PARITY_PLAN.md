@@ -32,7 +32,7 @@ His instruction: the Benzoloader UI/UX must be extremely close to the screenshot
 - Effort is large: steps 2 to 6 touch most layouts and activities. No rendering is possible before the build gate lifts, so spacing and sizes will be estimated from the images and corrected at the final comparison.
 - Icons: the reference icons may not be copied; I will use my own vector icons in a matching outline style.
 - The reference App section has About, Send feedback, Rate this App and Privacy policy rows. Rows without a verified destination are not built; they are added only when a real destination exists (no dead links).
-- Block Ads switch and "Single list" semantics are undecided (see SPEC_COVERAGE).
+- Block Ads (switch, host sources, auto-update) is IN SCOPE and NOT STARTED. Its source-list design and the "Single list" semantics are open (see REFERENCE_VIDEOS).
 
 ## Progress log
 - Step 1 (written, unbuilt, unrendered): palette tokens, theme attributes (barBackground, onBar, hintGreen), light status bar, top bars and browser bar on the cream bar colour with dark icons and text; dark theme tokens are my own choice, not from the captures. Remaining blue-era colour names in colors.xml were remapped to the green so no layout keeps the old blue.
