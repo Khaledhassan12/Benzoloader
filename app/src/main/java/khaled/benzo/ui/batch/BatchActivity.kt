@@ -71,7 +71,7 @@ class BatchActivity : AppCompatActivity() {
         buttons.addView(Button(this, null, android.R.attr.borderlessButtonStyle).apply { setText(R.string.dialog_cancel); setOnClickListener { finish() } })
         buttons.addView(Button(this, null, android.R.attr.borderlessButtonStyle).apply { setText(R.string.batch_generate); setOnClickListener { generate() } })
         root.addView(buttons)
-        setContentView(khaled.benzo.ui.common.CollapsingScreen.wrap(this, title, ScrollView(this).apply { addView(root) }))
+        setContentView(ScrollView(this).apply { addView(root) })
 
         val watcher = object : android.text.TextWatcher {
             override fun afterTextChanged(s: android.text.Editable?) = updatePreview()

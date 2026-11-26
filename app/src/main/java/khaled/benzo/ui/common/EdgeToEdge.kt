@@ -19,6 +19,8 @@ import khaled.benzo.R
 object EdgeToEdge {
     fun apply(activity: Activity) {
         val window = activity.window
+        // Dialog-style screens (Editor, Properties, Torrent editor, Batch) float like the reference's dialogs and keep their window as is.
+        if (window.isFloating) return
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val tv = TypedValue()
         val bar = if (activity.theme.resolveAttribute(R.attr.barBackground, tv, true) && tv.type >= TypedValue.TYPE_FIRST_COLOR_INT && tv.type <= TypedValue.TYPE_LAST_COLOR_INT) tv.data
