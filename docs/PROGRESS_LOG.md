@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `98c3b40` (26 Nov 05:55, order collision fix; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `BATCH_SHA` (26 Nov 05:58, Batch loading; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `BATCH_SHA` | 26 Nov 05:58 | Batch loading: BatchPolicy expander, dialog, Tools entry, EN/AR strings, tests | WRITTEN, UNBUILT (never compiled or run) |
 | `98c3b40` | 26 Nov 05:55 | Manual order under a filter: splice over the full list, distinct keys, tests; final-stage checklist | WRITTEN, UNBUILT (never compiled or run) |
 | `db05cc4` | 26 Nov 05:45 | Manual order: schema v4 and Migration 3->4, OrderMoves, selection moves, tests | WRITTEN, UNBUILT (never compiled or run) |
 | `b075d75` | 26 Nov 05:20 | Torrent Force recheck and Force announce, policy tests | WRITTEN, UNBUILT (never compiled or run) |
@@ -294,6 +295,14 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 | Torrent Force recheck and Force announce (5:20am) | Shown in the selection overflow only when a selected item is a torrent with a hash. They call jlibtorrent TorrentHandle.forceRecheck() and forceReannounce() (both ()V descriptors read from the 1.2.0.18 class file; no javap, a small class-file parser). The toast says how many torrents the engine had loaded; the others are named as not running, never counted as done. The row text after a recheck (the reference showed 'checking files') is NOT built: the app has no checking-files row state yet (GAP). NOT done: To seed (meaning not grounded: could be seed-now, stop-downloading, or force-seeding mode; not guessed). TorrentActionPolicy tests written, not run. Engine behaviour of forceRecheck on a paused or seeding torrent is unverified. Not rendered | WRITTEN-UNBUILT |
 | Manual order: To top, To bottom, Up, Down (5:45am) | Schema v4: downloads.list_order INTEGER NOT NULL DEFAULT 0 (hand-written Migration 3->4, never run on a v3 DB, no schema JSON yet). Order sort now compares orderKey (listOrder if moved, else id), so an unmoved list is unchanged. Pure OrderMoves (move, newKeys) with tests written, not run: selected items keep relative order, the same set of keys is handed out again in the new order so new downloads still land where they did, keys made distinct, only changed rows written, in one transaction. Moves are in screen terms and honour the current direction. They work only in the Order sort; in other sorts the user is asked before the list is switched (the sort is the user's choice). NOT claimed: that the reference's moves change the queue START order. The queue still starts by added time (and the newest-first setting): INFERRED link, open decision for Khaled. (Hidden-row key tie limit was fixed afterwards, see the 5:55am row.) Interval selection NOT built (semantics inferred). Not rendered | WRITTEN-UNBUILT |
 | Manual order collision fix (5:55am, Main 5:31) | Moves under a filter no longer work on the shown subset alone. The new order is built over ALL items: the moved subset is spliced back into the full order (hidden items keep their exact slots, OrderMoves.splice), and keys are reissued over the full list, made distinct, only changed rows written in one transaction. So a hidden row cannot tie with or move relative to others outside the filter. Tests written, not run (splice slots, ties including a hidden item). The earlier 'hidden row can share a key' limit is REMOVED. FINAL-STAGE CHECKLIST still owes: Migration 3->4 run on a real v3 database; queue-start versus display-order question for Khaled; Interval selection; a run of every OrderMoves test. Not rendered | WRITTEN-UNBUILT |
+
+### Batch loading (written, unbuilt, unrendered)
+- OBSERVED (video 3, left panel part 2, about 680 to 686 s): dialog with Link field, numeric range From/To/Step, letter range From/To, a collapsible Advanced (path, speed, etc.), Cancel and Generate, and a Help dialog saying a dollar mark in the link is where incrementing numbers or characters go, and several marks give leading zeros (three marks: 001).
+- Built: `core/batch/BatchPolicy` (pure expander, cap 1000 links which is my own safety choice), `ui/batch/BatchActivity` (code-built dialog with a live preview of count, first and last link), entry "Batch loading" in the quick panel Tools section, own EN/AR text, `BatchPolicyTest` (written, not run).
+- Generated items are added one at a time through the existing add path so same-named files get distinct names, and are stored PAUSED.
+- UNKNOWN, not seen in the video: what Generate does with the items (queued or started), whether Advanced applies to all of them, the reference's count limit, Step for letters, whether Step 0 or From above To is accepted, letter case rules. My rejections for these are choices, not parity.
+- UNFINISHED: the Advanced section (folder, speed and other per-item fields) is not in the dialog; items use the default folder and thread count. Entry point in the reference (drawer position) is not confirmed.
+- Checks run: XML parse only.
 
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.

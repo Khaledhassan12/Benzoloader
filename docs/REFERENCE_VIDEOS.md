@@ -256,3 +256,6 @@ About screen (browser panels and lists are now in Video 6; bookmark and history 
 
 ## Update rule
 Each new video from the user adds a "Video N" section here, adds a row to the index, and updates concepts and the status table in the same commit.
+
+## Video 3 addendum: Batch loading (t about 680 to 686 s)
+OBSERVED: dialog (title, help icon, overflow icon, Link field, radio "numbers" with From/To/Step, radio "letters" with From/To, collapsible Advanced, Cancel, Generate). Help text: a dollar mark in the link is a place for incrementing numbers or characters; several marks give leading zeros. NOT SEEN: Generate result, Advanced contents, limits.

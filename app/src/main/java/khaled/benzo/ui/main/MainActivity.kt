@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity() {
             onOpenSettings = { startActivity(Intent(this, khaled.benzo.ui.settings.SettingsHubActivity::class.java)) },
             onOpenBrowser = { startActivity(Intent(this, BrowserActivity::class.java)) },
             onOpenSiteManager = { startActivity(Intent(this, khaled.benzo.ui.site.SiteManagerActivity::class.java)) },
+            onOpenBatch = { startActivity(Intent(this, khaled.benzo.ui.batch.BatchActivity::class.java)) },
             onOpenTopWindow = { startActivity(Intent(this, khaled.benzo.ui.settings.TopWindowSettingsActivity::class.java)) },
             onExit = {
                 startService(Intent(this, DownloadService::class.java).apply { action = khaled.benzo.receiver.DownloadActionReceiver.ACTION_EXIT_APP })

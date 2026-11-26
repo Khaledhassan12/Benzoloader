@@ -83,6 +83,11 @@
 
         <!-- Torrent Editor Activity: Catch .torrent and magnet: links -->
         <activity
+            android:name=".ui.batch.BatchActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Benzo.Dialog" />
+
+        <activity
             android:name=".ui.torrent.TorrentEditorActivity"
             android:exported="true"
             android:launchMode="singleTask"

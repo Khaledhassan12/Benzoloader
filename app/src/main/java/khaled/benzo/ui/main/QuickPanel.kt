@@ -63,6 +63,7 @@ class QuickPanel(
     private val onOpenSettings: () -> Unit,
     private val onOpenBrowser: () -> Unit,
     private val onOpenSiteManager: () -> Unit,
+    private val onOpenBatch: () -> Unit,
     private val onOpenTopWindow: () -> Unit,
     private val onExit: () -> Unit,
     private val onChanged: () -> Unit
@@ -136,6 +137,7 @@ class QuickPanel(
         }
         section(Section.TOOLS, R.string.qp_tools) {
             valueRow(R.string.qp_site_manager, null) { onOpenSiteManager() }
+            valueRow(R.string.qp_batch, null) { onOpenBatch() }
         }
     }
 
