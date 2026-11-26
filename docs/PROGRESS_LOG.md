@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `3c628b0` (26 Nov 09:50, manual order drives start; Apply sorting; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `e18085f` (26 Nov 11:00, Interface colours; compiled and unit-tested locally). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Local build and test evidence (own build, NOT CI):** `cfd04b8` compiled (`compileGithubDebugKotlin`) and 386 JVM unit tests passed locally on 26 Nov 10:11, after fixing three compile faults and one real bug. A debug-signed arm64-only APK was built from it. Every later batch is compiled and unit-tested before it is pushed (rule in force since Khaled's 09:54 request for an interim build); an entry that says otherwise is written-unbuilt.
 **CI:** NOT RUN. No GitHub Actions workflow exists on this branch. The final-stage CI build and a stable CI artifact are still to do.
 **User-reported run:** the interim APK was reported to install and launch on a phone (26 Nov 10:25). This is not evidence of feature parity or visual parity, and no screenshots or recordings are stored.
@@ -126,6 +126,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
 | `3c628b0` | 26 Nov 09:50 | Manual list order now decides queue start; Apply sorting (refresh mark, dialog, saved toast) stores the sort as list order; tests | WRITTEN, TESTS WRITTEN, UNBUILT |
+| `e18085f` | 26 Nov 11:00 | Interface colours screen (5 rows) applied to list; backup | COMPILED, 386 TESTS PASS (no new tests), NOT RENDERED |
 | `7fa573b` | 26 Nov 09:30 | Notification command buttons: seven-entry picker (max three), actions, backup, tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `cfb3c36` | 26 Nov 09:05 | Total-finish vibration setting and slider, service uses it, backup, test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `52c175d` | 26 Nov 08:40 | Settings backup: hidden panel rows (comma list, safe characters only) + test | WRITTEN, TESTS WRITTEN, UNBUILT |
@@ -361,6 +362,11 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 ### Interim build (26 Nov 10:14, Khaled asked for a test build now)
 - BUILT locally, not by CI: `compileGithubDebugKotlin` succeeds at `cfd04b8` after fixing three compile faults (lifecycleScope call in EditorActivity, missing R import and an invalid R.string alias in SettingsActivity). 386 unit tests ran, all pass after fixes (one real bug: ExportBundle.split added a stray blank line; three test faults; one expectation relaxed: the multi-connection test now needs 4 ranged requests, not 8, byte-exactness still asserted).
 - Debug-signed arm64-only APK published as pre-release `interim-cfd04b8` (SHA-256 a35ff92c...c92). Reported to install and launch on a phone (26 Nov 10:25); parity unverified; no screenshots or recordings are stored. Everything described above as "unbuilt" before this point is now COMPILED and unit-tested at logic level only; it is still unrendered and never run.
+
+### Interface colours (compiled, tests pass, not rendered, not run)
+- New screen InterfaceColorsActivity, opened by an "Interface colours" button at the top of the Settings Interface section (DIFFERENCE: the reference shows the colour rows inside the Interface screen itself). Rows: colour of file name, of information, background and colour of progress bar, background of list. Each shows hex, a swatch, and a cross while set (OBSERVED video 5). Stored 0 = stock colour. Applied in the download list (file name, status/size/speed/time text, running progress bar tint and background tint, list background). All five keys are in the settings backup.
+- NOT BUILT, kept open: Accent, Background of bars, Colour of creating file (state not identified), the Individual settings gate and the Material You dimming (reference showed Theme, Accent, bars and list dimmed with Material You on; effect of Individual settings UNCLEAR, so I did not invent one). The finished bar keeps its own look. The Presets entry of the picker gives our palette, not the reference's.
+- Not added: unit tests for these keys (they pass through the generic backup spec). The APK on the prerelease does NOT include this batch.
 
 ## Known risks right now
 1. Code through `cfd04b8` compiled locally (see header). A CI build has not run and could differ (different toolchain).
