@@ -33,9 +33,10 @@
                 android:id="@+id/txtFileName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="middle"
+                android:ellipsize="end"
                 android:maxLines="1"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textSize="15sp"
                 tools:text="file-name.ext" />
 
             <TextView
@@ -63,8 +64,8 @@
     <!-- One bar; the texts sit on it. Values are real aggregate bytes only. -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="22dp"
-        android:layout_marginTop="6dp">
+        android:layout_height="18dp"
+        android:layout_marginTop="8dp">
 
         <ProgressBar
             android:id="@+id/progressBar"
