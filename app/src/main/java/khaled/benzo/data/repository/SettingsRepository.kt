@@ -103,6 +103,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_NOTIF_PAUSE_ALL, false)
         set(value) = prefs.edit().putBoolean(KEY_NOTIF_PAUSE_ALL, value).apply()
 
+    /** Saved comma list of notification command buttons; null until the user opens the picker (then the older Pause all switch applies). */
+    var notifButtons: String?
+        get() = prefs.getString("notif_buttons", null)
+        set(value) = prefs.edit().putString("notif_buttons", value ?: "").apply()
+
     /** Keep the screen on while the app is open. Off by default. */
     var keepScreenOn: Boolean
         get() = prefs.getBoolean(KEY_KEEP_SCREEN, false)
@@ -317,7 +322,7 @@ class SettingsRepository(context: Context) {
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor, KEY_THEME_MODE to themeMode,
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
-        "vib_total_ms" to vibrateTotalMs, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible,
+        "vib_total_ms" to vibrateTotalMs, "notif_buttons" to notifButtons, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible,
         "quick_panel_hidden" to quickPanelHidden.sorted().joinToString(","),
         "top_window_enabled" to topWindowEnabled, "top_window_stats" to topWindowStatsMask,
         "top_window_text_color" to topWindowTextColor, "top_window_bg_color" to topWindowBackgroundColor,

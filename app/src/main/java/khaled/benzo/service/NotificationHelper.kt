@@ -151,10 +151,23 @@ class NotificationHelper(private val context: Context) {
                     LockScreenMode.HIDE_CONTENT -> NotificationCompat.VISIBILITY_PRIVATE
                 }
             )
-        for (b in NotificationPolicy.buttons(settings.notifPauseAllButton)) {
+        fun activity(code: Int, target: Intent) = PendingIntent.getActivity(
+            context, code, target.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        for (b in NotificationPolicy.commandButtons(settings.notifButtons, settings.notifPauseAllButton)) {
             when (b) {
                 NotifButton.PAUSE_ALL -> builder.addAction(R.drawable.stat_stop, context.getString(R.string.notification_pause_all), pauseAllPendingIntent)
                 NotifButton.EXIT -> builder.addAction(R.drawable.stat_stop, context.getString(R.string.notification_exit), exitPendingIntent)
+                NotifButton.START_ALL -> builder.addAction(R.drawable.stat_start, context.getString(R.string.cmd_start_all), PendingIntent.getBroadcast(
+                    context, 3, Intent(context, DownloadActionReceiver::class.java).apply { action = DownloadActionReceiver.ACTION_START_ALL },
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+                NotifButton.ADD -> builder.addAction(R.drawable.stat_start, context.getString(R.string.cmd_add),
+                    activity(4, Intent(context, khaled.benzo.ui.editor.EditorActivity::class.java)))
+                NotifButton.SCHEDULER -> builder.addAction(R.drawable.stat_start, context.getString(R.string.cmd_scheduler),
+                    activity(5, Intent(context, khaled.benzo.ui.settings.SettingsActivity::class.java).putExtra(khaled.benzo.ui.settings.SettingsActivity.EXTRA_SECTION, "scheduler")))
+                NotifButton.SETTINGS -> builder.addAction(R.drawable.stat_start, context.getString(R.string.cmd_settings),
+                    activity(6, Intent(context, khaled.benzo.ui.settings.SettingsHubActivity::class.java)))
+                NotifButton.BROWSER -> builder.addAction(R.drawable.stat_start, context.getString(R.string.cmd_browser),
+                    activity(7, Intent(context, khaled.benzo.ui.browser.BrowserActivity::class.java)))
             }
         }
 

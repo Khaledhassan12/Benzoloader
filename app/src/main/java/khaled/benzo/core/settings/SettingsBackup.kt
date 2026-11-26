@@ -64,6 +64,7 @@ object SettingsBackup {
         "dark_mode" to Spec.Bool,
         "bottom_bar" to Spec.Bool,
         "create_empty_file" to Spec.Bool,
+        "notif_buttons" to Spec.Text(100) { s -> s.all { it in 'a'..'z' || it == '_' || it == ',' } },
         "vib_total_ms" to Spec.IntRange(50, 1000, 50),
         "quick_graph_visible" to Spec.Bool,
         // Comma list of panel row keys (resource names). Unknown keys are harmless: the panel ignores keys it does not have.

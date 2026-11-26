@@ -242,6 +242,34 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /** Command buttons row: tap opens a checkbox list of seven entries. Android shows at most three, so a fourth tick is refused. Saved on each tick. */
+    private fun setupCommandButtonsRow() {
+        val repo = viewModel.repository
+        val row = binding.txtCommandButtons
+        val all = khaled.benzo.core.notify.NotifButton.values().toList()
+        val labels = intArrayOf(khaled.benzo.R.string.cmd_start_all, khaled.benzo.R.string.cmd_stop_all, khaled.benzo.R.string.cmd_add, khaled.benzo.R.string.cmd_scheduler, khaled.benzo.R.string.cmd_settings, khaled.benzo.R.string.cmd_browser, khaled.benzo.R.string.cmd_exit)
+        fun current() = khaled.benzo.core.notify.NotificationPolicy.commandButtons(repo.notifButtons, repo.notifPauseAllButton)
+        fun show() {
+            val names = current().joinToString(", ") { getString(labels[all.indexOf(it)]) }.ifEmpty { getString(khaled.benzo.R.string.cmd_none) }
+            row.text = getString(khaled.benzo.R.string.row_command_buttons) + "\n" + names
+        }
+        row.setOnClickListener {
+            var chosen = current()
+            val checked = BooleanArray(all.size) { all[it] in chosen }
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(khaled.benzo.R.string.row_command_buttons)
+                .setMultiChoiceItems(Array(all.size) { getString(labels[it]) }, checked) { dlg, which, on ->
+                    val next = khaled.benzo.core.notify.NotificationPolicy.toggled(chosen, all[which])
+                    if (next == null) {
+                        (dlg as androidx.appcompat.app.AlertDialog).listView.setItemChecked(which, false)
+                        android.widget.Toast.makeText(this, khaled.benzo.R.string.cmd_max_three, android.widget.Toast.LENGTH_SHORT).show()
+                    } else { chosen = next; repo.notifButtons = khaled.benzo.core.notify.NotificationPolicy.format(chosen); show() }
+                }
+                .setPositiveButton(android.R.string.ok, null).show()
+        }
+        show()
+    }
+
     private var afterFinishCode = 0
 
     /** Value row for "after finishing": title, then the current choice in the accent colour; a tap opens a single-choice dialog. */
@@ -359,6 +387,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchQuickAdd.isChecked = repo.quickAddLinks
         afterFinishCode = repo.afterFinish
         setupAfterFinishRow()
+        setupCommandButtonsRow()
         binding.switchQuickAddStart.isChecked = repo.quickAddStart
         binding.switchListBottom.isChecked = repo.listAddToBottom
         binding.sliderMinThread.value = repo.minThreadKb.toFloat()

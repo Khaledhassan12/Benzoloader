@@ -84,6 +84,16 @@
     <string name="notification_resume">استئناف</string>
     <string name="notification_cancel">إلغاء</string>
     <string name="notification_open">فتح</string>
+    <string name="row_command_buttons">أزرار الإشعار</string>
+    <string name="cmd_start_all">تشغيل الكل</string>
+    <string name="cmd_stop_all">إيقاف الكل</string>
+    <string name="cmd_add">إضافة</string>
+    <string name="cmd_scheduler">الجدولة</string>
+    <string name="cmd_settings">الإعدادات</string>
+    <string name="cmd_browser">المتصفح</string>
+    <string name="cmd_exit">خروج</string>
+    <string name="cmd_none">بدون</string>
+    <string name="cmd_max_three">أندرويد بيعرض 3 أزرار بس</string>
     <string name="notification_exit">خروج</string>
     <string name="browser_add_bookmark">إضافة الصفحة للعلامات</string>
     <string name="browser_bookmark_added">اتحفظت العلامة</string>

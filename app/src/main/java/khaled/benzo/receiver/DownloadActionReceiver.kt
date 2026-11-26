@@ -19,6 +19,7 @@ class DownloadActionReceiver : BroadcastReceiver() {
         const val ACTION_PAUSE = "khaled.benzo.ACTION_PAUSE"
         const val ACTION_RESUME = "khaled.benzo.ACTION_RESUME"
         const val ACTION_CANCEL = "khaled.benzo.ACTION_CANCEL"
+        const val ACTION_START_ALL = "khaled.benzo.ACTION_START_ALL"
         const val ACTION_PAUSE_ALL = "khaled.benzo.ACTION_PAUSE_ALL"
         const val ACTION_EXIT_APP = "khaled.benzo.ACTION_EXIT_APP"
         const val EXTRA_DOWNLOAD_ID = "extra_download_id"

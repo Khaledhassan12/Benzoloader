@@ -109,6 +109,13 @@ class DownloadService : Service() {
                     activeJobs.keys.toList().forEach { pauseTask(it) }
                 }
             }
+            DownloadActionReceiver.ACTION_START_ALL -> {
+                // Same as the main menu "Resume all": paused items go back to the queue, then the queue rules decide what starts.
+                serviceScope.launch {
+                    repository.resumeAll()
+                    processQueue()
+                }
+            }
             ACTION_PROCESS_QUEUE -> {
                 serviceScope.launch {
                     processQueue()
