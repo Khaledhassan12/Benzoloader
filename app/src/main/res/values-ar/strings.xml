@@ -382,4 +382,5 @@
     <string name="notif_queue_count">الطابور %1$d</string>
     <string name="editor_category">التصنيف</string>
     <string name="editor_category_auto">تلقائي (من اسم الملف)</string>
+    <string name="top_color_reset">إعادة الضبط</string>
 </resources>

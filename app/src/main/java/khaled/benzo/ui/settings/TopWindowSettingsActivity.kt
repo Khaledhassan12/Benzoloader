@@ -89,9 +89,9 @@ class TopWindowSettingsActivity : AppCompatActivity() {
         val on = { repo.topWindowEnabled }
 
         valueRow(R.string.top_stats, { statsSummary() }, { pickStats() }, on)
-        colorRow(R.string.top_text_color, { repo.topWindowTextColor }, { repo.topWindowTextColor = it }, on)
-        colorRow(R.string.top_bg_color, { repo.topWindowBackgroundColor }, { repo.topWindowBackgroundColor = it }, on)
-        colorRow(R.string.top_bar_color, { repo.topWindowBarColor }, { repo.topWindowBarColor = it }, on)
+        colorRow(R.string.top_text_color, { repo.topWindowTextColor }, { repo.topWindowTextColor = it }, on, 0xFFFFFFFF.toInt())
+        colorRow(R.string.top_bg_color, { repo.topWindowBackgroundColor }, { repo.topWindowBackgroundColor = it }, on, 0xFF000000.toInt())
+        colorRow(R.string.top_bar_color, { repo.topWindowBarColor }, { repo.topWindowBarColor = it }, on, 0xFFE53935.toInt())
         sliderRow(R.string.top_opacity, 10, 100, { repo.topWindowOpacityPercent }, { repo.topWindowOpacityPercent = it }, { "$it%" }, on)
         val sw2 = resources.displayMetrics.widthPixels
         val sh = resources.displayMetrics.heightPixels
@@ -136,8 +136,8 @@ class TopWindowSettingsActivity : AppCompatActivity() {
             }.setNegativeButton(android.R.string.cancel, null).show()
     }
 
-    private fun colorRow(title: Int, get: () -> Int, set: (Int) -> Unit, enabled: () -> Boolean) {
-        valueRow(title, { "#%08X".format(get()) }, {
+    private fun colorRow(title: Int, get: () -> Int, set: (Int) -> Unit, enabled: () -> Boolean, default: Int) {
+        val row = valueRow(title, { "#%08X".format(get()) }, {
             val et = EditText(this).apply {
                 inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
                 setText("#%08X".format(get())); setSelection(text.length)
@@ -147,8 +147,15 @@ class TopWindowSettingsActivity : AppCompatActivity() {
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     val parsed = runCatching { Color.parseColor(et.text.toString().trim()) }.getOrNull()
                     if (parsed != null) { set(parsed); refreshers.forEach { it() } }
-                }.setNegativeButton(android.R.string.cancel, null).show()
+                }
+                .setNeutralButton(R.string.top_color_reset) { _, _ -> set(default); refreshers.forEach { it() } }
+                .setNegativeButton(android.R.string.cancel, null).show()
         }, enabled)
+        // Colour square at the row end (the reference shows one; the picker itself is still hex entry).
+        val swatch = { android.graphics.drawable.GradientDrawable().apply {
+            setColor(get()); setStroke(dp(1), 0x66808080); setSize(dp(28), dp(28)) } }
+        row.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, swatch(), null)
+        refreshers += { row.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, swatch(), null) }
     }
 
     private fun sliderRow(title: Int, min: Int, max: Int, get: () -> Int, set: (Int) -> Unit, fmt: (Int) -> String, enabled: () -> Boolean) {
