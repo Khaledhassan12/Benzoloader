@@ -41,6 +41,9 @@ object ThemeColors {
                 // Before Android 10 there is no pre-created callback; this one runs before setContentView in our activities.
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) apply(activity)
             }
+            override fun onActivityPostCreated(activity: Activity, savedInstanceState: Bundle?) {
+                if (activity.javaClass.name.startsWith("khaled.benzo.")) EdgeToEdge.apply(activity)
+            }
             override fun onActivityStarted(activity: Activity) {}
             override fun onActivityResumed(activity: Activity) {}
             override fun onActivityPaused(activity: Activity) {}
