@@ -473,4 +473,8 @@
     <string name="send_link_title">هذا النص سيتم إرساله</string>
     <string name="send_link_warning">أحد الروابط أدناه فيه أجزاء إضافية بعد ? أو #، أو اسم وكلمة مرور قبل @. قد تحتوي على مفتاح خاص. راجعه قبل الإرسال.</string>
     <string name="sel_no_file_now">الملف لم يعد موجودًا على الجهاز.</string>
+    <string name="sel_force_recheck">إعادة فحص إجبارية</string>
+    <string name="sel_force_announce">إعلان إجباري</string>
+    <string name="sel_torrent_done">تم لـ %1$d تورنت.</string>
+    <string name="sel_torrent_partial">تم لـ %1$d من %2$d. الباقي غير شغال: شغّله أولًا.</string>
 </resources>

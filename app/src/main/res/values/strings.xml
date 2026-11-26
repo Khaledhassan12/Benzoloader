@@ -473,4 +473,8 @@
     <string name="send_link_title">This text will be sent</string>
     <string name="send_link_warning">A link below has extra parts after ? or #, or a name and password before @. These can hold a private key. Check it before sending.</string>
     <string name="sel_no_file_now">The file is no longer on the device.</string>
+    <string name="sel_force_recheck">Force recheck</string>
+    <string name="sel_force_announce">Force announce</string>
+    <string name="sel_torrent_done">Done for %1$d torrent(s).</string>
+    <string name="sel_torrent_partial">Done for %1$d of %2$d. The others are not running: start them first.</string>
 </resources>

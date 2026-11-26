@@ -203,6 +203,18 @@ class TorrentEngine(context: Context? = null) {
         return true
     }
 
+    /** Re-checks the files on disk against the torrent (jlibtorrent TorrentHandle.forceRecheck, descriptor ()V read from the class). False when the torrent is not loaded. */
+    fun forceRecheck(infoHash: String): Boolean {
+        val h = handle(infoHash)?.takeIf { it.isValid } ?: return false
+        h.forceRecheck(); return true
+    }
+
+    /** Asks every tracker for peers now (TorrentHandle.forceReannounce, descriptor ()V read from the class). False when the torrent is not loaded. */
+    fun forceReannounce(infoHash: String): Boolean {
+        val h = handle(infoHash)?.takeIf { it.isValid } ?: return false
+        h.forceReannounce(); return true
+    }
+
     fun pauseTorrent(infoHash: String) { handle(infoHash)?.takeIf { it.isValid }?.pause() }
     fun resumeTorrent(infoHash: String) { handle(infoHash)?.takeIf { it.isValid }?.resume() }
 

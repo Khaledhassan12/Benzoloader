@@ -247,12 +247,15 @@ class MainActivity : AppCompatActivity() {
             menu.add(0, 7, 1, R.string.sel_edit).setIcon(R.drawable.ic_edit).setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
             menu.add(0, 8, 2, R.string.sel_send); menu.add(0, 9, 2, R.string.sel_open)
             menu.add(0, 3, 2, R.string.sel_start); menu.add(0, 4, 3, R.string.sel_stop)
+            menu.add(0, 10, 3, R.string.sel_force_recheck); menu.add(0, 11, 3, R.string.sel_force_announce)
             menu.add(0, 5, 4, R.string.sel_select_all); menu.add(0, 6, 5, R.string.sel_invert)
             return true
         }
         override fun onPrepareActionMode(mode: androidx.appcompat.view.ActionMode, menu: android.view.Menu): Boolean {
             menu.findItem(2)?.isVisible = selection.count == 1
-            menu.findItem(7)?.isVisible = selection.count == 1   // Properties shows one item
+            menu.findItem(7)?.isVisible = selection.count == 1
+            val tor = khaled.benzo.core.torrent.TorrentActionPolicy.showActions(adapter.currentList.filter { it.id in selection.selected })
+            menu.findItem(10)?.isVisible = tor; menu.findItem(11)?.isVisible = tor   // Properties shows one item
             return true
         }
         override fun onActionItemClicked(mode: androidx.appcompat.view.ActionMode, item: android.view.MenuItem): Boolean {
@@ -273,6 +276,18 @@ class MainActivity : AppCompatActivity() {
                     if (one == null) android.widget.Toast.makeText(this@MainActivity, R.string.sel_open_one, android.widget.Toast.LENGTH_LONG).show()
                     else try { startActivity(khaled.benzo.ui.main.ItemFileIntents.open(this@MainActivity, one)) }
                         catch (e: android.content.ActivityNotFoundException) { android.widget.Toast.makeText(this@MainActivity, R.string.sel_no_app, android.widget.Toast.LENGTH_LONG).show() }
+                }
+                10, 11 -> {
+                    val targets = khaled.benzo.core.torrent.TorrentActionPolicy.targets(chosen)
+                    val engine = khaled.benzo.core.torrent.TorrentEngine.orNull()
+                    // Only torrents the engine has loaded can act; the others are named in the message, never reported as done.
+                    val done = if (engine == null) 0 else targets.count { t ->
+                        val h = t.torrentInfoHash ?: return@count false
+                        if (item.itemId == 10) engine.forceRecheck(h) else engine.forceReannounce(h)
+                    }
+                    val msg = if (done == targets.size) getString(R.string.sel_torrent_done, done)
+                              else getString(R.string.sel_torrent_partial, done, targets.size)
+                    android.widget.Toast.makeText(this@MainActivity, msg, android.widget.Toast.LENGTH_LONG).show()
                 }
                 7 -> chosen.firstOrNull()?.let { startActivity(Intent(this@MainActivity, khaled.benzo.ui.editor.EditorActivity::class.java).putExtra(khaled.benzo.ui.editor.EditorActivity.EXTRA_EDIT_ID, it.id)); mode.finish() }
                 3 -> chosen.filter { it.status != DownloadStatus.RUNNING && it.status != DownloadStatus.COMPLETED }.forEach { toggleDownloadStatus(it) }
