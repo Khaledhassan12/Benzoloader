@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = DownloadRepository(application)
-    private val _state = MutableStateFlow(khaled.benzo.data.repository.SettingsRepository(application).listAddToBottom.let { ListState(ascending = it, addToBottom = it) })
+    private val _state = MutableStateFlow(khaled.benzo.data.repository.SettingsRepository(application).listAddToBottom.let { ListState(ascending = it, addToBottom = it) }.let { st -> if (khaled.benzo.data.repository.SettingsRepository(application).singleList) st else st.copy(status = khaled.benzo.core.queue.StatusFilter.UNFINISHED) })
     private val _selectedCategory = MutableStateFlow<FileCategory?>(FileCategory.ALL)
 
     val downloads: StateFlow<List<DownloadItem>> = MutableStateFlow<List<DownloadItem>>(emptyList())

@@ -145,16 +145,23 @@ class MainActivity : AppCompatActivity() {
                 filterPanel.render(s, all)
                 // Observed: the title is "All" or the chosen category; marks follow it for a custom sort or a time filter.
                 // The marks are text stand-ins; the reference uses small icons.
-                val base = s.type?.let { categoryTitle(it) } ?: getString(R.string.panel_all)
+                // Two-list mode (Single list off, the reference default): Queue and Finished are the two lists. Title for the
+                // Finished list is INFERRED (the media shows only "Queue").
+                val twoLists = !khaled.benzo.data.repository.SettingsRepository(this@MainActivity).singleList && s.type == null
+                val base = s.type?.let { categoryTitle(it) } ?: when {
+                    twoLists && s.status == khaled.benzo.core.queue.StatusFilter.UNFINISHED -> getString(R.string.nav_queue)
+                    twoLists && s.status == khaled.benzo.core.queue.StatusFilter.COMPLETED -> getString(R.string.nav_finished)
+                    else -> getString(R.string.panel_all)
+                }
                 supportActionBar?.title = base + (if (s.sortIsCustom) " \u21C5" else "") + (if (s.timeIsCustom) " \u25F7" else "")
                 supportActionBar?.subtitle = when (s.status) {
                     khaled.benzo.core.queue.StatusFilter.ALL -> null
                     khaled.benzo.core.queue.StatusFilter.PAUSED -> getString(R.string.panel_stopped)
                     khaled.benzo.core.queue.StatusFilter.ACTIVE -> getString(R.string.panel_running)
                     khaled.benzo.core.queue.StatusFilter.FAILED -> getString(R.string.nav_failed)
-                    khaled.benzo.core.queue.StatusFilter.COMPLETED -> getString(R.string.panel_successful)
+                    khaled.benzo.core.queue.StatusFilter.COMPLETED -> if (twoLists) null else getString(R.string.panel_successful)
                     khaled.benzo.core.queue.StatusFilter.QUEUED -> getString(R.string.nav_queued)
-                    khaled.benzo.core.queue.StatusFilter.UNFINISHED -> getString(R.string.panel_unfinished)
+                    khaled.benzo.core.queue.StatusFilter.UNFINISHED -> if (twoLists) null else getString(R.string.panel_unfinished)
                 }
             }
         }

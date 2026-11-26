@@ -273,6 +273,11 @@ class SettingsRepository(context: Context) {
         set(value) = prefs.edit().putString("quick_panel_hidden", value.sorted().joinToString(",")).apply()
 
     /** Move the list toolbar to the bottom edge (Interface > Top bar at bottom). Off by default. */
+    /** Interface > Single list: one list for Queue and Finished. Off by default, as in the reference (two lists, Queue first). */
+    var singleList: Boolean
+        get() = prefs.getBoolean("single_list", false)
+        set(value) = prefs.edit().putBoolean("single_list", value).apply()
+
     var topBarAtBottom: Boolean
         get() = prefs.getBoolean("top_bar_bottom", false)
         set(value) = prefs.edit().putBoolean("top_bar_bottom", value).apply()
@@ -328,7 +333,7 @@ class SettingsRepository(context: Context) {
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
         "torrent_per_connections" to torrentPerConnections, "torrent_upload_slots" to torrentUploadSlots,
-        "top_bar_bottom" to topBarAtBottom, "size_style" to sizeUnitsMask, "speed_show" to speedShowMask,
+        "top_bar_bottom" to topBarAtBottom, "single_list" to singleList, "size_style" to sizeUnitsMask, "speed_show" to speedShowMask,
         "torrent_lsd" to torrentLsd, "torrent_utp" to torrentUtp, "torrent_upnp" to torrentUpnp, "torrent_natpmp" to torrentNatpmp,
         "vib_total_ms" to vibrateTotalMs, "notif_buttons" to notifButtons, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible, "stat_added_time" to statAddedTime, "stat_finish_time" to statFinishTime,
         "ui_col_filename" to uiColFilename, "ui_col_info" to uiColInfo, "ui_col_progress" to uiColProgress, "ui_col_progress_bg" to uiColProgressBg, "ui_col_list" to uiColList,

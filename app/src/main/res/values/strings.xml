@@ -555,4 +555,6 @@
     <string name="speed_bytes">Bytes per second</string>
     <string name="speed_bits">Bits per second</string>
     <string name="pref_top_bar_bottom">Top bar at bottom</string>
+    <string name="pref_single_list">Single list</string>
+    <string name="pref_single_list_sub">Combine Queue and Finished</string>
 </resources>
