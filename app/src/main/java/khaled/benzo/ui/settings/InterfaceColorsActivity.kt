@@ -26,14 +26,8 @@ class InterfaceColorsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         repo = SettingsRepository(this)
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        root.addView(com.google.android.material.appbar.MaterialToolbar(this).apply {
-            setTitle(R.string.colors_title)
-            setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
-            setNavigationOnClickListener { finish() }
-        }, LinearLayout.LayoutParams(-1, dp(56)))
         list = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        root.addView(ScrollView(this).apply { addView(list) }, LinearLayout.LayoutParams(-1, -1))
-        setContentView(root)
+        setContentView(khaled.benzo.ui.common.CollapsingScreen.wrap(this, getString(R.string.colors_title), ScrollView(this).apply { addView(list) }))
         val stockText = TextView(this).currentTextColor
         row(R.string.col_filename, { repo.uiColFilename }, { repo.uiColFilename = it }, stockText)
         row(R.string.col_info, { repo.uiColInfo }, { repo.uiColInfo = it }, stockText)

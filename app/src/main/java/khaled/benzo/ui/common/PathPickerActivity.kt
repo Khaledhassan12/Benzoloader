@@ -13,11 +13,16 @@ class PathPickerActivity : AppCompatActivity() {
 
     private lateinit var currentFolder: File
 
+    private var screenRoot: android.view.View? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val listView = ListView(this)
-        setContentView(listView)
+        listView.isNestedScrollingEnabled = true
+        val screen = khaled.benzo.ui.common.CollapsingScreen.wrap(this, title, listView)
+        setContentView(screen)
+        screenRoot = screen
 
         currentFolder = Environment.getExternalStorageDirectory()
         updateList(listView)
@@ -33,6 +38,7 @@ class PathPickerActivity : AppCompatActivity() {
 
     private fun updateList(listView: ListView) {
         title = currentFolder.absolutePath
+        screenRoot?.let { khaled.benzo.ui.common.CollapsingScreen.setTitle(it, currentFolder.absolutePath) }
         val subFolders = currentFolder.listFiles()?.filter { it.isDirectory }?.map { it.name } ?: emptyList()
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, subFolders)

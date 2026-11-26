@@ -38,15 +38,8 @@ class TopWindowSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         repo = SettingsRepository(this)
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val toolbar = com.google.android.material.appbar.MaterialToolbar(this).apply {
-            setTitle(R.string.cat_top_window)
-            setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
-            setNavigationOnClickListener { finish() }
-        }
-        root.addView(toolbar, LinearLayout.LayoutParams(-1, dp(56)))
         list = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        root.addView(ScrollView(this).apply { addView(list) }, LinearLayout.LayoutParams(-1, -1))
-        setContentView(root)
+        setContentView(khaled.benzo.ui.common.CollapsingScreen.wrap(this, getString(R.string.cat_top_window), ScrollView(this).apply { addView(list) }))
         build()
     }
 
