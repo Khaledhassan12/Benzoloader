@@ -497,9 +497,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showItemPopupMenu(item: DownloadItem, view: View) {
+        // While selecting, a long press keeps its old meaning: toggle the row.
+        if (selection.active) { selection = selection.toggle(item.id); onSelectionChanged(); return }
         val popup = PopupMenu(this, view)
         popup.menu.add(0, 1, 0, "Resume")
         popup.menu.add(0, 2, 1, "Delete")
+        popup.menu.add(0, 3, 2, getString(R.string.menu_select))
         popup.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 1 -> {
@@ -514,6 +517,7 @@ class MainActivity : AppCompatActivity() {
                     })
                     true
                 }
+                3 -> { selection = selection.toggle(item.id); onSelectionChanged(); true }
                 else -> false
             }
         }
@@ -635,6 +639,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_queue -> { viewModel.setStatusFilter(khaled.benzo.core.queue.StatusFilter.UNFINISHED); true }
             R.id.action_finished -> { viewModel.setCategory(FileCategory.COMPLETED); true }
+            R.id.action_help -> { showHelpMenu(); true }
             R.id.action_filter -> { binding.drawerLayout.openDrawer(panelGravity); true }
             R.id.sort_by_name -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.NAME); true }
             R.id.sort_by_size -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.SIZE); true }
@@ -666,5 +671,60 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    /** The "?" toolbar popup. Chat opens WhatsApp, Email opens the mail composer with a draft the user can read and edit; nothing is sent silently. */
+    private fun showHelpMenu() {
+        val anchor = binding.toolbar.findViewById<View>(R.id.action_help) ?: binding.toolbar
+        val pm = androidx.appcompat.widget.PopupMenu(this, anchor)
+        pm.menu.add(0, 1, 0, R.string.help_faq).setIcon(R.drawable.ic_help_faq)
+        pm.menu.add(0, 2, 1, R.string.help_chat).setIcon(R.drawable.ic_help_chat)
+        pm.menu.add(0, 3, 2, R.string.help_email).setIcon(R.drawable.ic_help_email)
+        pm.setForceShowIcon(true)
+        pm.setOnMenuItemClickListener {
+            when (it.itemId) {
+                1 -> startActivity(Intent(this, khaled.benzo.ui.help.FaqActivity::class.java))
+                2 -> openChat()
+                3 -> composeSupportEmail()
+            }
+            true
+        }
+        pm.show()
+    }
+
+    private fun openChat() {
+        if (SUPPORT_WHATSAPP.isBlank()) { android.widget.Toast.makeText(this, R.string.help_chat_unset, android.widget.Toast.LENGTH_SHORT).show(); return }
+        openExternal(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://wa.me/" + SUPPORT_WHATSAPP)))
+    }
+
+    private fun composeSupportEmail() {
+        val pkg = packageManager.getPackageInfo(packageName, 0)
+        val code = if (android.os.Build.VERSION.SDK_INT >= 28) pkg.longVersionCode else @Suppress("DEPRECATION") pkg.versionCode.toLong()
+        val body = getString(R.string.help_email_body) +
+            "App version: ${pkg.versionName} (build $code)\n" +
+            "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} (${android.os.Build.DEVICE})\n" +
+            "Android: ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})\n" +
+            "Security patch: ${android.os.Build.VERSION.SECURITY_PATCH}\n" +
+            "Language: ${java.util.Locale.getDefault().toLanguageTag()}\n" +
+            "Screen: ${resources.displayMetrics.widthPixels}x${resources.displayMetrics.heightPixels} px, ${resources.displayMetrics.densityDpi} dpi\n" +
+            "ABI: ${android.os.Build.SUPPORTED_ABIS.joinToString()}\n"
+        val uri = android.net.Uri.parse("mailto:")
+        openExternal(Intent(Intent.ACTION_SENDTO, uri).apply {
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(SUPPORT_EMAIL))
+            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.help_email_subject))
+            putExtra(Intent.EXTRA_TEXT, body)
+        })
+    }
+
+    private fun openExternal(intent: Intent) {
+        try { startActivity(intent) } catch (e: android.content.ActivityNotFoundException) {
+            android.widget.Toast.makeText(this, R.string.help_no_app, android.widget.Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private companion object {
+        const val SUPPORT_EMAIL = "khaled.hassansadik@gmail.com"
+        /** Digits only, with country code. The owner gave this number to publish (wa.me/201119523317). */
+        const val SUPPORT_WHATSAPP = "201119523317"
     }
 }

@@ -558,4 +558,13 @@
     <string name="pref_top_bar_bottom">Top bar at bottom</string>
     <string name="pref_single_list">Single list</string>
     <string name="pref_single_list_sub">Combine Queue and Finished</string>
+    <string name="help_title">Help</string>
+    <string name="help_chat">Chat</string>
+    <string name="help_email">Email</string>
+    <string name="help_chat_unset">Chat is not set up yet</string>
+    <string name="help_no_app">No app found to open this</string>
+    <string name="help_email_subject">Benzoloader support</string>
+    <string name="help_email_body">Please write below what you did, what you expected and what happened. A screenshot helps.\n\n--- Write here ---\n\n\n--- Device details (you can edit or delete these lines before sending) ---\nApp: Benzoloader\nDeveloper: Khaled Hassan\n</string>
+    <string name="menu_select">Select</string>
+    <string name="help_faq">FAQ</string>
 </resources>

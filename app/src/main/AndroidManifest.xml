@@ -51,6 +51,9 @@
 
         <!-- Main Activity -->
         <activity
+            android:name=".ui.help.FaqActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
             android:launchMode="singleTop">

@@ -262,9 +262,9 @@
     <string name="nav_queue">الطابور</string>
     <string name="nav_finished">المنتهية</string>
     <string name="nav_list">التصنيفات</string>
-    <string name="pref_bottom_bar">شريط التنقل السفلي</string>
+    <string name="pref_bottom_bar">شريط الإجراءات السفلي</string>
     <string name="cat_interface">الواجهة</string>
-    <string name="cat_interface_sub">لون التطبيق، شريط التنقل السفلي</string>
+    <string name="cat_interface_sub">لون التطبيق، شريط الإجراءات السفلي</string>
     <string name="pref_theme_color">لون التطبيق</string>
     <string name="pref_theme_color_note">ألوان الجهاز تحتاج أندرويد 12 أو أحدث على جهاز يدعمها. غير ذلك يُستخدم اللون الأخضر.</string>
     <string name="theme_device">ألوان الجهاز (Material You)</string>
@@ -557,4 +557,14 @@
     <string name="pref_top_bar_bottom">الشريط العلوي في الأسفل</string>
     <string name="pref_single_list">قائمة واحدة</string>
     <string name="pref_single_list_sub">دمج قائمة الانتظار مع المنتهية</string>
+    <string name="help_title">مساعدة</string>
+    <string name="help_faq">الأسئلة الشائعة</string>
+    <string name="help_chat">الدردشة</string>
+    <string name="help_email">البريد</string>
+    <string name="help_chat_unset">الدردشة غير جاهزة بعد</string>
+    <string name="help_no_app">لا يوجد تطبيق لفتح هذا</string>
+    <string name="help_email_subject">دعم Benzoloader</string>
+    <string name="help_email_body">اكتب تحت ما فعلته وما توقعته وما حدث. لقطة الشاشة تساعد.\n\n--- اكتب هنا ---\n\n\n--- تفاصيل الجهاز (يمكنك تعديل هذه الأسطر أو حذفها قبل الإرسال) ---\nالتطبيق: Benzoloader\nالمطوّر: Khaled Hassan\n</string>
+    <string name="menu_select">تحديد</string>
+    <string name="qp_single_list">قائمة واحدة</string>
 </resources>

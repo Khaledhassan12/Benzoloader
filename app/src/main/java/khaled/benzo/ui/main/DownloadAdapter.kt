@@ -66,6 +66,8 @@ class DownloadAdapter(
             val added = if (stats.statAddedTime && item.createdDate > 0)
                 " \u00B7 " + android.text.format.DateFormat.format("MM-dd HH:mm", item.createdDate) else ""
             binding.txtStatusSubtitle.text = "${khaled.benzo.ui.common.StatusText.of(binding.root.context, item.status, waiting[item.id])}" + added
+            // Reference frame: a finished row has no second text line (the check icon says it). Other states keep their status text.
+            binding.txtStatusSubtitle.visibility = if (item.status == DownloadStatus.COMPLETED && added.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
 
             // Progress calculation
             val percent = if (item.totalBytes > 0) {
@@ -102,7 +104,7 @@ class DownloadAdapter(
                 val seconds = (item.totalBytes - item.downloadedBytes).coerceAtLeast(0) / item.speed
                 String.format(Locale.US, "%02d:%02d", seconds / 60, seconds % 60)
             } else if (stats.statFinishTime && item.status == DownloadStatus.COMPLETED && item.completedDate > 0) {
-                android.text.format.DateFormat.format("yyyy-MM-dd HH:mm", item.completedDate).toString()
+                java.text.SimpleDateFormat("MMM d, yyyy h:mm:ss a", Locale.getDefault()).format(java.util.Date(item.completedDate))
             } else ""
 
             binding.imgFileIcon.setImageResource(when (item.status) {
@@ -113,7 +115,8 @@ class DownloadAdapter(
             binding.imgFileIcon.setOnClickListener { onControlClick(item) }
 
             binding.root.setOnClickListener { onItemClick(item) }
-            binding.root.setOnLongClickListener { onItemLongClick(item); true }
+            // Long press opens the item menu (the overflow button moved here); "Select" in that menu starts selection mode.
+            binding.root.setOnLongClickListener { onMenuClick(item, binding.root); true }
             if (item.id in selected) {
                 binding.root.setBackgroundColor(com.google.android.material.color.MaterialColors.getColor(
                     binding.root, com.google.android.material.R.attr.colorSecondaryContainer))
@@ -122,7 +125,7 @@ class DownloadAdapter(
                 binding.root.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, tv, true)
                 binding.root.setBackgroundResource(tv.resourceId)
             }
-            binding.btnItemMenu.setOnClickListener { v -> onMenuClick(item, v) }
+            binding.btnItemMenu.visibility = android.view.View.GONE
         }
 
         private fun formatBytes(bytes: Long): String = khaled.benzo.core.download.SizeFormat.format(bytes, 1)

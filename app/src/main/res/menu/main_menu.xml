@@ -23,6 +23,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/action_help"
+        android:icon="@drawable/ic_toolbar_help"
+        android:title="@string/help_title"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_toolbar_filter"
         android:title="@string/action_filter"
