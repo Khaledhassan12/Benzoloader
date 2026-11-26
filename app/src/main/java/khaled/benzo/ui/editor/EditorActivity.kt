@@ -174,14 +174,16 @@ class EditorActivity : AppCompatActivity() {
         val checksum = khaled.benzo.core.files.ChecksumPolicy.normalize(typed)
         if (typed.isNotBlank() && checksum == null) { Toast.makeText(this, R.string.checksum_invalid, Toast.LENGTH_LONG).show(); return }
         if (old.isTorrent && checksum != null) { Toast.makeText(this, R.string.checksum_torrent_unsupported, Toast.LENGTH_LONG).show(); return }
-        if (khaled.benzo.core.queue.EditPolicy.check(old, url, name, path) == khaled.benzo.core.queue.EditPolicy.Verdict.LOCKED_BY_PROGRESS) {
-            Toast.makeText(this, R.string.editor_change_locked, Toast.LENGTH_LONG).show(); return
-        }
-        val later = khaled.benzo.core.queue.EditPolicy.appliesNextStart(old)
-        viewModel.changeDownload(old, url, name, path, binding.sliderThreads.value.toInt(), binding.chkWifiOnly.isChecked,
-            pickedCategory, binding.sliderItemSpeed.value.toInt(), checksum) {
-            Toast.makeText(this, if (later) R.string.editor_change_saved_later else R.string.editor_change_saved, Toast.LENGTH_SHORT).show()
-            finish()
+        viewModel.changeDownload(old.id, url, name, path, binding.sliderThreads.value.toInt(), binding.chkWifiOnly.isChecked,
+            pickedCategory, binding.sliderItemSpeed.value.toInt(), checksum) { result, later ->
+            when (result) {
+                EditorViewModel.ChangeResult.LOCKED -> Toast.makeText(this, R.string.editor_change_locked, Toast.LENGTH_LONG).show()
+                EditorViewModel.ChangeResult.COLLISION -> Toast.makeText(this, R.string.editor_change_collision, Toast.LENGTH_LONG).show()
+                EditorViewModel.ChangeResult.SAVED -> {
+                    Toast.makeText(this, if (later) R.string.editor_change_saved_later else R.string.editor_change_saved, Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
         }
     }
 

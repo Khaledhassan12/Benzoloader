@@ -15,16 +15,31 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
     private val repository = DownloadRepository(application)
     val settingsRepository = SettingsRepository(application)
 
-    /** Saves edits to an existing item. Cookies, user agent and referer are left exactly as stored. */
+    enum class ChangeResult { SAVED, LOCKED, COLLISION }
+
+    /**
+     * Saves edits to an existing item with targeted updates only: the stored row is never rewritten from the screen's copy,
+     * so progress and status written by a running download are not overwritten, and cookies, user agent, referer and
+     * headers are not touched at all. Everything is re-read from the database here, not taken from the screen's earlier copy.
+     */
     fun changeDownload(
-        old: DownloadItem, url: String, fileName: String, savePath: String, parts: Int, isWifiOnly: Boolean,
-        category: FileCategory?, speedLimitKBps: Int, expectedChecksum: String?, onDone: () -> Unit
+        id: Long, url: String, fileName: String, savePath: String, parts: Int, isWifiOnly: Boolean,
+        category: FileCategory?, speedLimitKBps: Int, expectedChecksum: String?, onDone: (ChangeResult, Boolean) -> Unit
     ) {
         viewModelScope.launch {
-            repository.updateDownload(old.copy(
-                url = url, fileName = fileName, savePath = savePath, threadsCount = parts, isWifiOnly = isWifiOnly,
-                category = category ?: old.category, speedLimitKBps = speedLimitKBps, expectedChecksum = expectedChecksum))
-            onDone()
+            val fresh = repository.getDownload(id) ?: return@launch onDone(ChangeResult.LOCKED, false)
+            val (oldExists, newExists, others) = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                Triple(java.io.File(fresh.savePath, fresh.fileName).exists(), java.io.File(savePath, fileName).exists(), repository.getAllOnce())
+            }
+            when (khaled.benzo.core.queue.EditPolicy.check(fresh, url, fileName, savePath, oldExists, others, newExists)) {
+                khaled.benzo.core.queue.EditPolicy.Verdict.LOCKED_BY_PROGRESS -> return@launch onDone(ChangeResult.LOCKED, false)
+                khaled.benzo.core.queue.EditPolicy.Verdict.COLLISION -> return@launch onDone(ChangeResult.COLLISION, false)
+                else -> {}
+            }
+            val identityChanged = url != fresh.url || fileName != fresh.fileName || savePath != fresh.savePath
+            if (identityChanged && repository.updateIdentityGuarded(id, url, fileName, savePath) == 0) return@launch onDone(ChangeResult.LOCKED, false)
+            repository.updateSafeFields(id, parts, isWifiOnly, category ?: fresh.category, speedLimitKBps, expectedChecksum)
+            onDone(ChangeResult.SAVED, khaled.benzo.core.queue.EditPolicy.appliesNextStart(fresh))
         }
     }
 

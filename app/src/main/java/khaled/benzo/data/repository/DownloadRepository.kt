@@ -38,6 +38,12 @@ class DownloadRepository(context: Context) {
         return downloadDao.insertDownload(DownloadEntity.fromModel(item))
     }
 
+    suspend fun updateSafeFields(id: Long, threads: Int, wifi: Boolean, category: FileCategory, limit: Int, checksum: String?) =
+        downloadDao.updateSafeFields(id, threads, wifi, category.key, limit, checksum)
+
+    suspend fun updateIdentityGuarded(id: Long, url: String, name: String, path: String) =
+        downloadDao.updateIdentityGuarded(id, url, name, path)
+
     suspend fun updateDownload(item: DownloadItem) {
         downloadDao.updateDownload(DownloadEntity.fromModel(item))
     }

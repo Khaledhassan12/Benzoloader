@@ -452,4 +452,5 @@
     <string name="editor_change_saved">تم حفظ التغييرات</string>
     <string name="editor_change_saved_later">تم الحفظ. سيُطبَّق عند بدء هذا التنزيل المرة القادمة.</string>
     <string name="checksum_torrent_unsupported">لا يتم فحص المجموع الاختباري للتورنت.</string>
+    <string name="editor_change_collision">هذا الاسم موجود بالفعل في هذا المجلد أو يستخدمه تنزيل آخر. اختر اسمًا أو مجلدًا مختلفًا.</string>
 </resources>
