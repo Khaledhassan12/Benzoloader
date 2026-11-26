@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         // Transparent system bars: the drawer must not paint its own status-bar colour, and the two side panels
         // take the bar sizes as padding so their first and last rows are not under the bars.
-        binding.drawerLayout.setStatusBarBackgroundColor(android.graphics.Color.TRANSPARENT)
+        binding.drawerLayout.setStatusBarBackgroundColor(themeColor(R.attr.barBackground))
         for (panel in listOf<View>(binding.navigationView, binding.filterPanelScroll)) {
             androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(panel) { v, insets ->
                 val bars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
@@ -383,8 +383,17 @@ class MainActivity : AppCompatActivity() {
         android.widget.Toast.makeText(this, R.string.secrets_save_failed, android.widget.Toast.LENGTH_LONG).show()
 
     /** Bottom bar is shown or hidden from Settings > Interface. When it is shown its add button replaces the floating one. */
+    private fun themeColor(attr: Int): Int {
+        val tv = android.util.TypedValue()
+        theme.resolveAttribute(attr, tv, true)
+        return tv.data
+    }
+
     private fun applyBottomBar() {
         val repo = khaled.benzo.data.repository.SettingsRepository(this)
+        // Observed in the reference main screen: the status bar is the top bar colour (one block with the bar), and the
+        // navigation bar is the page colour when there is no bottom bar.
+        window.navigationBarColor = if (repo.bottomBar) themeColor(R.attr.barBackground) else themeColor(android.R.attr.colorBackground)
         // As in the first build: the bottom bar is shown whenever the setting is on (no frame of it exists in the reference media).
         val show = repo.bottomBar
         binding.bottomBar.visibility = if (show) View.VISIBLE else View.GONE
