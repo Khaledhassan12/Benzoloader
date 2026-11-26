@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `7949b86` (26 Nov 11:25, Additional statistics; compiled and unit-tested locally). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `fca2dca` (26 Nov 11:45, per-download After finishing; compiled and unit-tested locally). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Local build and test evidence (own build, NOT CI):** `cfd04b8` compiled (`compileGithubDebugKotlin`) and 386 JVM unit tests passed locally on 26 Nov 10:11, after fixing three compile faults and one real bug. A debug-signed arm64-only APK was built from it. Every later batch is compiled and unit-tested before it is pushed (rule in force since Khaled's 09:54 request for an interim build); an entry that says otherwise is written-unbuilt.
 **CI:** NOT RUN. No GitHub Actions workflow exists on this branch. The final-stage CI build and a stable CI artifact are still to do.
 **User-reported run:** the interim APK was reported to install and launch on a phone (26 Nov 10:25). This is not evidence of feature parity or visual parity, and no screenshots or recordings are stored.
@@ -128,6 +128,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 | `3c628b0` | 26 Nov 09:50 | Manual list order now decides queue start; Apply sorting (refresh mark, dialog, saved toast) stores the sort as list order; tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `e18085f` | 26 Nov 11:00 | Interface colours screen (5 rows) applied to list; backup | COMPILED, 386 TESTS PASS (no new tests), NOT RENDERED |
 | `7949b86` | 26 Nov 11:25 | Additional statistics dialog (time added, time finished); list rows follow; backup | COMPILED, TESTS PASS (no new tests), NOT RENDERED |
+| `fca2dca` | 26 Nov 11:45 | Editor per-download After finishing, schema v5, service rule, test | COMPILED, TESTS PASS, NOT RENDERED |
 | `7fa573b` | 26 Nov 09:30 | Notification command buttons: seven-entry picker (max three), actions, backup, tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `cfb3c36` | 26 Nov 09:05 | Total-finish vibration setting and slider, service uses it, backup, test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `52c175d` | 26 Nov 08:40 | Settings backup: hidden panel rows (comma list, safe characters only) + test | WRITTEN, TESTS WRITTEN, UNBUILT |
@@ -376,6 +377,10 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 ### Review of Khaled's screen recording of build 1 (26 Nov 11:35)
 - Recorded in docs/REFERENCE_VIDEOS.md as video 10 with 12 numbered differences, a priority order and the list of what the recording did NOT exercise (the list was empty throughout). No crash seen.
 - Fixes made right away (compiled, 386 tests pass, not rendered): Editor button row (the Start Now button was squeezed to a sliver), Automation row wording for "Newest downloads start first" (hand order now drives start; EN and AR).
+
+### Editor: per-download After finishing (compiled, tests pass, not rendered, not run; schema v5)
+- OBSERVED: the reference Editor has an "After finishing" dropdown (value "exit" seen). The choices were NOT seen. Built (INFERRED): General setting / Do nothing / Exit when it finishes, stored per download (`after_finish`, migration 4 to 5, NEVER run on a real v4 database). The service applies the download's own choice first, then the general setting, with the same safety rule as before: exit only when nothing else is running, waiting or seeding, and never after a failure. Changing it on an existing download writes only that column. Unit test for the choice rule.
+- NOT covered: the choice is not in the list export/import and not in a row's Properties. Still UNFINISHED in the Editor: Name spinner, Downloading dropdown, per-item Scheduler, per-item Proxy.
 
 ## Known risks right now
 1. Code through `cfd04b8` compiled locally (see header). A CI build has not run and could differ (different toolchain).
