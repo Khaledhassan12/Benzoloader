@@ -511,6 +511,15 @@ class SettingsActivity : AppCompatActivity() {
                 .setPositiveButton(android.R.string.ok) { _, _ -> r.statAddedTime = checked[0]; r.statFinishTime = checked[1] }
                 .setNegativeButton(android.R.string.cancel, null).show()
         }
+        binding.btnSizeUnits.setOnClickListener {
+            val r = viewModel.repository
+            val bits = intArrayOf(khaled.benzo.core.download.SizeFormat.B, khaled.benzo.core.download.SizeFormat.KB, khaled.benzo.core.download.SizeFormat.MB, khaled.benzo.core.download.SizeFormat.GB)
+            val checked = BooleanArray(4) { r.sizeUnitsMask and bits[it] != 0 }
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this).setTitle(R.string.size_units_title)
+                .setMultiChoiceItems(arrayOf("B", "KB", "MB", "GB"), checked) { _, i, c -> checked[i] = c }
+                .setPositiveButton(android.R.string.ok) { _, _ -> r.sizeUnitsMask = bits.indices.sumOf { if (checked[it]) bits[it] else 0 } }
+                .setNegativeButton(android.R.string.cancel, null).show()
+        }
         binding.btnInterfaceColors.setOnClickListener { startActivity(android.content.Intent(this, InterfaceColorsActivity::class.java)) }
         val b = binding.btnAllFilesAccess
         if (!khaled.benzo.ui.common.AllFilesAccess.isApplicable()) { b.visibility = android.view.View.GONE; return }

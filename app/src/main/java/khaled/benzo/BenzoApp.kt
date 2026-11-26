@@ -10,6 +10,7 @@ class BenzoApp : Application() {
         super.onCreate()
         instance = this
         khaled.benzo.ui.common.ThemeColors.install(this)
+        khaled.benzo.core.download.SizeFormat.mask = khaled.benzo.data.repository.SettingsRepository(this).sizeUnitsMask
         val codec = khaled.benzo.core.security.KeystoreKey.codec()
         khaled.benzo.core.security.Secrets.install(codec)
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.SupervisorJob() + kotlinx.coroutines.Dispatchers.IO).launch {
