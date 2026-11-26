@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `9032232` (26 Nov 04:25, Change safety; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `872f0c7` (26 Nov 04:40, Proxy; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `872f0c7` | 26 Nov 04:40 | Proxy: global proxy list and selector for the engine and Editor probe, tests | WRITTEN, UNBUILT (never compiled or run) |
 | `9032232` | 26 Nov 04:25 | Editor Change: guarded SQL updates, collision and completed-file protection, tests | WRITTEN, UNBUILT (never compiled or run) |
 | `efdca76` | 26 Nov 04:15 | Edit existing item (Change only), EditPolicy tests | WRITTEN, UNBUILT (never compiled or run) |
 | `1140bb2` | 26 Nov 03:50 | Properties screen: data-driven rows and eye visibility editor, tests | WRITTEN, UNBUILT (never compiled or run) |
