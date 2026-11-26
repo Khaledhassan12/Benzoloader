@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `1140bb2` (26 Nov 03:50, Properties screen; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `efdca76` (26 Nov 04:15, edit existing item; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `efdca76` | 26 Nov 04:15 | Edit existing item (Change only), EditPolicy tests | WRITTEN, UNBUILT (never compiled or run) |
 | `1140bb2` | 26 Nov 03:50 | Properties screen: data-driven rows and eye visibility editor, tests | WRITTEN, UNBUILT (never compiled or run) |
 | `9fa7ba7` | 26 Nov 03:35 | List selection mode (select, delete with confirmation, info, start/stop, select all, invert) plus SelectionState tests | WRITTEN, UNBUILT (never compiled or run) |
 | `5595d95` | 26 Nov 03:10 | Static review pass 2: library drawable reference fixed in Top window settings (R.drawable.abc_* is not in the app R with non-transitive R classes) | WRITTEN, UNBUILT (never compiled or run) |
