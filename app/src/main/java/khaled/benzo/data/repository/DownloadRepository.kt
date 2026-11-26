@@ -47,6 +47,8 @@ class DownloadRepository(context: Context) {
     suspend fun updateSafeFields(id: Long, threads: Int, wifi: Boolean, category: FileCategory, limit: Int, checksum: String?) =
         downloadDao.updateSafeFields(id, threads, wifi, category.key, limit, checksum)
 
+    suspend fun updateAfterFinish(id: Long, mode: Int) = downloadDao.updateAfterFinish(id, mode)
+
     suspend fun updateIdentityGuarded(id: Long, url: String, name: String, path: String) =
         downloadDao.updateIdentityGuarded(id, url, name, path)
 

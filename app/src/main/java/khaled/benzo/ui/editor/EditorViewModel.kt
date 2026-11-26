@@ -24,7 +24,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
      */
     fun changeDownload(
         id: Long, url: String, fileName: String, savePath: String, parts: Int, isWifiOnly: Boolean,
-        category: FileCategory?, speedLimitKBps: Int, expectedChecksum: String?, onDone: (ChangeResult, Boolean) -> Unit
+        category: FileCategory?, speedLimitKBps: Int, expectedChecksum: String?, afterFinish: Int, onDone: (ChangeResult, Boolean) -> Unit
     ) {
         viewModelScope.launch {
             val fresh = repository.getDownload(id) ?: return@launch onDone(ChangeResult.LOCKED, false)
@@ -39,6 +39,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
             val identityChanged = url != fresh.url || fileName != fresh.fileName || savePath != fresh.savePath
             if (identityChanged && repository.updateIdentityGuarded(id, url, fileName, savePath) == 0) return@launch onDone(ChangeResult.LOCKED, false)
             repository.updateSafeFields(id, parts, isWifiOnly, category ?: fresh.category, speedLimitKBps, expectedChecksum)
+            repository.updateAfterFinish(id, afterFinish)
             onDone(ChangeResult.SAVED, khaled.benzo.core.queue.EditPolicy.appliesNextStart(fresh))
         }
     }
@@ -58,6 +59,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
         pickedCategory: FileCategory? = null,
         speedLimitKBps: Int = 0,
         expectedChecksum: String? = null,
+        afterFinish: Int = 0,
         onError: () -> Unit = {},
         onComplete: (Long) -> Unit
     ) {
@@ -91,6 +93,7 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
                 isWifiOnly = isWifiOnly,
                 speedLimitKBps = speedLimitKBps,
                 expectedChecksum = expectedChecksum,
+                afterFinish = afterFinish,
                 userAgent = userAgent,
                 referer = referer,
                 cookies = cookies

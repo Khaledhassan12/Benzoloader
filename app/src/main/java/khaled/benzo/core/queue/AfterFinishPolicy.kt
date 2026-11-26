@@ -10,6 +10,13 @@ enum class AfterFinish(val code: Int) {
 }
 
 object AfterFinishPolicy {
+    /** Mode for one finished download: its own choice (1 = nothing, 2 = exit) wins, 0 or anything else follows the general setting. */
+    fun effective(itemCode: Int, general: AfterFinish): AfterFinish = when (itemCode) {
+        1 -> AfterFinish.NOTHING
+        2 -> AfterFinish.EXIT_SERVICE
+        else -> general
+    }
+
     /**
      * True when the service should stop now: the user chose exit, a download just completed, and nothing is running,
      * waiting to start, or being seeded. A failure never triggers it, so the user sees what went wrong.

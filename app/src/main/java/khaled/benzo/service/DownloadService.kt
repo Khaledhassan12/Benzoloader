@@ -236,7 +236,7 @@ class DownloadService : Service() {
                 }
                 notificationHelper.vibrate(completionVibrationMs())
                 autoResume.onSuccess(id)
-                if (exitIfFinished(justCompleted = true)) return@launch
+                if (exitIfFinished(justCompleted = true, id)) return@launch
             } else {
                 val failedStatus = khaled.benzo.core.files.ErrorPolicy.statusAfterFailure(settings.pauseAfterError)
                 repository.updateStatusAndSpeed(id, failedStatus, 0L)
@@ -278,7 +278,7 @@ class DownloadService : Service() {
                 (repository.getDownload(id) ?: item).let { notificationHelper.showCompletedNotification(it); notificationHelper.showFinishedToast(it.fileName) }
                 if (settings.soundOnComplete) notificationHelper.playSound(R.raw.done)
                 notificationHelper.vibrate(completionVibrationMs())
-                if (exitIfFinished(justCompleted = true)) return@launch
+                if (exitIfFinished(justCompleted = true, id)) return@launch
             }
             if (activeJobs.isEmpty()) wakeLockManager.release()
             updateNotification()
@@ -360,8 +360,9 @@ class DownloadService : Service() {
     }
 
     /** "After finishing: exit". Counts what is still running, waiting to start (QUEUED) or seeding before it stops the service. */
-    private suspend fun exitIfFinished(justCompleted: Boolean): Boolean {
-        val mode = khaled.benzo.core.queue.AfterFinish.fromCode(settings.afterFinish)
+    private suspend fun exitIfFinished(justCompleted: Boolean, finishedId: Long): Boolean {
+        val own = repository.getDownload(finishedId)?.afterFinish ?: 0
+        val mode = khaled.benzo.core.queue.AfterFinishPolicy.effective(own, khaled.benzo.core.queue.AfterFinish.fromCode(settings.afterFinish))
         if (mode == khaled.benzo.core.queue.AfterFinish.NOTHING) return false
         val waiting = repository.getAllOnce().count { it.status == DownloadStatus.QUEUED }
         if (khaled.benzo.core.queue.AfterFinishPolicy.shouldExit(mode, justCompleted, activeJobs.size, waiting, seedingMonitor.watchedCount())) {

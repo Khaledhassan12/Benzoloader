@@ -348,6 +348,10 @@
     <string name="stats_title">إحصائيات إضافية</string>
     <string name="stats_added">وقت الإضافة</string>
     <string name="stats_finished">وقت الانتهاء</string>
+    <string name="editor_after_finish">بعد الانتهاء</string>
+    <string name="after_general">حسب الإعداد العام</string>
+    <string name="after_nothing">لا تفعل شيئاً</string>
+    <string name="after_exit">اخرج عند انتهائه</string>
     <string name="panel_sorting">الترتيب</string>
     <string name="panel_clear">مسح</string>
     <string name="panel_stopped">متوقف</string>

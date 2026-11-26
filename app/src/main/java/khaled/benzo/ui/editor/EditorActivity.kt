@@ -62,6 +62,9 @@ class EditorActivity : AppCompatActivity() {
 
     /** First entry = automatic (from the file name, as before). A picked category is used as chosen; with Cataloging on it also picks the type folder. */
     private var pickedCategory: khaled.benzo.data.model.FileCategory? = null
+    /** After finishing for this download: 0 = general setting, 1 = do nothing, 2 = exit. */
+    private var afterFinishChoice = 0
+    private fun afterLabels() = listOf(getString(R.string.after_general), getString(R.string.after_nothing), getString(R.string.after_exit))
     private val pickable = listOf(
         khaled.benzo.data.model.FileCategory.VIDEO to R.string.nav_video,
         khaled.benzo.data.model.FileCategory.MUSIC to R.string.nav_music,
@@ -159,6 +162,7 @@ class EditorActivity : AppCompatActivity() {
             binding.chkWifiOnly.isChecked = d.isWifiOnly
             binding.edtChecksum.setText(d.expectedChecksum.orEmpty())
             binding.edtCategory.setText(getString(pickable.first { it.first == d.category }.second), false)
+            afterFinishChoice = d.afterFinish; binding.edtAfterFinish.setText(afterLabels()[d.afterFinish.coerceIn(0, 2)], false)
             binding.layoutAdvanced.visibility = View.VISIBLE
         }
     }
@@ -176,7 +180,7 @@ class EditorActivity : AppCompatActivity() {
         if (typed.isNotBlank() && checksum == null) { Toast.makeText(this, R.string.checksum_invalid, Toast.LENGTH_LONG).show(); return }
         if (old.isTorrent && checksum != null) { Toast.makeText(this, R.string.checksum_torrent_unsupported, Toast.LENGTH_LONG).show(); return }
         viewModel.changeDownload(old.id, url, name, path, binding.sliderThreads.value.toInt(), binding.chkWifiOnly.isChecked,
-            pickedCategory, binding.sliderItemSpeed.value.toInt(), checksum) { result, later ->
+            pickedCategory, binding.sliderItemSpeed.value.toInt(), checksum, afterFinishChoice) { result, later ->
             when (result) {
                 EditorViewModel.ChangeResult.LOCKED -> Toast.makeText(this, R.string.editor_change_locked, Toast.LENGTH_LONG).show()
                 EditorViewModel.ChangeResult.COLLISION -> Toast.makeText(this, R.string.editor_change_collision, Toast.LENGTH_LONG).show()
@@ -190,6 +194,9 @@ class EditorActivity : AppCompatActivity() {
 
     private fun setupCategory() {
         val labels = listOf(getString(R.string.editor_category_auto)) + pickable.map { getString(it.second) }
+        binding.edtAfterFinish.setAdapter(android.widget.ArrayAdapter(this, android.R.layout.simple_list_item_1, afterLabels()))
+        binding.edtAfterFinish.setText(afterLabels()[afterFinishChoice], false)
+        binding.edtAfterFinish.setOnItemClickListener { _, _, pos, _ -> afterFinishChoice = pos }
         binding.edtCategory.setAdapter(android.widget.ArrayAdapter(this, android.R.layout.simple_list_item_1, labels))
         binding.edtCategory.setText(labels[0], false)
         binding.edtCategory.setOnItemClickListener { _, _, pos, _ ->
@@ -354,6 +361,7 @@ class EditorActivity : AppCompatActivity() {
             pickedCategory = pickedCategory,
             speedLimitKBps = binding.sliderItemSpeed.value.toInt(),
             expectedChecksum = khaled.benzo.core.files.ChecksumPolicy.normalize(binding.edtChecksum.text.toString()),
+            afterFinish = afterFinishChoice,
             onError = { Toast.makeText(this, R.string.secrets_save_failed, Toast.LENGTH_LONG).show() }
         ) { downloadId ->
             if (startNow) {

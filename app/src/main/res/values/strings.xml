@@ -348,6 +348,10 @@
     <string name="stats_title">Additional statistics</string>
     <string name="stats_added">Time added</string>
     <string name="stats_finished">Time finished</string>
+    <string name="editor_after_finish">After finishing</string>
+    <string name="after_general">Use the general setting</string>
+    <string name="after_nothing">Do nothing</string>
+    <string name="after_exit">Exit when it finishes</string>
     <string name="panel_sorting">Sorting</string>
     <string name="panel_clear">Clear</string>
     <string name="panel_stopped">Stopped</string>

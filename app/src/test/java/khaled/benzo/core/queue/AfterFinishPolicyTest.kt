@@ -29,4 +29,12 @@ class AfterFinishPolicyTest {
         assertFalse(AfterFinishPolicy.allFinished(true, 0, 2, 0))
         assertFalse(AfterFinishPolicy.allFinished(true, 0, 0, 1))
     }
+
+    /** WRITTEN, run with the suite: a download's own choice beats the general setting. */
+    @Test fun ownChoiceBeatsGeneralSetting() {
+        assertEquals(AfterFinish.NOTHING, AfterFinishPolicy.effective(1, AfterFinish.EXIT_SERVICE))
+        assertEquals(AfterFinish.EXIT_SERVICE, AfterFinishPolicy.effective(2, AfterFinish.NOTHING))
+        assertEquals(AfterFinish.EXIT_SERVICE, AfterFinishPolicy.effective(0, AfterFinish.EXIT_SERVICE))
+        assertEquals(AfterFinish.NOTHING, AfterFinishPolicy.effective(9, AfterFinish.NOTHING))
+    }
 }

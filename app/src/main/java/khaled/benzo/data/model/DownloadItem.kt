@@ -30,7 +30,9 @@ data class DownloadItem(
     /** Expected file checksum as hex (MD5, SHA-1 or SHA-256 by length). Null = no check. */
     val expectedChecksum: String? = null,
     /** Hand-set position for the Order sort. 0 = never moved: the item sorts by its id, as before. */
-    val listOrder: Long = 0L
+    val listOrder: Long = 0L,
+    /** After finishing, for this download: 0 = follow the general setting, 1 = do nothing, 2 = exit when it finishes. INFERRED meaning (the reference Editor shows an "After finishing" dropdown, value "exit"; the choices were not seen). */
+    val afterFinish: Int = 0
 ) {
     /** What the Order sort compares. Moved items carry their own key; the rest keep their id. */
     val orderKey: Long get() = if (listOrder > 0L) listOrder else id

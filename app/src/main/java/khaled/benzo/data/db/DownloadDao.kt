@@ -47,6 +47,9 @@ interface DownloadDao {
     @Query("UPDATE downloads SET url = :url, file_name = :name, save_path = :path WHERE id = :id AND downloaded_bytes = 0 AND status NOT IN (1, 2, 4)")
     suspend fun updateIdentityGuarded(id: Long, url: String, name: String, path: String): Int
 
+    @Query("UPDATE downloads SET after_finish = :mode WHERE id = :id")
+    suspend fun updateAfterFinish(id: Long, mode: Int): Int
+
     @Query("UPDATE downloads SET list_order = :key WHERE id = :id")
     suspend fun updateListOrder(id: Long, key: Long): Int
 
