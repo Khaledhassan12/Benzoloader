@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `de38f1a` (26 Nov 06:35, Create empty file switch; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `209fd9d` (26 Nov 06:40, settings backup coverage for two new switches; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `209fd9d` | 26 Nov 06:40 | Settings backup: create_empty_file and quick_graph_visible added, test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `de38f1a` | 26 Nov 06:35 | Create empty file switch in Settings > Downloading, engine reservation on/off, test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `f3bdb6c` | 26 Nov 06:12 | Quick panel: graph show/hide in the Downloading header, After finishing row | WRITTEN, UNBUILT (never compiled or run) |
 | `e8754fb` | 26 Nov 05:58 | Batch loading: BatchPolicy expander, dialog, Tools entry, EN/AR strings, tests | WRITTEN, UNBUILT (never compiled or run) |
@@ -312,7 +313,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 ### Create empty file (written, unbuilt, unrendered)
 - OBSERVED (videos 3 and 5): switch "create empty file", sub-line about speeding up downloading, shown ON. Built: `createEmptyFile` setting (default ON), switch in Settings > Downloading saved on tap, `DownloadEngine.preallocate` (off = no setLength reservation, the file grows as parts write; the end check that every byte arrived and the length matches still runs). Test written, not run.
-- UNVERIFIED: any speed effect; behaviour of out-of-order writes into a growing file on every file system; recovery of a half-written file with the switch off. Switching it mid-download changes only the next start. Not in the settings backup list yet (adding needs a spec entry and a test). Label wording is mine and differs from the reference sub-line. Not rendered.
+- UNVERIFIED: any speed effect; behaviour of out-of-order writes into a growing file on every file system; recovery of a half-written file with the switch off. Switching it mid-download changes only the next start. Now in the settings backup (06:40, Main request). ON is the CAPTURED reference value, not a verified factory default. Label wording is mine and differs from the reference sub-line. Not rendered.
 
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.
