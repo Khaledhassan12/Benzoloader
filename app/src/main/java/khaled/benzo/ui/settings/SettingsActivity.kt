@@ -515,21 +515,15 @@ class SettingsActivity : AppCompatActivity() {
         }
         binding.btnSizeUnits.setOnClickListener {
             val r = viewModel.repository
-            val bits = intArrayOf(khaled.benzo.core.download.SizeFormat.B, khaled.benzo.core.download.SizeFormat.KB, khaled.benzo.core.download.SizeFormat.MB, khaled.benzo.core.download.SizeFormat.GB)
-            val checked = BooleanArray(4) { r.sizeUnitsMask and bits[it] != 0 }
-            com.google.android.material.dialog.MaterialAlertDialogBuilder(this).setTitle(R.string.size_units_title)
-                .setMultiChoiceItems(arrayOf("B", "KB", "MB", "GB"), checked) { _, i, c -> checked[i] = c }
-                .setPositiveButton(android.R.string.ok) { _, _ -> r.sizeUnitsMask = bits.indices.sumOf { if (checked[it]) bits[it] else 0 } }
-                .setNegativeButton(android.R.string.cancel, null).show()
+            pairedChoiceDialog(R.string.size_units_title, arrayOf("g m k", "G M K", "b", "B"),
+                intArrayOf(khaled.benzo.core.download.SizeFormat.LOWER_UNITS, khaled.benzo.core.download.SizeFormat.UPPER_UNITS, khaled.benzo.core.download.SizeFormat.LOWER_B, khaled.benzo.core.download.SizeFormat.UPPER_B),
+                r.sizeUnitsMask) { r.sizeUnitsMask = it }
         }
         binding.btnSpeedShow.setOnClickListener {
             val r = viewModel.repository
-            val bits = intArrayOf(khaled.benzo.core.download.SpeedFormat.CURRENT, khaled.benzo.core.download.SpeedFormat.AVERAGE, khaled.benzo.core.download.SpeedFormat.BYTE, khaled.benzo.core.download.SpeedFormat.BIT)
-            val checked = BooleanArray(4) { r.speedShowMask and bits[it] != 0 }
-            com.google.android.material.dialog.MaterialAlertDialogBuilder(this).setTitle(R.string.speed_show_title)
-                .setMultiChoiceItems(arrayOf(getString(R.string.speed_current), getString(R.string.speed_average), getString(R.string.speed_bytes), getString(R.string.speed_bits)), checked) { _, i, c -> checked[i] = c }
-                .setPositiveButton(android.R.string.ok) { _, _ -> r.speedShowMask = bits.indices.sumOf { if (checked[it]) bits[it] else 0 } }
-                .setNegativeButton(android.R.string.cancel, null).show()
+            pairedChoiceDialog(R.string.speed_show_title, arrayOf(getString(R.string.speed_current), getString(R.string.speed_average), getString(R.string.speed_bytes), getString(R.string.speed_bits)),
+                intArrayOf(khaled.benzo.core.download.SpeedFormat.CURRENT, khaled.benzo.core.download.SpeedFormat.AVERAGE, khaled.benzo.core.download.SpeedFormat.BYTE, khaled.benzo.core.download.SpeedFormat.BIT),
+                r.speedShowMask) { r.speedShowMask = it }
         }
         binding.btnInterfaceColors.setOnClickListener { startActivity(android.content.Intent(this, InterfaceColorsActivity::class.java)) }
         val b = binding.btnAllFilesAccess
@@ -538,6 +532,24 @@ class SettingsActivity : AppCompatActivity() {
         val granted = khaled.benzo.ui.common.AllFilesAccess.isGranted()
         b.text = getString(if (granted) khaled.benzo.R.string.allfiles_state_on else khaled.benzo.R.string.allfiles_state_off)
         b.setOnClickListener { khaled.benzo.ui.common.AllFilesAccess.explainAndRequest(this) }
+    }
+
+    /** Four boxes in two pairs; ticking one box unticks the other of its pair, as in the reference dialogs. */
+    private fun pairedChoiceDialog(title: Int, labels: Array<String>, bits: IntArray, current: Int, onSave: (Int) -> Unit) {
+        val checked = BooleanArray(4) { current and bits[it] != 0 }
+        val d = com.google.android.material.dialog.MaterialAlertDialogBuilder(this).setTitle(title)
+            .setMultiChoiceItems(labels, checked, null)
+            .setPositiveButton(R.string.browser_close) { _, _ -> onSave(bits.indices.sumOf { if (checked[it]) bits[it] else 0 }) }
+            .create()
+        d.setOnShowListener {
+            val lv = d.listView
+            lv.setOnItemClickListener { _, _, pos, _ ->
+                val other = pos xor 1
+                if (lv.isItemChecked(pos)) { lv.setItemChecked(other, false); checked[other] = false; checked[pos] = true }
+                else { lv.setItemChecked(pos, true); checked[pos] = true }
+            }
+        }
+        d.show()
     }
 
     override fun onBackPressed() {

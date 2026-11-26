@@ -140,7 +140,7 @@ class SettingsRepository(context: Context) {
 
     /** 0 = the library's own limit. */
     var torrentConnections: Int
-        get() = prefs.getInt(KEY_TORRENT_CONNECTIONS, 0).coerceIn(0, 1000)
+        get() = prefs.getInt(KEY_TORRENT_CONNECTIONS, 210).coerceIn(0, 1000)
         set(value) = prefs.edit().putInt(KEY_TORRENT_CONNECTIONS, value.coerceIn(0, 1000)).apply()
 
     /** Fixed torrent listen port. Off keeps the library's own listen setting. */
@@ -328,7 +328,7 @@ class SettingsRepository(context: Context) {
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
         "torrent_per_connections" to torrentPerConnections, "torrent_upload_slots" to torrentUploadSlots,
-        "top_bar_bottom" to topBarAtBottom, "size_units" to sizeUnitsMask, "speed_show" to speedShowMask,
+        "top_bar_bottom" to topBarAtBottom, "size_style" to sizeUnitsMask, "speed_show" to speedShowMask,
         "torrent_lsd" to torrentLsd, "torrent_utp" to torrentUtp, "torrent_upnp" to torrentUpnp, "torrent_natpmp" to torrentNatpmp,
         "vib_total_ms" to vibrateTotalMs, "notif_buttons" to notifButtons, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible, "stat_added_time" to statAddedTime, "stat_finish_time" to statFinishTime,
         "ui_col_filename" to uiColFilename, "ui_col_info" to uiColInfo, "ui_col_progress" to uiColProgress, "ui_col_progress_bg" to uiColProgressBg, "ui_col_list" to uiColList,
@@ -365,11 +365,11 @@ class SettingsRepository(context: Context) {
     /** Torrent encryption mode index: 0 prefer (default), 1 require, 2 disable. See TorrentEncryption. */
     /** Connections for one torrent. 0 = leave the library value. */
     var torrentPerConnections: Int
-        get() = prefs.getInt("torrent_per_connections", 0).coerceIn(0, 500)
+        get() = prefs.getInt("torrent_per_connections", 70).coerceIn(0, 500)
         set(v) = prefs.edit().putInt("torrent_per_connections", v.coerceIn(0, 500)).apply()
     /** Upload slots for one torrent. 0 = leave the library value. */
     var torrentUploadSlots: Int
-        get() = prefs.getInt("torrent_upload_slots", 0).coerceIn(0, 20)
+        get() = prefs.getInt("torrent_upload_slots", 4).coerceIn(0, 20)
         set(v) = prefs.edit().putInt("torrent_upload_slots", v.coerceIn(0, 20)).apply()
     var torrentLsd: Boolean
         get() = prefs.getBoolean("torrent_lsd", true)
@@ -413,10 +413,10 @@ class SettingsRepository(context: Context) {
     var speedShowMask: Int
         get() = khaled.benzo.core.download.SpeedFormat.sanitize(prefs.getInt("speed_show", khaled.benzo.core.download.SpeedFormat.DEFAULT))
         set(value) = prefs.edit().putInt("speed_show", khaled.benzo.core.download.SpeedFormat.sanitize(value)).apply()
-    /** Units used for sizes, bits 1 B, 2 KB, 4 MB, 8 GB. Never 0. */
+    /** Size text style, bits 1 g m k, 2 G M K, 4 b, 8 B (one of each pair). */
     var sizeUnitsMask: Int
-        get() = khaled.benzo.core.download.SizeFormat.sanitize(prefs.getInt("size_units", 15))
-        set(value) { val m = khaled.benzo.core.download.SizeFormat.sanitize(value); prefs.edit().putInt("size_units", m).apply(); khaled.benzo.core.download.SizeFormat.mask = m }
+        get() = khaled.benzo.core.download.SizeFormat.sanitize(prefs.getInt("size_style", khaled.benzo.core.download.SizeFormat.DEFAULT))
+        set(value) { val m = khaled.benzo.core.download.SizeFormat.sanitize(value); prefs.edit().putInt("size_style", m).apply(); khaled.benzo.core.download.SizeFormat.mask = m }
     /** Additional statistics on a list row (checkbox dialog in Interface, OBSERVED video 5): added time, finishing time. */
     var statAddedTime: Boolean
         get() = prefs.getBoolean("stat_added_time", true)

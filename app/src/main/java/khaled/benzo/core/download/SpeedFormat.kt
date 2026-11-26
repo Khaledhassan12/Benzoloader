@@ -1,11 +1,11 @@
 package khaled.benzo.core.download
 
-import java.util.Locale
-
 /**
- * Speed text on a list row, driven by four checkboxes (bits: 1 current speed, 2 average speed, 4 byte/sec, 8 bit/sec).
- * The four choices were OBSERVED in the reference Speed row. How they combine is INFERRED: current and average are
- * joined as "current (avg average)", byte and bit text are joined with a middle dot.
+ * Speed text on a list row. The reference Speed dialog has four boxes in two pairs: "current speed" or "average speed",
+ * and "byte/sec." or "bit/sec." (OBSERVED; its row value reads "current speed · byte/sec."). The pair is exclusive:
+ * INFERRED from the row value always naming exactly one of each. Reference code (read for behaviour only): bit mode
+ * multiplies by 8, then the compact size text and the b/B letter from the Size dialog are added with "/s".
+ * Bits: 1 current, 2 average, 4 byte/sec, 8 bit/sec. Default 1 + 4 is the reference's default.
  */
 object SpeedFormat {
     const val CURRENT = 1
@@ -15,39 +15,16 @@ object SpeedFormat {
     const val DEFAULT = CURRENT or BYTE
 
     fun sanitize(m: Int): Int {
-        var v = m and 15
-        if (v and (CURRENT or AVERAGE) == 0) v = v or CURRENT
-        if (v and (BYTE or BIT) == 0) v = v or BYTE
-        return v
-    }
-
-    fun bitsText(bytesPerSec: Long): String {
-        val bits = bytesPerSec.coerceAtLeast(0L) * 8.0
-        return when {
-            bits >= 1e9 -> String.format(Locale.US, "%.1f Gb/s", bits / 1e9)
-            bits >= 1e6 -> String.format(Locale.US, "%.1f Mb/s", bits / 1e6)
-            bits >= 1e3 -> String.format(Locale.US, "%.1f Kb/s", bits / 1e3)
-            else -> String.format(Locale.US, "%d b/s", bits.toLong())
-        }
-    }
-
-    private fun one(bytesPerSec: Long, mask: Int): String {
-        val parts = ArrayList<String>(2)
-        if (mask and BYTE != 0) parts.add(SizeFormat.format(bytesPerSec, 1) + "/s")
-        if (mask and BIT != 0) parts.add(bitsText(bytesPerSec))
-        return parts.joinToString(" \u00B7 ")
+        val a = if (m and AVERAGE != 0 && m and CURRENT == 0) AVERAGE else CURRENT
+        val b = if (m and BIT != 0 && m and BYTE == 0) BIT else BYTE
+        return a or b
     }
 
     /** [averageBytesPerSec] is null when no average is known yet. */
-    fun text(currentBytesPerSec: Long, averageBytesPerSec: Long?, rawMask: Int): String {
+    fun text(currentBytesPerSec: Long, averageBytesPerSec: Long?, rawMask: Int, sizeMask: Int = SizeFormat.mask): String {
         val m = sanitize(rawMask)
-        val showCur = m and CURRENT != 0
-        val showAvg = m and AVERAGE != 0 && averageBytesPerSec != null
-        return when {
-            showCur && showAvg -> one(currentBytesPerSec, m) + " (" + one(averageBytesPerSec!!, m) + ")"
-            showAvg -> one(averageBytesPerSec!!, m)
-            showCur -> one(currentBytesPerSec, m)
-            else -> one(currentBytesPerSec, m)
-        }
+        val v = (if (m and AVERAGE != 0) averageBytesPerSec ?: currentBytesPerSec else currentBytesPerSec).coerceAtLeast(0L)
+        val x = if (m and BIT != 0) v * 8 else v
+        return SizeFormat.compact(x, sizeMask) + SizeFormat.byteLetter(sizeMask) + "/s"
     }
 }
