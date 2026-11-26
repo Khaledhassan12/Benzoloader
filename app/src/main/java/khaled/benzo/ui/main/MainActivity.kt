@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         setupNavigationDrawer()
         setupFilterPanel()
+        setupQuickPanel()
         setupRecyclerView()
         setupListeners()
         observeViewModel()
@@ -87,6 +88,30 @@ class MainActivity : AppCompatActivity() {
         FileCategory.TORRENT -> R.string.nav_torrent
         else -> R.string.panel_all
     })
+
+    private lateinit var quickPanel: QuickPanel
+
+    /** The left menu of the reference is the quick-settings panel: graph, bar, sections, Exit/Settings/Browser. It replaces the old category menu (categories live in the filter panel). */
+    private fun setupQuickPanel() {
+        val settings = khaled.benzo.data.repository.SettingsRepository(this)
+        quickPanel = QuickPanel(
+            this, settings,
+            onOpenSettings = { startActivity(Intent(this, khaled.benzo.ui.settings.SettingsHubActivity::class.java)) },
+            onOpenBrowser = { startActivity(Intent(this, BrowserActivity::class.java)) },
+            onOpenSiteManager = { startActivity(Intent(this, khaled.benzo.ui.site.SiteManagerActivity::class.java)) },
+            onOpenTopWindow = { startActivity(Intent(this, khaled.benzo.ui.settings.TopWindowSettingsActivity::class.java)) },
+            onExit = {
+                startService(Intent(this, DownloadService::class.java).apply { action = khaled.benzo.receiver.DownloadActionReceiver.ACTION_EXIT_APP })
+                finishAffinity()
+            },
+            onChanged = { startService(Intent(this, DownloadService::class.java).apply { action = DownloadService.ACTION_PROCESS_QUEUE }) }
+        )
+        binding.navigationView.addView(quickPanel, android.widget.FrameLayout.LayoutParams(-1, -1))
+        binding.drawerLayout.addDrawerListener(object : androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener() {
+            override fun onDrawerOpened(drawerView: View) { if (drawerView === binding.navigationView) quickPanel.refresh() }
+        })
+        lifecycleScope.launch { viewModel.allItems.collect { quickPanel.update(it) } }
+    }
 
     /** Builds the side panel and keeps it, the toolbar subtitle and the list in step with the list state. */
     private fun setupFilterPanel() {

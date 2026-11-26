@@ -208,12 +208,10 @@
     <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/drawer_menu" />
+        android:fitsSystemWindows="true" />
 
     <!-- Side panel: Category, Status, Time, Sorting. Filled by FilterPanel. -->
     <ScrollView
