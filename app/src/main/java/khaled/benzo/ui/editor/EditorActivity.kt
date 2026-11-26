@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import android.widget.Toast
+import kotlinx.coroutines.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import khaled.benzo.R
@@ -27,6 +28,7 @@ class EditorActivity : AppCompatActivity() {
 
         setupDefaultFields()
         setupCategory()
+        setupProbe()
         setupListeners()
         handleIncomingIntent(autoAdd = savedInstanceState == null)
         // Video 8: a short sound plays when the Editor opens (matches the add sound by length and envelope; INFERRED, not an exact-audio claim).
@@ -65,6 +67,50 @@ class EditorActivity : AppCompatActivity() {
         khaled.benzo.data.model.FileCategory.IMAGE to R.string.nav_images,
         khaled.benzo.data.model.FileCategory.OTHER to R.string.nav_other
     )
+
+    private var probeJob: kotlinx.coroutines.Job? = null
+    private var nameEditedByUser = false
+    private var settingNameFromCode = false
+    private val probeEngine by lazy { khaled.benzo.core.download.DownloadEngine() }
+
+    /**
+     * When the link changes, wait a moment, then ask the server for size and suggested name (one small ranged request, no
+     * cookies). The size is only shown. The name is filled only while the user has not typed their own; a typed name is never replaced.
+     */
+    private fun setupProbe() {
+        binding.edtFileName.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) { if (!settingNameFromCode) nameEditedByUser = true }
+        })
+        binding.edtUrl.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) { scheduleProbe(s?.toString()?.trim().orEmpty()) }
+        })
+        scheduleProbe(binding.edtUrl.text.toString().trim())
+    }
+
+    private fun scheduleProbe(url: String) {
+        probeJob?.cancel()
+        if (!(url.startsWith("http://", true) || url.startsWith("https://", true))) { binding.txtSizeLabel.text = ""; return }
+        binding.txtSizeLabel.setText(R.string.editor_size_checking)
+        probeJob = androidx.lifecycle.lifecycleScope.launch {
+            kotlinx.coroutines.delay(700)
+            val ua = viewModel.settingsRepository.defaultUserAgent
+            val headers = HashMap<String, String>()
+            if (ua.isNotEmpty()) headers["User-Agent"] = ua
+            val info = runCatching { probeEngine.checkServer(url, headers) }.getOrNull()
+            if (info == null) { binding.txtSizeLabel.setText(R.string.editor_size_unknown); return@launch }
+            binding.txtSizeLabel.text = if (info.contentLength > 0)
+                getString(R.string.editor_size_value, khaled.benzo.core.download.SpeedTracker.formatSize(info.contentLength))
+                else getString(R.string.editor_size_unknown)
+            val suggested = info.suggestedFileName
+            if (!nameEditedByUser && !suggested.isNullOrBlank() && binding.edtFileName.text.isNullOrBlank()) {
+                settingNameFromCode = true; binding.edtFileName.setText(suggested); settingNameFromCode = false
+            }
+        }
+    }
 
     private fun setupCategory() {
         val labels = listOf(getString(R.string.editor_category_auto)) + pickable.map { getString(it.second) }

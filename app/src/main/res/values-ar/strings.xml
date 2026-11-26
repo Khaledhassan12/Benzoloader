@@ -389,4 +389,7 @@
     <string name="checksum_invalid">المجموع الاختباري لازم يكون 32 أو 40 أو 64 حرف سداسي عشري.</string>
     <string name="checksum_mismatch">الملف المكتمل مش مطابق للمجموع الاختباري اللي كتبته. الملف اتحفظ.</string>
     <string name="checksum_unreadable">ما قدرتش أقرأ الملف المكتمل عشان أتحقق من المجموع الاختباري، فمتحققش منه. الملف اتحفظ.</string>
+    <string name="editor_size_checking">بتحقق من الحجم…</string>
+    <string name="editor_size_unknown">الحجم غير معروف</string>
+    <string name="editor_size_value">الحجم: %1$s</string>
 </resources>
