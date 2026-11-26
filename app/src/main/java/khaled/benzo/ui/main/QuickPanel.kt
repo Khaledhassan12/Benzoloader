@@ -64,6 +64,8 @@ class QuickPanel(
     private val onOpenBrowser: () -> Unit,
     private val onOpenSiteManager: () -> Unit,
     private val onOpenBatch: () -> Unit,
+    private val onExportList: () -> Unit,
+    private val onImportList: () -> Unit,
     private val onOpenTopWindow: () -> Unit,
     private val onExit: () -> Unit,
     private val onChanged: () -> Unit
@@ -113,14 +115,6 @@ class QuickPanel(
             sliderRow(R.string.qp_threads, 1, 16, settings.defaultThreadsCount, { "$it" }) { settings.defaultThreadsCount = it }
             sliderRow(R.string.qp_speed, 0, 10240, settings.speedLimitKBps, { if (it == 0) context.getString(R.string.qp_speed_max) else "$it KB/s" }, 64) { settings.speedLimitKBps = it }
             switchRow(R.string.qp_auto_resume, settings.autoResume) { settings.autoResume = it }
-            val labels = arrayOf(context.getString(R.string.after_finish_nothing), context.getString(R.string.after_finish_exit))
-            valueRow(R.string.row_after_finish, labels[settings.afterFinish.coerceIn(0, 1)]) {
-                com.google.android.material.dialog.MaterialAlertDialogBuilder(context)
-                    .setTitle(R.string.row_after_finish)
-                    .setSingleChoiceItems(labels, settings.afterFinish.coerceIn(0, 1)) { dlg, which -> settings.afterFinish = which; dlg.dismiss(); renderSections(); onChanged() }
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show()
-            }
         }
         section(Section.TORRENT, R.string.qp_torrent) {
             switchRow(R.string.qp_sequential, settings.torrentSequential) { settings.torrentSequential = it }
@@ -131,6 +125,9 @@ class QuickPanel(
             switchRow(R.string.qp_sounds, settings.soundOnComplete) { settings.soundOnComplete = it }
         }
         section(Section.OPTIONS, R.string.qp_options) {
+            // OBSERVED (video 3): "Exit after finishing" is a switch in this section. It writes the same after-finishing
+            // setting as Settings (1 = exit). Settings still offers the same two choices.
+            switchRow(R.string.qp_exit_after, settings.afterFinish == 1) { settings.afterFinish = if (it) 1 else 0 }
             switchRow(R.string.qp_wifi_only, settings.isWifiOnly) { settings.isWifiOnly = it }
             switchRow(R.string.qp_cataloging, settings.catalogEnabled) { settings.catalogEnabled = it }
             switchRow(R.string.qp_scheduler, settings.scheduleEnabled) { settings.scheduleEnabled = it }
@@ -158,6 +155,8 @@ class QuickPanel(
         section(Section.TOOLS, R.string.qp_tools) {
             valueRow(R.string.qp_site_manager, null) { onOpenSiteManager() }
             valueRow(R.string.qp_batch, null) { onOpenBatch() }
+            valueRow(R.string.qp_export_txt, null) { onExportList() }
+            valueRow(R.string.qp_import_txt, null) { onImportList() }
         }
     }
 

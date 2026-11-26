@@ -424,6 +424,9 @@
     <string name="qp_site_manager">Site manager</string>
     <string name="qp_graph_toggle">Show or hide the speed graph</string>
     <string name="qp_theme">Theme</string>
+    <string name="qp_exit_after">Exit after finishing</string>
+    <string name="qp_export_txt">Export the download list</string>
+    <string name="qp_import_txt">Import a download list</string>
     <string name="qp_batch">Batch loading</string>
     <string name="batch_title">Batch loading</string>
     <string name="batch_help_title">How batch loading works</string>

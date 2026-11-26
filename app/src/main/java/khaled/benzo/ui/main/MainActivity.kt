@@ -99,6 +99,8 @@ class MainActivity : AppCompatActivity() {
             onOpenSettings = { startActivity(Intent(this, khaled.benzo.ui.settings.SettingsHubActivity::class.java)) },
             onOpenBrowser = { startActivity(Intent(this, BrowserActivity::class.java)) },
             onOpenSiteManager = { startActivity(Intent(this, khaled.benzo.ui.site.SiteManagerActivity::class.java)) },
+            onExportList = { showExportDialog() },
+            onImportList = { listFiles.importList() },
             onOpenBatch = { startActivity(Intent(this, khaled.benzo.ui.batch.BatchActivity::class.java)) },
             onOpenTopWindow = { startActivity(Intent(this, khaled.benzo.ui.settings.TopWindowSettingsActivity::class.java)) },
             onExit = {

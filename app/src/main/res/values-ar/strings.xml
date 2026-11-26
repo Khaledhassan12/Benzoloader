@@ -424,6 +424,9 @@
     <string name="qp_site_manager">مدير المواقع</string>
     <string name="qp_graph_toggle">إظهار أو إخفاء رسم السرعة</string>
     <string name="qp_theme">المظهر</string>
+    <string name="qp_exit_after">خروج بعد الانتهاء</string>
+    <string name="qp_export_txt">تصدير قائمة التحميلات</string>
+    <string name="qp_import_txt">استيراد قائمة تحميلات</string>
     <string name="qp_batch">تحميل دفعة</string>
     <string name="batch_title">تحميل دفعة</string>
     <string name="batch_help_title">إزاي بيشتغل تحميل الدفعة</string>
