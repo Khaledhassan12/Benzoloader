@@ -257,6 +257,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean("create_empty_file", true)
         set(value) = prefs.edit().putBoolean("create_empty_file", value).apply()
 
+    /** Quick-panel rows hidden with the eye editor (string keys). */
+    var quickPanelHidden: Set<String>
+        get() = prefs.getStringSet("quick_panel_hidden", emptySet()) ?: emptySet()
+        set(value) = prefs.edit().putStringSet("quick_panel_hidden", value.toSet()).apply()
+
     var bottomBar: Boolean
         get() = prefs.getBoolean(KEY_BOTTOM_BAR, true)
         set(value) = prefs.edit().putBoolean(KEY_BOTTOM_BAR, value).apply()

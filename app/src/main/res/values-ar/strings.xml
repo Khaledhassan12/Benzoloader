@@ -427,6 +427,7 @@
     <string name="qp_exit_after">خروج بعد الانتهاء</string>
     <string name="qp_export_txt">تصدير قائمة التحميلات</string>
     <string name="qp_import_txt">استيراد قائمة تحميلات</string>
+    <string name="qp_eye_toggle">اختار الصفوف اللي تظهر</string>
     <string name="qp_batch">تحميل دفعة</string>
     <string name="batch_title">تحميل دفعة</string>
     <string name="batch_help_title">إزاي بيشتغل تحميل الدفعة</string>

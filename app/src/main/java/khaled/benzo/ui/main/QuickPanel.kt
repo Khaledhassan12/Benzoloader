@@ -74,6 +74,10 @@ class QuickPanel(
     private enum class Section { DOWNLOADING, TORRENT, NOTIFICATIONS, OPTIONS, INTERFACE, TOOLS }
 
     private val open = mutableSetOf(Section.DOWNLOADING)
+    // Declared before init: init draws the panel, and the drawing code uses these two.
+    /** Rows seen while drawing, so stale hidden keys can be cleaned. */
+    private val knownKeys = mutableSetOf<String>()
+    private var editing = false
     private val graph = SpeedGraphView(context)
     private val barText = TextView(context)
     private val bar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply { max = 100 }
@@ -109,6 +113,7 @@ class QuickPanel(
     private fun renderSections() {
         graph.visibility = if (settings.quickGraphVisible) VISIBLE else GONE
         body.removeAllViews()
+        knownKeys.clear()
         section(Section.DOWNLOADING, R.string.qp_downloading) {
             valueRow(R.string.qp_folder, settings.defaultDownloadPath.ifEmpty { context.getString(R.string.qp_default_folder) }) { onOpenSettings() }
             sliderRow(R.string.qp_simultaneous, 1, 5, settings.maxConcurrentDownloads, { "$it" }) { settings.maxConcurrentDownloads = it }
@@ -178,9 +183,35 @@ class QuickPanel(
                 contentDescription = context.getString(R.string.qp_graph_toggle)
                 setOnClickListener { settings.quickGraphVisible = !settings.quickGraphVisible; renderSections() }
             }, LayoutParams(dp(48), dp(48)))
+            // OBSERVED (video 3 part 1): an eye icon in the header turns on checkboxes beside every row. Stock placeholder icon.
+            row.addView(android.widget.ImageButton(context).apply {
+                setImageResource(android.R.drawable.ic_menu_view)
+                setBackgroundResource(android.R.color.transparent)
+                contentDescription = context.getString(R.string.qp_eye_toggle)
+                setOnClickListener { editing = !editing; renderSections() }
+            }, LayoutParams(dp(48), dp(48)))
             body.addView(row)
         } else body.addView(header)
         if (which in open) rows()
+    }
+
+    /**
+     * Puts one row in the panel. Normally a hidden row is skipped. In eye-edit mode every row shows with a checkbox
+     * that is ticked while the row is shown (OBSERVED: a checkbox beside every row).
+     */
+    private fun place(title: Int, content: View) {
+        val key = resources.getResourceEntryName(title)
+        knownKeys += key
+        val hidden = khaled.benzo.core.panel.PanelVisibility.clean(settings.quickPanelHidden, knownKeys)
+        val shown = khaled.benzo.core.panel.PanelVisibility.isShown(hidden, key)
+        if (!editing) { if (shown) body.addView(content); return }
+        val row = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
+        row.addView(android.widget.CheckBox(context).apply {
+            isChecked = shown
+            setOnCheckedChangeListener { _, _ -> settings.quickPanelHidden = khaled.benzo.core.panel.PanelVisibility.toggle(settings.quickPanelHidden, key) }
+        })
+        row.addView(content, LayoutParams(0, -2, 1f))
+        body.addView(row)
     }
 
     private fun valueRow(title: Int, value: String?, onTap: () -> Unit) {
@@ -189,7 +220,7 @@ class QuickPanel(
             minimumHeight = dp(52); gravity = Gravity.CENTER_VERTICAL; setPadding(dp(32), dp(6), dp(16), dp(6))
             isClickable = true; setOnClickListener { onTap() }
         }
-        body.addView(tv)
+        place(title, tv)
     }
 
     private fun switchRow(title: Int, value: Boolean, set: (Boolean) -> Unit) {
@@ -197,7 +228,7 @@ class QuickPanel(
             setText(title); isChecked = value; minimumHeight = dp(52); setPadding(dp(32), 0, dp(16), 0)
             setOnCheckedChangeListener { _, on -> set(on); onChanged() }
         }
-        body.addView(sw)
+        place(title, sw)
     }
 
     private fun sliderRow(title: Int, min: Int, max: Int, value: Int, fmt: (Int) -> String, step: Int = 1, set: (Int) -> Unit) {
@@ -212,8 +243,10 @@ class QuickPanel(
                 override fun onStopTrackingTouch(slider: Slider) { set(slider.value.toInt()); onChanged() }
             })
         }
-        body.addView(label)
-        body.addView(s, LayoutParams(-1, -2).apply { setMargins(dp(24), 0, dp(8), 0) })
+        val box = LinearLayout(context).apply { orientation = VERTICAL }
+        box.addView(label)
+        box.addView(s, LayoutParams(-1, -2).apply { setMargins(dp(24), 0, dp(8), 0) })
+        place(title, box)
     }
 
     private fun bottomBar(): View = LinearLayout(context).apply {
