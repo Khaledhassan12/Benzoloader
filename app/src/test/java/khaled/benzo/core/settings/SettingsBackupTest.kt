@@ -75,4 +75,13 @@ class SettingsBackupTest {
         } }
         assertEquals(values, B.parse(B.format(values)).accepted)
     }
+
+    /** WRITTEN, NOT RUN: the newer persisted switches are covered by the backup, and a non-boolean value is rejected. */
+    @Test fun emptyFileAndGraphSwitchesRoundTrip() {
+        val text = B.MAGIC + "\ncreate_empty_file=false\nquick_graph_visible=true\n"
+        val r = B.parse(text)
+        assertEquals(false, r.accepted["create_empty_file"])
+        assertEquals(true, r.accepted["quick_graph_visible"])
+        assertEquals(1, B.parse(B.MAGIC + "\ncreate_empty_file=maybe\n").invalid)
+    }
 }

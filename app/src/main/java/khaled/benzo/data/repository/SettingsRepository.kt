@@ -252,7 +252,7 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean("quick_graph_visible", true)
         set(value) = prefs.edit().putBoolean("quick_graph_visible", value).apply()
 
-    /** "Create empty file": reserve the whole file before downloading. Default ON as in the reference capture. Not in the settings backup yet. */
+    /** "Create empty file": reserve the whole file before downloading. Default ON is the CAPTURED reference value, not a verified factory default. In the settings backup. */
     var createEmptyFile: Boolean
         get() = prefs.getBoolean("create_empty_file", true)
         set(value) = prefs.edit().putBoolean("create_empty_file", value).apply()
@@ -307,6 +307,7 @@ class SettingsRepository(context: Context) {
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor, KEY_THEME_MODE to themeMode,
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
+        "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible,
         "top_window_enabled" to topWindowEnabled, "top_window_stats" to topWindowStatsMask,
         "top_window_text_color" to topWindowTextColor, "top_window_bg_color" to topWindowBackgroundColor,
         "top_window_bar_color" to topWindowBarColor, "top_window_opacity" to topWindowOpacityPercent,
