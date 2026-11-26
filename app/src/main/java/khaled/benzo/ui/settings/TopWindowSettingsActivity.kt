@@ -141,11 +141,29 @@ class TopWindowSettingsActivity : AppCompatActivity() {
             // Shared picker; its Presets list carries "Default", which replaces the old Reset button.
             khaled.benzo.ui.common.ColorPickerDialog.show(this, title, get(), default) { picked -> set(picked); refreshers.forEach { it() } }
         }, enabled)
-        // Colour square at the row end (the reference shows one); the picker is the shared ColorPickerDialog.
-        val swatch = { android.graphics.drawable.GradientDrawable().apply {
-            setColor(get()); setStroke(dp(1), 0x66808080); setSize(dp(28), dp(28)) } }
-        row.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, swatch(), null)
-        refreshers += { row.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, swatch(), null) }
+        // OBSERVED (video 5): trailing colour square, and a cross left of it only while the value differs from default.
+        // Layout: [row text][cross][square]. The cross resets to the default; the square opens the picker like the row.
+        val index = list.indexOfChild(row)
+        list.removeView(row)
+        val square = View(this)
+        val cross = android.widget.ImageButton(this).apply {
+            setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
+            setBackgroundResource(android.R.color.transparent)
+            contentDescription = getString(R.string.top_color_reset)
+            setOnClickListener { set(default); refreshers.forEach { it() } }
+        }
+        val wrap = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
+        wrap.addView(row, LinearLayout.LayoutParams(0, -2, 1f))
+        wrap.addView(cross, LinearLayout.LayoutParams(dp(40), dp(40)))
+        wrap.addView(square, LinearLayout.LayoutParams(dp(28), dp(28)).apply { marginStart = dp(4); marginEnd = dp(20) })
+        square.setOnClickListener { row.performClick() }
+        list.addView(wrap, index)
+        val paintTrailing = {
+            square.background = android.graphics.drawable.GradientDrawable().apply { setColor(get()); setStroke(dp(1), 0x66808080) }
+            cross.visibility = if (get() != default) View.VISIBLE else View.INVISIBLE
+            val a = if (enabled()) 1f else 0.38f; cross.alpha = a; square.alpha = a; cross.isEnabled = enabled(); square.isEnabled = enabled()
+        }
+        paintTrailing(); refreshers += paintTrailing
     }
 
     private fun sliderRow(title: Int, min: Int, max: Int, get: () -> Int, set: (Int) -> Unit, fmt: (Int) -> String, enabled: () -> Boolean) {
