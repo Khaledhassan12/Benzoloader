@@ -141,6 +141,17 @@ class QuickPanel(
             }
         }
         section(Section.INTERFACE, R.string.qp_interface) {
+            // Theme row (light, dark or system) writes the same setting as Settings > Interface and applies at once.
+            val modes = arrayOf(context.getString(R.string.mode_system), context.getString(R.string.mode_light), context.getString(R.string.mode_dark))
+            valueRow(R.string.qp_theme, modes[settings.themeMode.coerceIn(0, 2)]) {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.qp_theme)
+                    .setSingleChoiceItems(modes, settings.themeMode.coerceIn(0, 2)) { dlg, which ->
+                        settings.themeMode = which; dlg.dismiss()
+                        khaled.benzo.ui.common.ThemeColors.applyNightMode(context)
+                    }
+                    .setNegativeButton(R.string.dialog_cancel, null).show()
+            }
             switchRow(R.string.qp_bottom_bar, settings.bottomBar) { settings.bottomBar = it }
             switchRow(R.string.qp_swap_menus, settings.swapSideMenus) { settings.swapSideMenus = it }
         }
