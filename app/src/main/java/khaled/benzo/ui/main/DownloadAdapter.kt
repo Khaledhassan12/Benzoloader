@@ -77,7 +77,11 @@ class DownloadAdapter(
             binding.progressBar.progress = if (item.status == DownloadStatus.COMPLETED) 100 else percent
             binding.progressBar.progressDrawable = androidx.core.content.ContextCompat.getDrawable(
                 binding.root.context,
-                if (item.status == DownloadStatus.COMPLETED) R.drawable.bar_done else R.drawable.bar_running
+                when (item.status) {
+                    DownloadStatus.COMPLETED -> R.drawable.bar_done
+                    DownloadStatus.PAUSED, DownloadStatus.ERROR -> R.drawable.bar_failed
+                    else -> R.drawable.bar_running
+                }
             )
             binding.progressBar.isIndeterminate = false
             // Custom bar colours apply to the running bar only; the finished bar keeps its own look (the reference showed no rule).
@@ -88,8 +92,13 @@ class DownloadAdapter(
                 }
             }
             val total = if (item.totalBytes > 0) formatBytes(item.totalBytes) else "?"
-            binding.txtSizes.text = if (item.status == DownloadStatus.COMPLETED) total
-                else formatBytes(item.downloadedBytes) + " / " + total
+            // Finished: "size · average speed · time" (reference frame). The speed and time exist only for downloads recorded since the transfer time was stored.
+            val secs = item.activeMs / 1000
+            binding.txtSizes.text = if (item.status == DownloadStatus.COMPLETED) {
+                if (item.activeMs >= 1000 && item.totalBytes > 0)
+                    total + " \u00B7 " + khaled.benzo.core.download.SpeedFormat.text(item.totalBytes / secs, null, stats.speedShowMask) + " \u00B7 " + clock(secs)
+                else total
+            } else formatBytes(item.downloadedBytes) + " / " + total
             val running = item.status == DownloadStatus.RUNNING
             binding.txtSpeed.text = if (running) {
                 // Average since this row was first seen running in this session (INFERRED; no stored start time exists).
@@ -103,6 +112,9 @@ class DownloadAdapter(
             binding.txtEta.text = if (running && item.speed > 0 && item.totalBytes > 0) {
                 val seconds = (item.totalBytes - item.downloadedBytes).coerceAtLeast(0) / item.speed
                 String.format(Locale.US, "%02d:%02d", seconds / 60, seconds % 60)
+            } else if (item.status == DownloadStatus.PAUSED || item.status == DownloadStatus.ERROR) {
+                // Reference frame (stopped row): "elapsed / remaining".
+                clock(secs) + " / " + (if (item.speed > 0 && item.totalBytes > 0) clock((item.totalBytes - item.downloadedBytes).coerceAtLeast(0) / item.speed) else "00:00")
             } else if (stats.statFinishTime && item.status == DownloadStatus.COMPLETED && item.completedDate > 0) {
                 java.text.SimpleDateFormat("MMM d, yyyy h:mm:ss a", Locale.getDefault()).format(java.util.Date(item.completedDate))
             } else ""
@@ -110,6 +122,8 @@ class DownloadAdapter(
             binding.imgFileIcon.setImageResource(when (item.status) {
                 DownloadStatus.RUNNING -> R.drawable.stat_pause
                 DownloadStatus.COMPLETED -> R.drawable.stat_success
+                DownloadStatus.PAUSED -> R.drawable.stat_stop
+                DownloadStatus.ERROR -> R.drawable.stat_error
                 else -> R.drawable.stat_start
             })
             binding.imgFileIcon.setOnClickListener { onControlClick(item) }
@@ -125,7 +139,26 @@ class DownloadAdapter(
                 binding.root.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, tv, true)
                 binding.root.setBackgroundResource(tv.resourceId)
             }
-            binding.btnItemMenu.visibility = android.view.View.GONE
+            binding.imgFileType.setImageResource(fileTypeIcon(item))
+        }
+
+        private fun clock(totalSeconds: Long): String =
+            if (totalSeconds >= 3600) String.format(Locale.US, "%d:%02d:%02d", totalSeconds / 3600, totalSeconds % 3600 / 60, totalSeconds % 60)
+            else String.format(Locale.US, "%02d:%02d", totalSeconds / 60, totalSeconds % 60)
+
+        /** File-type icon on the right of the row (reference frames: blue phone = programs, pink document = text; colours from the reference). */
+        private fun fileTypeIcon(item: DownloadItem): Int {
+            if (item.isTorrent) return R.drawable.ic_filetype_torr
+            return when (khaled.benzo.data.model.FileCategory.fromExtension(item.fileName)) {
+                khaled.benzo.data.model.FileCategory.ARCHIVE -> R.drawable.ic_filetype_archive
+                khaled.benzo.data.model.FileCategory.PROGRAM -> R.drawable.ic_filetype_program
+                khaled.benzo.data.model.FileCategory.VIDEO -> R.drawable.ic_filetype_video
+                khaled.benzo.data.model.FileCategory.MUSIC -> R.drawable.ic_filetype_music
+                khaled.benzo.data.model.FileCategory.IMAGE -> R.drawable.ic_filetype_image
+                khaled.benzo.data.model.FileCategory.DOCUMENT -> R.drawable.ic_filetype_text
+                khaled.benzo.data.model.FileCategory.TORRENT -> R.drawable.ic_filetype_torr
+                else -> R.drawable.ic_filetype_other
+            }
         }
 
         private fun formatBytes(bytes: Long): String = khaled.benzo.core.download.SizeFormat.format(bytes, 1)

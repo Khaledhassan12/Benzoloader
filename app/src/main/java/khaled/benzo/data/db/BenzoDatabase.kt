@@ -14,7 +14,7 @@ import androidx.room.RoomDatabase
         BookmarkEntity::class,
         HistoryEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = true
 )
 abstract class BenzoDatabase : RoomDatabase() {

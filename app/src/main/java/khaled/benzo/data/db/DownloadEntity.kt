@@ -33,7 +33,9 @@ data class DownloadEntity(
     @ColumnInfo(name = "speed_limit_kbps", defaultValue = "0") val speedLimitKBps: Int = 0,
     @ColumnInfo(name = "expected_checksum") val expectedChecksum: String? = null,
     @ColumnInfo(name = "list_order", defaultValue = "0") val listOrder: Long = 0L,
-    @ColumnInfo(name = "after_finish", defaultValue = "0") val afterFinish: Int = 0
+    @ColumnInfo(name = "after_finish", defaultValue = "0") val afterFinish: Int = 0,
+    /** Milliseconds this download spent actually transferring (summed over runs). Used for the finished-row average speed and the elapsed time. */
+    @ColumnInfo(name = "active_ms", defaultValue = "0") val activeMs: Long = 0L
 ) {
     fun toModel(): DownloadItem {
         val ck = khaled.benzo.core.security.Secrets.read(cookies)
@@ -65,7 +67,8 @@ data class DownloadEntity(
             speedLimitKBps = speedLimitKBps,
             expectedChecksum = expectedChecksum,
             listOrder = listOrder,
-            afterFinish = afterFinish
+            afterFinish = afterFinish,
+            activeMs = activeMs
         )
     }
 
@@ -96,7 +99,8 @@ data class DownloadEntity(
                 speedLimitKBps = model.speedLimitKBps,
                 expectedChecksum = model.expectedChecksum,
                 listOrder = model.listOrder,
-                afterFinish = model.afterFinish
+                afterFinish = model.afterFinish,
+                activeMs = model.activeMs
             )
         }
     }

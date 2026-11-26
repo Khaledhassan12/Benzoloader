@@ -239,6 +239,8 @@ class MainActivity : AppCompatActivity() {
             onItemClick = { item ->
                 if (selection.active) { selection = selection.toggle(item.id); onSelectionChanged(); return@DownloadAdapter }
                 if (item.needsReentry) { showReentry(item); return@DownloadAdapter }
+                // Tapping a download that is not finished stops it while it runs and resumes it when it is stopped (his rule, 16:07).
+                if (item.status != khaled.benzo.data.model.DownloadStatus.COMPLETED) { toggleDownloadStatus(item); return@DownloadAdapter }
                 val intent = Intent(this, FilePropertiesActivity::class.java).apply {
                     putExtra("download_id", item.id)
                 }
@@ -487,7 +489,7 @@ class MainActivity : AppCompatActivity() {
     private fun toggleDownloadStatus(item: DownloadItem) {
         val serviceIntent = Intent(this, DownloadService::class.java).apply {
             putExtra(DownloadActionReceiver.EXTRA_DOWNLOAD_ID, item.id)
-            action = if (item.status == DownloadStatus.RUNNING) {
+            action = if (item.status == DownloadStatus.RUNNING || item.status == DownloadStatus.CONNECTING) {
                 DownloadActionReceiver.ACTION_PAUSE
             } else {
                 DownloadService.ACTION_START_DOWNLOAD
@@ -503,6 +505,7 @@ class MainActivity : AppCompatActivity() {
         popup.menu.add(0, 1, 0, "Resume")
         popup.menu.add(0, 2, 1, "Delete")
         popup.menu.add(0, 3, 2, getString(R.string.menu_select))
+        popup.menu.add(0, 4, 3, getString(R.string.menu_properties))
         popup.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 1 -> {
@@ -518,6 +521,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 3 -> { selection = selection.toggle(item.id); onSelectionChanged(); true }
+                4 -> { startActivity(Intent(this, FilePropertiesActivity::class.java).apply { putExtra("download_id", item.id) }); true }
                 else -> false
             }
         }

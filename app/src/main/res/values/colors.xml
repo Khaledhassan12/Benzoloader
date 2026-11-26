@@ -46,4 +46,12 @@
     <color name="bar_dark">#1E1E1E</color>
     <color name="on_bar_dark">#E6E1E5</color>
     <color name="hint_green_dark">#9CCB6B</color>
+    <color name="filetype_archive">#ff906722</color>
+    <color name="filetype_image">#ffef6c00</color>
+    <color name="filetype_music">#ff009688</color>
+    <color name="filetype_other">#ff757575</color>
+    <color name="filetype_program">#ff0288d1</color>
+    <color name="filetype_text">#ffc2185b</color>
+    <color name="filetype_torr">#ff8c84f3</color>
+    <color name="filetype_video">#ff9c27b0</color>
 </resources>

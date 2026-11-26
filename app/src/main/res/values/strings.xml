@@ -567,4 +567,5 @@
     <string name="help_email_body">Please write below what you did, what you expected and what happened. A screenshot helps.\n\n--- Write here ---\n\n\n--- Device details (you can edit or delete these lines before sending) ---\nApp: Benzoloader\nDeveloper: Khaled Hassan\n</string>
     <string name="menu_select">Select</string>
     <string name="help_faq">FAQ</string>
+    <string name="menu_properties">Properties</string>
 </resources>

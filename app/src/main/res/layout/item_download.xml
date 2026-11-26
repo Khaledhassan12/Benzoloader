@@ -50,15 +50,12 @@
                 tools:text="Downloading" />
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btnItemMenu"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+        <ImageView
+            android:id="@+id/imgFileType"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:contentDescription="@null"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_more_vert"
-            app:tint="?android:textColorSecondary" />
+            android:src="@drawable/ic_filetype_other" />
     </LinearLayout>
 
     <!-- One bar; the texts sit on it. Values are real aggregate bytes only. -->

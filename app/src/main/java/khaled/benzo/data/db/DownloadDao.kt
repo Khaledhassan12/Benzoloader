@@ -62,8 +62,8 @@ interface DownloadDao {
     @Query("UPDATE downloads SET status = :status, speed = :speed WHERE id = :id")
     suspend fun updateStatusAndSpeed(id: Long, status: Int, speed: Long): Int
 
-    @Query("UPDATE downloads SET downloaded_bytes = :downloadedBytes, speed = :speed WHERE id = :id")
-    suspend fun updateProgressAndSpeed(id: Long, downloadedBytes: Long, speed: Long): Int
+    @Query("UPDATE downloads SET downloaded_bytes = :downloadedBytes, speed = :speed, active_ms = active_ms + :addMs WHERE id = :id")
+    suspend fun updateProgressAndSpeed(id: Long, downloadedBytes: Long, speed: Long, addMs: Long): Int
 
     @Query("UPDATE downloads SET status = :newStatus WHERE status = :oldStatus")
     suspend fun updateAllStatus(oldStatus: Int, newStatus: Int): Int

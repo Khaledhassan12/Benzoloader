@@ -65,9 +65,18 @@ class DownloadRepository(context: Context) {
         downloadDao.updateStatusAndSpeed(id, status.code, speed)
     }
 
+    /** Last progress tick per download, to add the time between ticks to its transfer time. A gap over 10 s (paused, restarted) adds nothing. */
+    private val lastTick = java.util.concurrent.ConcurrentHashMap<Long, Long>()
+
     suspend fun updateProgress(id: Long, downloadedBytes: Long, speed: Long) {
-        downloadDao.updateProgressAndSpeed(id, downloadedBytes, speed)
+        val now = System.currentTimeMillis()
+        val prev = lastTick.put(id, now)
+        val add = if (prev != null && now - prev in 1..10_000) now - prev else 0L
+        downloadDao.updateProgressAndSpeed(id, downloadedBytes, speed, add)
     }
+
+    /** Called when a download stops, so the next run does not count the idle gap. */
+    fun endTicks(id: Long) { lastTick.remove(id) }
 
     suspend fun getChunks(downloadId: Long): List<DownloadChunk> {
         return chunkDao.getChunksForDownload(downloadId).map { it.toModel() }

@@ -32,7 +32,9 @@ data class DownloadItem(
     /** Hand-set position for the Order sort. 0 = never moved: the item sorts by its id, as before. */
     val listOrder: Long = 0L,
     /** After finishing, for this download: 0 = follow the general setting, 1 = do nothing, 2 = exit when it finishes. INFERRED meaning (the reference Editor shows an "After finishing" dropdown, value "exit"; the choices were not seen). */
-    val afterFinish: Int = 0
+    val afterFinish: Int = 0,
+    /** Milliseconds spent actually transferring, summed over runs. 0 for downloads made before this was recorded. */
+    val activeMs: Long = 0L
 ) {
     /** What the Order sort compares. Moved items carry their own key; the rest keep their id. */
     val orderKey: Long get() = if (listOrder > 0L) listOrder else id

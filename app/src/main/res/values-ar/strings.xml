@@ -567,4 +567,5 @@
     <string name="help_email_body">اكتب تحت ما فعلته وما توقعته وما حدث. لقطة الشاشة تساعد.\n\n--- اكتب هنا ---\n\n\n--- تفاصيل الجهاز (يمكنك تعديل هذه الأسطر أو حذفها قبل الإرسال) ---\nالتطبيق: Benzoloader\nالمطوّر: Khaled Hassan\n</string>
     <string name="menu_select">تحديد</string>
     <string name="qp_single_list">قائمة واحدة</string>
+    <string name="menu_properties">الخصائص</string>
 </resources>
