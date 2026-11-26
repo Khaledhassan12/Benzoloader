@@ -105,6 +105,7 @@ class QuickPanel(
     fun refresh() = renderSections()
 
     private fun renderSections() {
+        graph.visibility = if (settings.quickGraphVisible) VISIBLE else GONE
         body.removeAllViews()
         section(Section.DOWNLOADING, R.string.qp_downloading) {
             valueRow(R.string.qp_folder, settings.defaultDownloadPath.ifEmpty { context.getString(R.string.qp_default_folder) }) { onOpenSettings() }
@@ -112,6 +113,14 @@ class QuickPanel(
             sliderRow(R.string.qp_threads, 1, 16, settings.defaultThreadsCount, { "$it" }) { settings.defaultThreadsCount = it }
             sliderRow(R.string.qp_speed, 0, 10240, settings.speedLimitKBps, { if (it == 0) context.getString(R.string.qp_speed_max) else "$it KB/s" }, 64) { settings.speedLimitKBps = it }
             switchRow(R.string.qp_auto_resume, settings.autoResume) { settings.autoResume = it }
+            val labels = arrayOf(context.getString(R.string.after_finish_nothing), context.getString(R.string.after_finish_exit))
+            valueRow(R.string.row_after_finish, labels[settings.afterFinish.coerceIn(0, 1)]) {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.row_after_finish)
+                    .setSingleChoiceItems(labels, settings.afterFinish.coerceIn(0, 1)) { dlg, which -> settings.afterFinish = which; dlg.dismiss(); renderSections(); onChanged() }
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .show()
+            }
         }
         section(Section.TORRENT, R.string.qp_torrent) {
             switchRow(R.string.qp_sequential, settings.torrentSequential) { settings.torrentSequential = it }
@@ -149,7 +158,18 @@ class QuickPanel(
             isClickable = true
             setOnClickListener { if (!open.add(which)) open.remove(which); renderSections() }
         }
-        body.addView(header)
+        if (which == Section.DOWNLOADING) {
+            // OBSERVED (video 3): a chart icon in this header shows or hides the graph. The icon here is a stock placeholder, not a match.
+            val row = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
+            row.addView(header, LayoutParams(0, -2, 1f))
+            row.addView(android.widget.ImageButton(context).apply {
+                setImageResource(android.R.drawable.ic_menu_sort_by_size)
+                setBackgroundResource(android.R.color.transparent)
+                contentDescription = context.getString(R.string.qp_graph_toggle)
+                setOnClickListener { settings.quickGraphVisible = !settings.quickGraphVisible; renderSections() }
+            }, LayoutParams(dp(48), dp(48)))
+            body.addView(row)
+        } else body.addView(header)
         if (which in open) rows()
     }
 

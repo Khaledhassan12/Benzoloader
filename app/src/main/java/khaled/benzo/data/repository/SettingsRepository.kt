@@ -247,6 +247,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_SWAP_MENUS, false)
         set(value) = prefs.edit().putBoolean(KEY_SWAP_MENUS, value).apply()
 
+    /** Speed graph at the top of the quick panel. Default shown; the default is my choice, the reference default was not seen. */
+    var quickGraphVisible: Boolean
+        get() = prefs.getBoolean("quick_graph_visible", true)
+        set(value) = prefs.edit().putBoolean("quick_graph_visible", value).apply()
+
     var bottomBar: Boolean
         get() = prefs.getBoolean(KEY_BOTTOM_BAR, true)
         set(value) = prefs.edit().putBoolean(KEY_BOTTOM_BAR, value).apply()
