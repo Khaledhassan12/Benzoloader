@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `ae3fc64` (26 Nov 08:00, panel Options and Tools rows; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `85899b9` (26 Nov 08:25, quick panel eye editor; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `85899b9` | 26 Nov 08:25 | Quick panel eye editor: checkboxes beside rows, hidden rows saved; PanelVisibility + tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `ae3fc64` | 26 Nov 08:00 | Quick panel: Exit after finishing as an Options switch (moved from a Downloading value row), Tools Export/Import list entries | WRITTEN, UNBUILT (never compiled or run) |
 | `5f1f0d8` | 26 Nov 07:40 | Quick panel Interface: Theme row (system, light, dark) | WRITTEN, UNBUILT (never compiled or run) |
 | `2a9fa0e` | 26 Nov 07:20 | Top window colour rows: cross reset while differing from default, separate square | WRITTEN, UNBUILT (never compiled or run) |
@@ -331,6 +332,10 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 ### Quick panel Options and Tools rows (written, unbuilt, unrendered)
 - OBSERVED (video 3 part 2): Options section holds Exit after finishing as a switch; Tools holds Export downloads in txt file and Import downloads from txt file. My 06:11 value row in Downloading was misplaced, so it is removed. The new switch writes the same after-finishing setting as Settings (on = exit).
 - Tools entries call the same main-menu actions: export opens our export dialog (the four-entry interim dialog, not a txt-only export) and import opens the list import. Labels say "download list" because our export is not txt-only; difference from the reference label is open. Remaining panel rows: eye editor, Smart download, Download torrents, pop-up and icon switches, App section (About, Send feedback, Rate, Privacy policy: destinations and wording unseen/unowned). Not rendered.
+
+### Quick panel eye editor (written, unbuilt, unrendered)
+- OBSERVED (video 3 part 1): the eye icon in a section header shows a checkbox beside every row, and unticking changes which rows show. Built: eye button in the Downloading header (stock placeholder icon) toggles edit mode; every row gets a checkbox ticked while shown; unticked rows disappear outside edit mode. Row keys are the row title resource names. Stored in `quick_panel_hidden`; saved across leaving edit mode is my choice (reference persistence NOT SEEN).
+- The eye is only in the Downloading header (reference may show it per section, UNCLEAR). Hidden keys are not in the settings backup yet (GAP). Order-of-init risk handled: knownKeys and editing are declared before the init block that draws. Not rendered.
 
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.
