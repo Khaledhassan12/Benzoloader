@@ -84,4 +84,10 @@ class SettingsBackupTest {
         assertEquals(true, r.accepted["quick_graph_visible"])
         assertEquals(1, B.parse(B.MAGIC + "\ncreate_empty_file=maybe\n").invalid)
     }
+
+    /** WRITTEN, NOT RUN. */
+    @Test fun hiddenPanelRowsAreTextWithSafeCharactersOnly() {
+        assertEquals("qp_wifi_only,qp_theme", B.parse(B.MAGIC + "\nquick_panel_hidden=qp_wifi_only,qp_theme\n").accepted["quick_panel_hidden"])
+        assertEquals(1, B.parse(B.MAGIC + "\nquick_panel_hidden=bad value!\n").invalid)
+    }
 }

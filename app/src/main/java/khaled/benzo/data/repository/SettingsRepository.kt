@@ -259,8 +259,8 @@ class SettingsRepository(context: Context) {
 
     /** Quick-panel rows hidden with the eye editor (string keys). */
     var quickPanelHidden: Set<String>
-        get() = prefs.getStringSet("quick_panel_hidden", emptySet()) ?: emptySet()
-        set(value) = prefs.edit().putStringSet("quick_panel_hidden", value.toSet()).apply()
+        get() = (prefs.getString("quick_panel_hidden", "") ?: "").split(',').filter { it.isNotEmpty() }.toSet()
+        set(value) = prefs.edit().putString("quick_panel_hidden", value.sorted().joinToString(",")).apply()
 
     var bottomBar: Boolean
         get() = prefs.getBoolean(KEY_BOTTOM_BAR, true)
@@ -313,6 +313,7 @@ class SettingsRepository(context: Context) {
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
         "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible,
+        "quick_panel_hidden" to quickPanelHidden.sorted().joinToString(","),
         "top_window_enabled" to topWindowEnabled, "top_window_stats" to topWindowStatsMask,
         "top_window_text_color" to topWindowTextColor, "top_window_bg_color" to topWindowBackgroundColor,
         "top_window_bar_color" to topWindowBarColor, "top_window_opacity" to topWindowOpacityPercent,

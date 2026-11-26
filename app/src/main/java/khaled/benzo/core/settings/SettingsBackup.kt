@@ -65,6 +65,8 @@ object SettingsBackup {
         "bottom_bar" to Spec.Bool,
         "create_empty_file" to Spec.Bool,
         "quick_graph_visible" to Spec.Bool,
+        // Comma list of panel row keys (resource names). Unknown keys are harmless: the panel ignores keys it does not have.
+        "quick_panel_hidden" to Spec.Text(600) { s -> s.all { it in 'a'..'z' || it in '0'..'9' || it == '_' || it == ',' } },
         "theme_color" to Spec.IntRange(0, 4, 1),
         "theme_mode" to Spec.IntRange(0, 2, 1),
         "download_path" to Spec.Text(512) { isPlausiblePath(it) },
