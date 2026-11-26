@@ -335,6 +335,9 @@
     <string name="panel_category">Category</string>
     <string name="panel_status">Status</string>
     <string name="panel_time">Time</string>
+    <string name="apply_sort_title">Apply sorting?</string>
+    <string name="apply_sort_message">The list order becomes the order shown now. This also decides which waiting download starts first.</string>
+    <string name="apply_sort_saved">Saved</string>
     <string name="panel_sorting">Sorting</string>
     <string name="panel_clear">Clear</string>
     <string name="panel_stopped">Stopped</string>

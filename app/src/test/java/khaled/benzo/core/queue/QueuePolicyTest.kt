@@ -16,6 +16,16 @@ class QueuePolicyTest {
         assertEquals(listOf(1L, 2L), QueuePolicy.nextToStart(q, ok).map { it.id })
         assertEquals(listOf(3L, 2L), QueuePolicy.nextToStart(q, ok, newestFirst = true).map { it.id })
     }
+    /** WRITTEN, NOT RUN: a hand move (a new list order key) changes which waiting item starts first. */
+    @Test fun handOrderDrivesStartOrder() {
+        val q = listOf(it(1).copy(listOrder = 30), it(2).copy(listOrder = 10), it(3).copy(listOrder = 20))
+        assertEquals(listOf(2L, 3L), QueuePolicy.nextToStart(q, ok).map { it.id })
+        assertEquals(listOf(1L, 3L), QueuePolicy.nextToStart(q, ok, newestFirst = true).map { it.id })
+    }
+    @Test fun unmovedItemsStillStartOldestFirst() {
+        val q = listOf(it(3), it(1), it(2))
+        assertEquals(listOf(1L, 2L), QueuePolicy.nextToStart(q, ok).map { it.id })
+    }
     @Test fun startsWhenAllConditionsMet() = assertEquals(BlockReason.NONE, QueuePolicy.blockReason(it(1), ok))
     @Test fun noNetworkBlocks() = assertEquals(BlockReason.NO_NETWORK, QueuePolicy.blockReason(it(1), ok.copy(networkAvailable = false)))
     @Test fun perItemWifiOnlyWaitsOnMobileData() = assertEquals(BlockReason.WAITING_FOR_WIFI, QueuePolicy.blockReason(it(1, wifi = true), ok.copy(onWifi = false)))

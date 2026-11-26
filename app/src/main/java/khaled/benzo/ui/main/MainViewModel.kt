@@ -89,6 +89,23 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch { repository.setListOrders(keys) }
     }
 
+    /** True while a sort other than Order is shown: the only time the reference shows the apply icon (OBSERVED). */
+    fun canApplySort() = _state.value.sort != SortKey.ORDER
+
+    /** Stores what the current sort shows as the list order, over ALL items (filters ignored), then shows the Order sort, descending. */
+    fun applySortAsOrder() {
+        val st = _state.value
+        if (st.sort == SortKey.ORDER) return
+        val all = allItems.value
+        val orderScreen = khaled.benzo.core.queue.ListLogic.apply(all, StatusFilter.ALL, "", SortKey.ORDER, false).map { it.id }
+        val sortedScreen = khaled.benzo.core.queue.ListLogic.apply(all, StatusFilter.ALL, "", st.sort, st.ascending).map { it.id }
+        val keys = khaled.benzo.core.queue.OrderMoves.applySorted(orderScreen, sortedScreen, all.associate { it.id to it.orderKey })
+        viewModelScope.launch {
+            if (keys.isNotEmpty()) repository.setListOrders(keys)
+            _state.update { it.withSortDirection(SortKey.ORDER, false) }
+        }
+    }
+
     fun setOrderSort() = _state.update { it.withSortDirection(SortKey.ORDER, false) }
     fun isOrderSort() = _state.value.sort == SortKey.ORDER
 

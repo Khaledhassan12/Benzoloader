@@ -41,4 +41,13 @@ object OrderMoves {
         byRank.forEachIndexed { i, id -> if (keyOf.getValue(id) != strict[i]) out[id] = strict[i] }
         return out
     }
+
+    /**
+     * "Apply sorting": store the order the current sort shows as the list order. INFERRED from the reference (video 2 dense
+     * frames: after OK the Order (down) row is selected and the list keeps the order the sort produced); not seen to be stored.
+     * [orderScreen] is the full list in the Order sort, descending (the Order (down) screen), [sortedScreen] the full list as
+     * the chosen sort shows it. Returns only the changed keys.
+     */
+    fun applySorted(orderScreen: List<Long>, sortedScreen: List<Long>, keyOf: Map<Long, Long>): Map<Long, Long> =
+        newKeys(orderScreen, sortedScreen, keyOf, ascending = false)
 }

@@ -28,7 +28,8 @@ class FilterPanel(
     private val onStatus: (StatusFilter) -> Unit,
     private val onTime: (TimeFilter) -> Unit,
     private val onSort: (SortKey, Boolean) -> Unit,
-    private val onClear: () -> Unit
+    private val onClear: () -> Unit,
+    private val onApplySort: () -> Unit = {}
 ) : LinearLayout(context) {
 
     private enum class Section { CATEGORY, STATUS, TIME, SORTING }
@@ -67,6 +68,14 @@ class FilterPanel(
             header.addView(TextView(context).apply {
                 setText(R.string.panel_clear); setPadding(dp(12), dp(8), dp(12), dp(8))
                 setTextColor(accent()); setOnClickListener { onClear() }
+            })
+        }
+        if (which == Section.SORTING && state.sort != SortKey.ORDER) {
+            // OBSERVED: a refresh-style mark on the Sorting header, only while a sort other than Order is chosen. Placeholder glyph.
+            header.addView(TextView(context).apply {
+                text = "\u21BB"; textSize = 20f; setPadding(dp(12), dp(8), dp(12), dp(8)); setTextColor(accent())
+                contentDescription = context.getString(R.string.apply_sort_title)
+                setOnClickListener { onApplySort() }
             })
         }
         header.addView(TextView(context).apply { text = if (which in open) "\u25B4" else "\u25BE"; textSize = 18f })

@@ -59,4 +59,13 @@ class OrderMovesTest {
         assertEquals(7L, DownloadItem(id = 7, url = "u", fileName = "f", savePath = "/p").orderKey)
         assertEquals(99L, DownloadItem(id = 7, url = "u", fileName = "f", savePath = "/p", listOrder = 99).orderKey)
     }
+
+    /** WRITTEN, NOT RUN: applying a sort hands the same keys out again so that the Order (down) screen matches the sort. */
+    @Test fun applySortedMakesOrderScreenMatchTheSort() {
+        val keys = mapOf(1L to 1L, 2L to 2L, 3L to 3L)
+        val changed = OrderMoves.applySorted(listOf(3L, 2L, 1L), listOf(1L, 3L, 2L), keys)
+        assertEquals(mapOf(1L to 3L, 2L to 1L, 3L to 2L), changed)
+    }
+    @Test fun applySortedWithTheSameOrderChangesNothing() =
+        assertTrue(OrderMoves.applySorted(listOf(3L, 2L, 1L), listOf(3L, 2L, 1L), mapOf(1L to 1L, 2L to 2L, 3L to 3L)).isEmpty())
 }

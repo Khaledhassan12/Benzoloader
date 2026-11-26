@@ -124,7 +124,16 @@ class MainActivity : AppCompatActivity() {
             onStatus = { viewModel.setStatusOnly(it) },
             onTime = { viewModel.setTime(it) },
             onSort = { key, asc -> viewModel.setSortDirection(key, asc) },
-            onClear = { viewModel.clearFilters() }
+            onClear = { viewModel.clearFilters() },
+            onApplySort = {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.apply_sort_title).setMessage(R.string.apply_sort_message)
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        viewModel.applySortAsOrder()
+                        android.widget.Toast.makeText(this, R.string.apply_sort_saved, android.widget.Toast.LENGTH_SHORT).show()
+                    }.show()
+            }
         )
         binding.filterPanelHost.addView(filterPanel)
         lifecycleScope.launch {

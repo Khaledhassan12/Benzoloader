@@ -65,11 +65,16 @@ object QueuePolicy {
     fun restartBelowOrAt(threshold: Int): Int =
         if (threshold >= 99) threshold else minOf(threshold + LOW_BATTERY_RESUME_MARGIN, 99)
 
-    /** Next queued items to start, oldest first (or newest first when [newestFirst], the "add to top" choice), respecting every rule and the concurrency limit. */
+    /**
+     * Next queued items to start, respecting every rule and the concurrency limit. Order: the list order key, smaller first
+     * (the key is the item id until the user moves items by hand, so an unmoved list still starts oldest first), reversed
+     * when [newestFirst]. USER-STATED (Khaled, 26 Nov 09:35): moving an item changes the START order, so hand moves count here.
+     * UNCLEAR: which screen end starts first. With newest on top (the default display) the bottom starts first.
+     */
     fun nextToStart(queued: List<DownloadItem>, c: Conditions, newestFirst: Boolean = false): List<DownloadItem> {
         var active = c.activeCount
         val out = mutableListOf<DownloadItem>()
-        val waiting = queued.filter { it.status == DownloadStatus.QUEUED }.sortedBy { it.createdDate }
+        val waiting = queued.filter { it.status == DownloadStatus.QUEUED }.sortedWith(compareBy({ it.orderKey }, { it.createdDate }, { it.id }))
         for (item in if (newestFirst) waiting.reversed() else waiting) {
             val r = blockReason(item, c.copy(activeCount = active))
             if (r == BlockReason.NONE) { out.add(item); active++ }
