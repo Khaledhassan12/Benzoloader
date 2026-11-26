@@ -72,13 +72,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setSort(key: SortKey) = _state.update { it.withSort(key) }
 
-    /** Applies a hand move to the displayed items and stores new order keys. Only meaningful in the Order sort (the screen checks). */
+    /**
+     * Applies a hand move to the displayed items and stores new order keys. Only meaningful in the Order sort (the screen checks).
+     * The keys are worked out over ALL items, with hidden (filtered-out) items keeping their exact slots, so a move under a
+     * filter cannot change or tie anything outside the filter.
+     */
     fun moveItems(shown: List<DownloadItem>, selected: Set<Long>, move: khaled.benzo.core.queue.OrderMoves.Move) {
         val ascending = _state.value.ascending
-        val before = shown.map { it.id }
-        val after = khaled.benzo.core.queue.OrderMoves.move(before, selected, move)
-        if (after == before) return
-        val keys = khaled.benzo.core.queue.OrderMoves.newKeys(before, after, shown.associate { it.id to it.orderKey }, ascending)
+        val all = allItems.value
+        val full = khaled.benzo.core.queue.ListLogic.apply(all, StatusFilter.ALL, "", SortKey.ORDER, ascending).map { it.id }
+        val subsetBefore = shown.map { it.id }
+        val subsetAfter = khaled.benzo.core.queue.OrderMoves.move(subsetBefore, selected, move)
+        if (subsetAfter == subsetBefore) return
+        val fullAfter = khaled.benzo.core.queue.OrderMoves.splice(full, subsetBefore, subsetAfter)
+        val keys = khaled.benzo.core.queue.OrderMoves.newKeys(full, fullAfter, all.associate { it.id to it.orderKey }, ascending)
         viewModelScope.launch { repository.setListOrders(keys) }
     }
 

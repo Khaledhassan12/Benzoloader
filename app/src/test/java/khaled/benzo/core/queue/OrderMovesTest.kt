@@ -40,6 +40,21 @@ class OrderMovesTest {
         val nk = OrderMoves.newKeys(listOf(1L, 2L), listOf(2L, 1L), mapOf(1L to 5L, 2L to 5L), ascending = true)
         assertEquals(2, nk.size); assertNotEquals(nk[1L], nk[2L]); assertTrue(nk.getValue(2L) < nk.getValue(1L))
     }
+    @Test fun spliceKeepsHiddenItemsInTheirSlots() {
+        val full = listOf(1L, 2L, 3L, 4L, 5L)
+        val subsetBefore = listOf(2L, 4L, 5L)                       // 1 and 3 are filtered out
+        val subsetAfter = OrderMoves.move(subsetBefore, setOf(5L), Move.TOP)   // 5,2,4
+        assertEquals(listOf(1L, 5L, 3L, 2L, 4L), OrderMoves.splice(full, subsetBefore, subsetAfter))
+    }
+    @Test fun filteredMoveNeverTiesOrChangesHiddenItems() {
+        val keys = mapOf(1L to 5L, 2L to 5L, 3L to 5L, 4L to 9L)          // ties, including a hidden item
+        val full = listOf(1L, 2L, 3L, 4L)
+        val after = OrderMoves.splice(full, listOf(2L, 3L), OrderMoves.move(listOf(2L, 3L), setOf(3L), Move.UP))
+        val nk = OrderMoves.newKeys(full, after, keys, ascending = true)
+        val merged = keys + nk
+        assertEquals("every key distinct", 4, merged.values.toSet().size)
+        assertEquals("hidden items keep their slots", listOf(1L, 3L, 2L, 4L), merged.entries.sortedBy { it.value }.map { it.key })
+    }
     @Test fun orderKeyUsesIdUntilMoved() {
         assertEquals(7L, DownloadItem(id = 7, url = "u", fileName = "f", savePath = "/p").orderKey)
         assertEquals(99L, DownloadItem(id = 7, url = "u", fileName = "f", savePath = "/p", listOrder = 99).orderKey)

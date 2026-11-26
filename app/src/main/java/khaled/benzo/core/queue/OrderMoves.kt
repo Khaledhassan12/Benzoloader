@@ -17,10 +17,20 @@ object OrderMoves {
     }
 
     /**
+     * Puts a moved subset back into the full list. Hidden items keep their exact slots; the subset's items fill the slots the
+     * subset occupied, in their new order. This is how a move under a filter leaves everything outside the filter alone.
+     */
+    fun splice(fullBefore: List<Long>, subsetBefore: List<Long>, subsetAfter: List<Long>): List<Long> {
+        require(subsetBefore.toSet() == subsetAfter.toSet() && subsetBefore.size == subsetAfter.size) { "subset changed" }
+        val inSubset = subsetBefore.toHashSet(); val it = subsetAfter.iterator()
+        return fullBefore.map { id -> if (id in inSubset) it.next() else id }
+    }
+
+    /**
      * New order keys for the displayed items. The same set of keys is handed out again in the new order, so keys stay in
      * their old range (a new download still lands where it did). Keys are made strictly increasing. Returns only the changed ones.
      * [ascending] is how the screen is sorted: true = smaller key higher on the screen.
-     * Limit: with a filter active, a hidden item can share a key with a shown one; its relative place then follows id order.
+     * Pass the FULL list (every item), never a filtered one, so no hidden item can end up with the same key as a shown one.
      */
     fun newKeys(screenBefore: List<Long>, screenAfter: List<Long>, keyOf: Map<Long, Long>, ascending: Boolean): Map<Long, Long> {
         val sorted = screenBefore.map { keyOf.getValue(it) }.sorted()
