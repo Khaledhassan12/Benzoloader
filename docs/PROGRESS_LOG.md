@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `2a9fa0e` (26 Nov 07:20, Top window colour cross; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `5f1f0d8` (26 Nov 07:40, quick panel Theme row; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `5f1f0d8` | 26 Nov 07:40 | Quick panel Interface: Theme row (system, light, dark) | WRITTEN, UNBUILT (never compiled or run) |
 | `2a9fa0e` | 26 Nov 07:20 | Top window colour rows: cross reset while differing from default, separate square | WRITTEN, UNBUILT (never compiled or run) |
 | `7fed3a2` | 26 Nov 07:00 | Shared colour picker dialog, ColorMath, Top window colour rows use it, tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `209fd9d` | 26 Nov 06:40 | Settings backup: create_empty_file and quick_graph_visible added, test | WRITTEN, TESTS WRITTEN, UNBUILT |
@@ -322,6 +323,9 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 - Built: `ColorPickerDialog` (own drawing code: square, hue bar, alpha slider, live hex box, swatches), `ColorMath` (HSV and AARRGGBB maths, hex parse and format) with `ColorMathTest` (written, not run). Top window colour rows now use it, replacing the hex-only box.
 - NOT SEEN: what the reference Presets opens. Mine lists "Default" (replaces the old Reset button) and a 12-colour palette of my own choice. A half-typed hex value is not applied: OK shows an error and stays open (my choice).
 - Cross reset added at 07:20 (commit 2a9fa0e): shown only while the value differs from OUR default, which is a held decision (Top window factory defaults); in the capture the text row showed no cross, ours would show one until the defaults are settled. Not rendered. Still NOT DONE: the Interface colour rows (Accent, filename, information, progress colours) still need the "Individual settings" gate and the theme plumbing before they can use this picker (OPEN, theme ownership). Not rendered: touch handling, sizes and the look of the dialog are unchecked.
+
+### Quick panel Theme row (written, unbuilt, unrendered)
+- The panel Interface section gets a Theme value row (System, Light, Dark) that writes the same `theme_mode` as Settings > Interface and applies the night mode at once. Reference showed a Theme value on its Interface screen (OBSERVED, value "dark"); whether the reference panel carries this row is INFERRED from the earlier gap list. Material You switch NOT added: what switching it off means (which colour source) is not seen, and a guess would be a made-up semantic. Remaining panel rows: eye editor, Smart download, Download torrents, pop-up/icon switches, Export/Import entries, App section. Reference factory defaults stay an evidence gap, not a question for Khaled (Main, 07:12).
 
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.
