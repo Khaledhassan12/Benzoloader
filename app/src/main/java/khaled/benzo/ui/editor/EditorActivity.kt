@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import android.widget.Toast
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -71,7 +72,13 @@ class EditorActivity : AppCompatActivity() {
     private var probeJob: kotlinx.coroutines.Job? = null
     private var nameEditedByUser = false
     private var settingNameFromCode = false
-    private val probeEngine by lazy { khaled.benzo.core.download.DownloadEngine() }
+    /** Short timeouts so a slow or odd server cannot hold the form. Only headers are read: the response body is never read, even when the server ignores Range. */
+    private val probeEngine by lazy {
+        khaled.benzo.core.download.DownloadEngine(
+            khaled.benzo.core.download.DownloadEngine.createDefaultClient().newBuilder()
+                .connectTimeout(8, java.util.concurrent.TimeUnit.SECONDS).readTimeout(8, java.util.concurrent.TimeUnit.SECONDS)
+                .callTimeout(10, java.util.concurrent.TimeUnit.SECONDS).build())
+    }
 
     /**
      * When the link changes, wait a moment, then ask the server for size and suggested name (one small ranged request, no
@@ -91,16 +98,31 @@ class EditorActivity : AppCompatActivity() {
         scheduleProbe(binding.edtUrl.text.toString().trim())
     }
 
-    private fun scheduleProbe(url: String) {
+    private val probeGate = khaled.benzo.core.queue.ProbeGate()
+
+    private fun scheduleProbe(url: String, force: Boolean = false) {
+        if (!(url.startsWith("http://", true) || url.startsWith("https://", true))) {
+            probeJob?.cancel(); binding.txtSizeLabel.text = ""; return
+        }
+        if (!probeGate.begin(url, force)) return
         probeJob?.cancel()
-        if (!(url.startsWith("http://", true) || url.startsWith("https://", true))) { binding.txtSizeLabel.text = ""; return }
         binding.txtSizeLabel.setText(R.string.editor_size_checking)
         probeJob = androidx.lifecycle.lifecycleScope.launch {
             kotlinx.coroutines.delay(700)
+            // Same network rules as the download itself: no request on no network or when a Wi-Fi-only rule is not met.
+            val cond = khaled.benzo.service.DeviceConditions(this@EditorActivity, viewModel.settingsRepository).read(0)
+            when (khaled.benzo.core.queue.ProbePolicy.decide(cond.networkAvailable, cond.onWifi, binding.chkWifiOnly.isChecked, cond.globalWifiOnly)) {
+                khaled.benzo.core.queue.ProbePolicy.Decision.NO_NETWORK -> { binding.txtSizeLabel.setText(R.string.editor_size_no_network); return@launch }
+                khaled.benzo.core.queue.ProbePolicy.Decision.WAITING_FOR_WIFI -> { binding.txtSizeLabel.setText(R.string.editor_size_wifi); return@launch }
+                else -> {}
+            }
             val ua = viewModel.settingsRepository.defaultUserAgent
             val headers = HashMap<String, String>()
             if (ua.isNotEmpty()) headers["User-Agent"] = ua
-            val info = runCatching { probeEngine.checkServer(url, headers) }.getOrNull()
+            val info = try { probeEngine.checkServer(url, headers) } catch (e: kotlinx.coroutines.CancellationException) { throw e } catch (e: Exception) { null }
+            // A newer link may have replaced this one while the request ran: drop the result then.
+            ensureActive()
+            if (!probeGate.isCurrent(url, binding.edtUrl.text.toString())) return@launch
             if (info == null) { binding.txtSizeLabel.setText(R.string.editor_size_unknown); return@launch }
             binding.txtSizeLabel.text = if (info.contentLength > 0)
                 getString(R.string.editor_size_value, khaled.benzo.core.download.SpeedTracker.formatSize(info.contentLength))
@@ -168,6 +190,7 @@ class EditorActivity : AppCompatActivity() {
             binding.txtThreadsValue.text = value.toInt().toString()
         }
 
+        binding.chkWifiOnly.setOnCheckedChangeListener { _, _ -> scheduleProbe(binding.edtUrl.text.toString().trim(), force = true) }
         binding.sliderItemSpeed.addOnChangeListener { _, v, _ ->
             binding.txtItemSpeedValue.text = if (v.toInt() == 0) getString(R.string.editor_speed_global) else "${v.toInt()} KB/s"
         }

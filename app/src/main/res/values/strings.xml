@@ -392,4 +392,6 @@
     <string name="editor_size_checking">Checking size…</string>
     <string name="editor_size_unknown">Size unknown</string>
     <string name="editor_size_value">Size: %1$s</string>
+    <string name="editor_size_no_network">Size not checked: no network</string>
+    <string name="editor_size_wifi">Size not checked until Wi-Fi is available</string>
 </resources>
