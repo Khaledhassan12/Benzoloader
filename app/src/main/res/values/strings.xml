@@ -430,4 +430,20 @@
     <string name="sel_invert">Invert selection</string>
     <string name="sel_delete_title">Delete downloads?</string>
     <string name="sel_delete_msg">%1$d selected download(s) will be removed from the list. This is the same removal as the row menu.</string>
+    <string name="prop_visibility">Choose visible fields</string>
+    <string name="prop_name">Name</string>
+    <string name="prop_category">Category</string>
+    <string name="prop_path">Folder</string>
+    <string name="prop_url">Link</string>
+    <string name="prop_size">Size</string>
+    <string name="prop_downloaded">Downloaded</string>
+    <string name="prop_speed">Speed</string>
+    <string name="prop_message">Message</string>
+    <string name="prop_threads">Connections</string>
+    <string name="prop_limit">Speed limit</string>
+    <string name="prop_checksum">Expected checksum</string>
+    <string name="prop_created">Added</string>
+    <string name="prop_finished">Finished</string>
+    <string name="prop_hash">Torrent hash</string>
+    <string name="prop_agent">User agent</string>
 </resources>

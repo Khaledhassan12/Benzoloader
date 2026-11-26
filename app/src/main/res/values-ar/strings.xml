@@ -430,4 +430,20 @@
     <string name="sel_invert">عكس التحديد</string>
     <string name="sel_delete_title">حذف التحميلات؟</string>
     <string name="sel_delete_msg">سيتم حذف %1$d تحميل محدد من القائمة، بنفس طريقة حذف الصف من قائمته.</string>
+    <string name="prop_visibility">اختيار الحقول الظاهرة</string>
+    <string name="prop_name">الاسم</string>
+    <string name="prop_category">التصنيف</string>
+    <string name="prop_path">المجلد</string>
+    <string name="prop_url">الرابط</string>
+    <string name="prop_size">الحجم</string>
+    <string name="prop_downloaded">تم تنزيله</string>
+    <string name="prop_speed">السرعة</string>
+    <string name="prop_message">الرسالة</string>
+    <string name="prop_threads">الاتصالات</string>
+    <string name="prop_limit">حد السرعة</string>
+    <string name="prop_checksum">المجموع المتوقع</string>
+    <string name="prop_created">وقت الإضافة</string>
+    <string name="prop_finished">وقت الانتهاء</string>
+    <string name="prop_hash">بصمة التورنت</string>
+    <string name="prop_agent">معرّف المتصفح</string>
 </resources>

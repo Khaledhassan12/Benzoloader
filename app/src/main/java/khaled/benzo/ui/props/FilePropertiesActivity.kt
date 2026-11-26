@@ -11,6 +11,39 @@ import kotlinx.coroutines.launch
 class FilePropertiesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFilePropertiesBinding
+    private var rows: List<PropRow> = emptyList()
+    private var editing = false
+    private val prefs by lazy { getSharedPreferences("properties_ui", MODE_PRIVATE) }
+    private fun hidden(): Set<String> = prefs.getStringSet("hidden", emptySet()) ?: emptySet()
+
+    private fun label(key: String): String = getString(when (key) {
+        "name" -> R.string.prop_name; "category" -> R.string.prop_category; "path" -> R.string.prop_path
+        "url" -> R.string.prop_url; "size" -> R.string.prop_size; "downloaded" -> R.string.prop_downloaded
+        "speed" -> R.string.prop_speed; "message" -> R.string.prop_message; "threads" -> R.string.prop_threads
+        "limit" -> R.string.prop_limit; "checksum" -> R.string.prop_checksum; "created" -> R.string.prop_created
+        "finished" -> R.string.prop_finished; "hash" -> R.string.prop_hash; else -> R.string.prop_agent })
+
+    /** Eye mode shows a checkbox beside every row. Unchecked rows are hidden on this screen; the choice is kept on the device. */
+    private fun renderRows() {
+        val box = binding.propRows; box.removeAllViews()
+        val hide = hidden()
+        val shown = if (editing) rows else PropertyRows.visible(rows, hide)
+        val dp = resources.displayMetrics.density
+        for (r in shown) {
+            val line = android.widget.LinearLayout(this).apply { orientation = android.widget.LinearLayout.HORIZONTAL; setPadding(0, (6 * dp).toInt(), 0, (6 * dp).toInt()) }
+            if (editing) line.addView(android.widget.CheckBox(this).apply {
+                isChecked = r.key !in hide
+                setOnCheckedChangeListener { _, on ->
+                    val now = hidden().toMutableSet(); if (on) now.remove(r.key) else now.add(r.key)
+                    prefs.edit().putStringSet("hidden", now).apply()
+                }
+            })
+            val col = android.widget.LinearLayout(this).apply { orientation = android.widget.LinearLayout.VERTICAL }
+            col.addView(android.widget.TextView(this).apply { text = label(r.key); textSize = 12f; alpha = 0.7f })
+            col.addView(android.widget.TextView(this).apply { text = r.value; textSize = 15f; setTextIsSelectable(true) })
+            line.addView(col); box.addView(line)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,11 +56,9 @@ class FilePropertiesActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 val item = repository.getDownload(downloadId)
                 if (item != null) {
-                    binding.txtPropFileName.text = item.fileName
-                    binding.txtPropUrl.text = "URL: ${item.url}"
-                    binding.txtPropPath.text = "Path: ${item.savePath}/${item.fileName}"
-                    binding.txtPropSize.text = "Size: ${item.downloadedBytes} / ${if (item.totalBytes > 0) item.totalBytes else "Unknown"} bytes"
-                    binding.txtPropParts.text = "Threads: ${item.parts}"
+                    rows = PropertyRows.build(item, { khaled.benzo.core.download.SpeedTracker.formatSize(it) },
+                        { java.text.DateFormat.getDateTimeInstance().format(java.util.Date(it)) })
+                    renderRows()
                     val hash = item.torrentInfoHash
                     if (item.isTorrent && hash != null) {
                         binding.btnTrackers.visibility = android.view.View.VISIBLE
@@ -37,6 +68,7 @@ class FilePropertiesActivity : AppCompatActivity() {
             }
         }
 
+        binding.btnPropVisibility.setOnClickListener { editing = !editing; renderRows() }
         binding.btnCloseProperties.setOnClickListener {
             finish()
         }

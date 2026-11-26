@@ -1,62 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_properties"
-        android:textAppearance="?attr/textAppearanceTitleLarge"
-        android:textStyle="bold" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/txtPropFileName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:textAppearance="?attr/textAppearanceBodyLarge"
-        android:textStyle="bold"
-        tools:text="sample_archive.zip" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/action_properties"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/txtPropUrl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="?android:textColorSecondary"
-        tools:text="URL: https://example.com/file.zip" />
+        <ImageButton
+            android:id="@+id/btnPropVisibility"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/prop_visibility"
+            android:src="@drawable/ic_visibility" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/txtPropPath"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="?android:textColorSecondary"
-        tools:text="Path: /storage/emulated/0/Download/file.zip" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/txtPropSize"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="?android:textColorSecondary"
-        tools:text="Size: 154,204,180 bytes (147.06 MB)" />
-
-    <TextView
-        android:id="@+id/txtPropParts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="?android:textColorSecondary"
-        tools:text="Threads: 8 · Range: Supported" />
+        <LinearLayout
+            android:id="@+id/propRows"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnTrackers"
