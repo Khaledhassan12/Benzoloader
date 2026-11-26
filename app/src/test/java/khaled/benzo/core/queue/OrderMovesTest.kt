@@ -38,7 +38,8 @@ class OrderMovesTest {
     }
     @Test fun tiedKeysBecomeDistinct() {
         val nk = OrderMoves.newKeys(listOf(1L, 2L), listOf(2L, 1L), mapOf(1L to 5L, 2L to 5L), ascending = true)
-        assertEquals(2, nk.size); assertNotEquals(nk[1L], nk[2L]); assertTrue(nk.getValue(2L) < nk.getValue(1L))
+        val eff = mapOf(1L to 5L, 2L to 5L) + nk   // only changed keys come back
+        assertNotEquals(eff[1L], eff[2L]); assertTrue(eff.getValue(2L) < eff.getValue(1L))
     }
     @Test fun spliceKeepsHiddenItemsInTheirSlots() {
         val full = listOf(1L, 2L, 3L, 4L, 5L)

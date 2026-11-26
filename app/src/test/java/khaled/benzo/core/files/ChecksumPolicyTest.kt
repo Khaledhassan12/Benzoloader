@@ -21,7 +21,7 @@ class ChecksumPolicyTest {
         assertEquals(ChecksumPolicy.Result.UNREADABLE, ChecksumPolicy.check(missing, "0".repeat(32)))
     }
     @Test fun matchesEmptyFileMd5() {
-        val f = java.io.File.createTempFile("cs", ".bin")
+        val f = java.io.File.createTempFile("cs_t", ".bin")
         try { assertTrue(ChecksumPolicy.matches(f, "d41d8cd98f00b204e9800998ecf8427e")); assertFalse(ChecksumPolicy.matches(f, "0".repeat(32))) }
         finally { f.delete() }
     }

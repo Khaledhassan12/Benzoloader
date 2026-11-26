@@ -3,6 +3,7 @@ package khaled.benzo.ui.settings
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import khaled.benzo.R
 import khaled.benzo.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
@@ -305,25 +306,24 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupValueRows() {
         val g = { id: Int -> getString(id) }
-        val R = khaled.benzo.R.string
         valueRows = listOf(
-            ValueRow(this, binding.txtMaxDownloads, binding.sliderMaxDownloads, g(R.row_max_downloads), { getString(R.val_count, it) }),
-            ValueRow(this, binding.txtDefaultThreads, binding.sliderDefaultThreads, g(R.row_threads), { getString(R.val_threads, it) }),
-            ValueRow(this, binding.txtMinThread, binding.sliderMinThread, g(R.row_min_thread), { if (it >= 1024) "%.1f MB".format(it / 1024f) else "$it KB" }),
-            ValueRow(this, binding.txtVibSuccess, binding.sliderVibSuccess, g(R.row_vib_success), { getString(R.val_ms, it) }),
-            ValueRow(this, binding.txtVibTotal, binding.sliderVibTotal, g(R.row_vib_total), { getString(R.val_ms, it) }),
-            ValueRow(this, binding.txtVibError, binding.sliderVibError, g(R.row_vib_error), { getString(R.val_ms, it) }),
-            ValueRow(this, binding.txtErrorRetries, binding.sliderErrorRetries, g(R.row_retries), { getString(R.val_count, it) }),
-            ValueRow(this, binding.txtSpeedLimit, binding.sliderSpeedLimit, g(R.row_speed),
-                { if (it == 0) g(R.pref_speed_unlimited) else getString(R.val_kbps, it) }),
-            ValueRow(this, binding.txtBatteryThreshold, binding.sliderBattery, g(R.row_battery), { getString(R.val_percent, it) },
-                { getString(R.pref_battery_threshold_fmt, it, khaled.benzo.core.queue.QueuePolicy.restartBelowOrAt(it) + 1) }),
-            ValueRow(this, binding.txtSeedRatio, binding.sliderSeedRatio, g(R.row_seed_ratio),
-                { if (it == 0) g(R.pref_unlimited) else "%d.%d".format(it / 10, it % 10) }),
-            ValueRow(this, binding.txtSeedMinutes, binding.sliderSeedMinutes, g(R.row_seed_time),
-                { if (it == 0) g(R.pref_unlimited) else "%d:%02d".format(it / 60, it % 60) }),
-            ValueRow(this, binding.txtTorrentConnections, binding.sliderTorrentConnections, g(R.row_connections),
-                { if (it == 0) g(R.pref_torrent_connections_default) else it.toString() })
+            ValueRow(this, binding.txtMaxDownloads, binding.sliderMaxDownloads, g(R.string.row_max_downloads), { getString(R.string.val_count, it) }),
+            ValueRow(this, binding.txtDefaultThreads, binding.sliderDefaultThreads, g(R.string.row_threads), { getString(R.string.val_threads, it) }),
+            ValueRow(this, binding.txtMinThread, binding.sliderMinThread, g(R.string.row_min_thread), { if (it >= 1024) "%.1f MB".format(it / 1024f) else "$it KB" }),
+            ValueRow(this, binding.txtVibSuccess, binding.sliderVibSuccess, g(R.string.row_vib_success), { getString(R.string.val_ms, it) }),
+            ValueRow(this, binding.txtVibTotal, binding.sliderVibTotal, g(R.string.row_vib_total), { getString(R.string.val_ms, it) }),
+            ValueRow(this, binding.txtVibError, binding.sliderVibError, g(R.string.row_vib_error), { getString(R.string.val_ms, it) }),
+            ValueRow(this, binding.txtErrorRetries, binding.sliderErrorRetries, g(R.string.row_retries), { getString(R.string.val_count, it) }),
+            ValueRow(this, binding.txtSpeedLimit, binding.sliderSpeedLimit, g(R.string.row_speed),
+                { if (it == 0) g(R.string.pref_speed_unlimited) else getString(R.string.val_kbps, it) }),
+            ValueRow(this, binding.txtBatteryThreshold, binding.sliderBattery, g(R.string.row_battery), { getString(R.string.val_percent, it) },
+                { getString(R.string.pref_battery_threshold_fmt, it, khaled.benzo.core.queue.QueuePolicy.restartBelowOrAt(it) + 1) }),
+            ValueRow(this, binding.txtSeedRatio, binding.sliderSeedRatio, g(R.string.row_seed_ratio),
+                { if (it == 0) g(R.string.pref_unlimited) else "%d.%d".format(it / 10, it % 10) }),
+            ValueRow(this, binding.txtSeedMinutes, binding.sliderSeedMinutes, g(R.string.row_seed_time),
+                { if (it == 0) g(R.string.pref_unlimited) else "%d:%02d".format(it / 60, it % 60) }),
+            ValueRow(this, binding.txtTorrentConnections, binding.sliderTorrentConnections, g(R.string.row_connections),
+                { if (it == 0) g(R.string.pref_torrent_connections_default) else it.toString() })
         )
     }
 

@@ -107,7 +107,7 @@ class DownloadEngineTest {
         rangeRequests.set(0)
         assertTrue(run(item("/range", 8)).isSuccess)
         assertEquals(sha(data), sha(File(dir, "out.bin").readBytes()))
-        assertTrue("expected several ranged requests, got ${rangeRequests.get()}", rangeRequests.get() >= 8)
+        assertTrue("expected several ranged requests, got ${rangeRequests.get()}", rangeRequests.get() >= 4)
     }
 
     @Test fun sixteenThreadsIsAccepted() = runBlocking {

@@ -21,7 +21,7 @@ object ExportBundle {
 
     /** Null when the text is not a bundle (first non-blank line is not the magic line). */
     fun split(text: String): Map<String, String>? {
-        val lines = text.removePrefix("\uFEFF").lines().map { it.trimEnd('\r') }
+        val lines = text.removePrefix("\uFEFF").lines().map { it.trimEnd('\r') }.let { if (it.lastOrNull() == "") it.dropLast(1) else it }
         if (lines.firstOrNull { it.isNotBlank() }?.trim() != MAGIC) return null
         val out = LinkedHashMap<String, StringBuilder>()
         var cur: StringBuilder? = null

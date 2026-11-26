@@ -15,8 +15,8 @@ class ProxyConfigTest {
             assertSame(s, ProxyConfig.Parsed.Bad, ProxyConfig.parse(s))
     }
     @Test fun selectorNeverFallsBackToDirectWhenProxyChosen() {
-        val sel = AppProxySelector { ok("h.example:1") }
+        val sel = AppProxySelector(current = { ok("h.example:1") })
         assertEquals(1, sel.select(null).size); assertEquals(Proxy.Type.HTTP, sel.select(null)[0].type())
-        assertEquals(Proxy.NO_PROXY, AppProxySelector { null }.select(null)[0])
+        assertEquals(Proxy.NO_PROXY, AppProxySelector(current = { null }).select(null)[0])
     }
 }

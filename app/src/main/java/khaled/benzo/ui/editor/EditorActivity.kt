@@ -12,6 +12,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import khaled.benzo.R
 import khaled.benzo.databinding.ActivityEditorBinding
 import khaled.benzo.service.DownloadService
@@ -109,7 +110,7 @@ class EditorActivity : AppCompatActivity() {
         if (!probeGate.begin(url, force)) return
         probeJob?.cancel()
         binding.txtSizeLabel.setText(R.string.editor_size_checking)
-        probeJob = androidx.lifecycle.lifecycleScope.launch {
+        probeJob = lifecycleScope.launch {
             kotlinx.coroutines.delay(700)
             // Same network rules as the download itself: no request on no network or when a Wi-Fi-only rule is not met.
             val cond = khaled.benzo.service.DeviceConditions(this@EditorActivity, viewModel.settingsRepository).read(0)
@@ -146,7 +147,7 @@ class EditorActivity : AppCompatActivity() {
         binding.btnStart.visibility = View.GONE
         binding.btnQueue.setText(R.string.editor_change)
         binding.btnQueue.setOnClickListener { submitChange() }
-        androidx.lifecycle.lifecycleScope.launch {
+        lifecycleScope.launch {
             val d = viewModel.load(id) ?: run { finish(); return@launch }
             editing = d
             nameEditedByUser = true
