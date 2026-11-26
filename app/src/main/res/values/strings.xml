@@ -129,7 +129,7 @@
     <string name="pref_max_downloads">Max concurrent downloads</string>
     <string name="pref_default_threads">Default threads count (1-16)</string>
     <string name="pref_speed_limit">Speed Limit</string>
-    <string name="pref_speed_unlimited">Unlimited</string>
+    <string name="pref_speed_unlimited">MAX</string>
     <string name="pref_network">Network</string>
     <string name="pref_wifi_only">Download on Wi-Fi only</string>
     <string name="pref_power">Power &amp; Battery</string>

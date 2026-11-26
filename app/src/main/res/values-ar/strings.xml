@@ -129,7 +129,7 @@
     <string name="pref_max_downloads">الحد الأقصى للتحميلات المتزامنة</string>
     <string name="pref_default_threads">عدد أجزاء التحميل الافتراضي (1-16)</string>
     <string name="pref_speed_limit">تحديد سرعة التحميل</string>
-    <string name="pref_speed_unlimited">غير محدود</string>
+    <string name="pref_speed_unlimited">الحد الأقصى</string>
     <string name="pref_network">الشبكة والاتصال</string>
     <string name="pref_wifi_only">التحميل عبر واي فاي فقط</string>
     <string name="pref_power">إدارة الطاقة والبطارية</string>

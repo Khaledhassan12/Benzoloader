@@ -388,6 +388,9 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 - Safety fix that this needed: the wait between tries doubled with a bit shift and would overflow at high counts. It is now `RetryBackoff.waitMs` capped at 30 s, with tests (written and run with the suite).
 - NOT done from the same row group: "Pause after error" in seconds (our switch means keep progress; the held Pause-after-error decision), Use profiles, Multi-Threading.
 
+### Download speed label MAX (compiled, tests pass, not rendered)
+- OBSERVED: the reference shows MAX for no speed limit. Our row now reads MAX (English) and a matching Arabic word, replacing Unlimited. Label only, no behaviour change.
+
 ## Known risks right now
 1. Code through `cfd04b8` compiled locally (see header). A CI build has not run and could differ (different toolchain).
 2. No screen has been rendered. Layout parity with the reference captures is unverified.
