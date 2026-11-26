@@ -383,6 +383,9 @@
     <string name="notif_queue_count">Queue %1$d</string>
     <string name="editor_category">Category</string>
     <string name="editor_category_auto">Automatic (from file name)</string>
+    <string name="color_presets">Presets</string>
+    <string name="color_default">Default</string>
+    <string name="color_hex_invalid">Enter 8 hex digits, AARRGGBB</string>
     <string name="top_color_reset">Reset</string>
     <string name="editor_speed_limit">Speed limit for this download</string>
     <string name="editor_speed_global">Global limit</string>

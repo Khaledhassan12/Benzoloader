@@ -138,20 +138,10 @@ class TopWindowSettingsActivity : AppCompatActivity() {
 
     private fun colorRow(title: Int, get: () -> Int, set: (Int) -> Unit, enabled: () -> Boolean, default: Int) {
         val row = valueRow(title, { "#%08X".format(get()) }, {
-            val et = EditText(this).apply {
-                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
-                setText("#%08X".format(get())); setSelection(text.length)
-            }
-            val box = LinearLayout(this).apply { setPadding(dp(24), dp(16), dp(24), 0); addView(et, LinearLayout.LayoutParams(-1, -2)) }
-            MaterialAlertDialogBuilder(this).setTitle(title).setMessage(R.string.top_color_hint).setView(box)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    val parsed = runCatching { Color.parseColor(et.text.toString().trim()) }.getOrNull()
-                    if (parsed != null) { set(parsed); refreshers.forEach { it() } }
-                }
-                .setNeutralButton(R.string.top_color_reset) { _, _ -> set(default); refreshers.forEach { it() } }
-                .setNegativeButton(android.R.string.cancel, null).show()
+            // Shared picker; its Presets list carries "Default", which replaces the old Reset button.
+            khaled.benzo.ui.common.ColorPickerDialog.show(this, title, get(), default) { picked -> set(picked); refreshers.forEach { it() } }
         }, enabled)
-        // Colour square at the row end (the reference shows one; the picker itself is still hex entry).
+        // Colour square at the row end (the reference shows one); the picker is the shared ColorPickerDialog.
         val swatch = { android.graphics.drawable.GradientDrawable().apply {
             setColor(get()); setStroke(dp(1), 0x66808080); setSize(dp(28), dp(28)) } }
         row.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, swatch(), null)

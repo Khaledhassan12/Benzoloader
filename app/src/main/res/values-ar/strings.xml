@@ -383,6 +383,9 @@
     <string name="notif_queue_count">الطابور %1$d</string>
     <string name="editor_category">التصنيف</string>
     <string name="editor_category_auto">تلقائي (من اسم الملف)</string>
+    <string name="color_presets">ألوان جاهزة</string>
+    <string name="color_default">الافتراضي</string>
+    <string name="color_hex_invalid">اكتب 8 أرقام هيكس بصيغة AARRGGBB</string>
     <string name="top_color_reset">إعادة الضبط</string>
     <string name="editor_speed_limit">حد السرعة لهذا التحميل</string>
     <string name="editor_speed_global">الحد العام</string>
