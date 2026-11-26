@@ -244,12 +244,14 @@ class MainActivity : AppCompatActivity() {
         override fun onCreateActionMode(mode: androidx.appcompat.view.ActionMode, menu: android.view.Menu): Boolean {
             menu.add(0, 1, 0, R.string.sel_delete).setIcon(R.drawable.ic_delete).setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
             menu.add(0, 2, 1, R.string.sel_info).setIcon(R.drawable.ic_info).setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
+            menu.add(0, 7, 1, R.string.sel_edit).setIcon(R.drawable.ic_edit).setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
             menu.add(0, 3, 2, R.string.sel_start); menu.add(0, 4, 3, R.string.sel_stop)
             menu.add(0, 5, 4, R.string.sel_select_all); menu.add(0, 6, 5, R.string.sel_invert)
             return true
         }
         override fun onPrepareActionMode(mode: androidx.appcompat.view.ActionMode, menu: android.view.Menu): Boolean {
-            menu.findItem(2)?.isVisible = selection.count == 1   // Properties shows one item
+            menu.findItem(2)?.isVisible = selection.count == 1
+            menu.findItem(7)?.isVisible = selection.count == 1   // Properties shows one item
             return true
         }
         override fun onActionItemClicked(mode: androidx.appcompat.view.ActionMode, item: android.view.MenuItem): Boolean {
@@ -264,6 +266,7 @@ class MainActivity : AppCompatActivity() {
                         mode.finish()
                     }.setNegativeButton(android.R.string.cancel, null).show()
                 2 -> chosen.firstOrNull()?.let { startActivity(Intent(this@MainActivity, FilePropertiesActivity::class.java).putExtra("download_id", it.id)) }
+                7 -> chosen.firstOrNull()?.let { startActivity(Intent(this@MainActivity, khaled.benzo.ui.editor.EditorActivity::class.java).putExtra(khaled.benzo.ui.editor.EditorActivity.EXTRA_EDIT_ID, it.id)); mode.finish() }
                 3 -> chosen.filter { it.status != DownloadStatus.RUNNING && it.status != DownloadStatus.COMPLETED }.forEach { toggleDownloadStatus(it) }
                 4 -> chosen.filter { it.status == DownloadStatus.RUNNING }.forEach { toggleDownloadStatus(it) }
                 5 -> { selection = selection.selectAll(visibleIds()); onSelectionChanged() }

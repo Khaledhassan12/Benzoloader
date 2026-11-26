@@ -446,4 +446,10 @@
     <string name="prop_finished">Finished</string>
     <string name="prop_hash">Torrent hash</string>
     <string name="prop_agent">User agent</string>
+    <string name="sel_edit">Edit</string>
+    <string name="editor_change">Change</string>
+    <string name="editor_change_locked">Link, name and folder cannot change once data is downloaded or while it runs. Other options can.</string>
+    <string name="editor_change_saved">Changes saved</string>
+    <string name="editor_change_saved_later">Saved. It applies the next time this download starts.</string>
+    <string name="checksum_torrent_unsupported">A checksum is not checked for torrents.</string>
 </resources>

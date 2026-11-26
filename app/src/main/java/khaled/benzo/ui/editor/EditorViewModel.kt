@@ -15,6 +15,21 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
     private val repository = DownloadRepository(application)
     val settingsRepository = SettingsRepository(application)
 
+    /** Saves edits to an existing item. Cookies, user agent and referer are left exactly as stored. */
+    fun changeDownload(
+        old: DownloadItem, url: String, fileName: String, savePath: String, parts: Int, isWifiOnly: Boolean,
+        category: FileCategory?, speedLimitKBps: Int, expectedChecksum: String?, onDone: () -> Unit
+    ) {
+        viewModelScope.launch {
+            repository.updateDownload(old.copy(
+                url = url, fileName = fileName, savePath = savePath, threadsCount = parts, isWifiOnly = isWifiOnly,
+                category = category ?: old.category, speedLimitKBps = speedLimitKBps, expectedChecksum = expectedChecksum))
+            onDone()
+        }
+    }
+
+    suspend fun load(id: Long): DownloadItem? = repository.getDownload(id)
+
     fun addDownload(
         url: String,
         fileName: String,

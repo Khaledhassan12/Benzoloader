@@ -27,10 +27,12 @@ class EditorActivity : AppCompatActivity() {
         binding = ActivityEditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupDefaultFields()
+        val editId = intent.getLongExtra(EXTRA_EDIT_ID, -1L)
+        setupDefaultFields(skipClipboard = editId != -1L)
         setupCategory()
         setupProbe()
         setupListeners()
+        if (editId != -1L) { beginEdit(editId); return }
         handleIncomingIntent(autoAdd = savedInstanceState == null)
         // Video 8: a short sound plays when the Editor opens (matches the add sound by length and envelope; INFERRED, not an exact-audio claim).
         if (savedInstanceState == null && khaled.benzo.data.repository.SettingsRepository(this).soundOnComplete) {
@@ -38,7 +40,7 @@ class EditorActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupDefaultFields() {
+    private fun setupDefaultFields(skipClipboard: Boolean = false) {
         val defaultPath = viewModel.settingsRepository.defaultDownloadPath.ifEmpty {
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         }
@@ -48,7 +50,7 @@ class EditorActivity : AppCompatActivity() {
 
         // Check clipboard for URL if empty
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        if (clipboard.hasPrimaryClip() && clipboard.primaryClipDescription?.hasMimeType("text/plain") == true) {
+        if (!skipClipboard && clipboard.hasPrimaryClip() && clipboard.primaryClipDescription?.hasMimeType("text/plain") == true) {
             val clipText = clipboard.primaryClip?.getItemAt(0)?.text?.toString()
             if (!clipText.isNullOrEmpty() && (clipText.startsWith("http://") || clipText.startsWith("https://"))) {
                 binding.edtUrl.setText(clipText)
@@ -131,6 +133,55 @@ class EditorActivity : AppCompatActivity() {
             if (!nameEditedByUser && !suggested.isNullOrBlank() && binding.edtFileName.text.isNullOrBlank()) {
                 settingNameFromCode = true; binding.edtFileName.setText(suggested); settingNameFromCode = false
             }
+        }
+    }
+
+    private var editing: khaled.benzo.data.model.DownloadItem? = null
+
+    /**
+     * Opens an existing item in the same form. Only "Change" exists here: it saves the edits and never restarts or
+     * re-downloads. A separate Restart is NOT built (its meaning in the reference is inferred, and it would discard progress).
+     */
+    private fun beginEdit(id: Long) {
+        binding.btnStart.visibility = View.GONE
+        binding.btnQueue.setText(R.string.editor_change)
+        binding.btnQueue.setOnClickListener { submitChange() }
+        androidx.lifecycle.lifecycleScope.launch {
+            val d = viewModel.load(id) ?: run { finish(); return@launch }
+            editing = d
+            nameEditedByUser = true
+            probeGate.begin(d.url, false)
+            binding.edtUrl.setText(d.url); binding.edtFileName.setText(d.fileName); binding.edtPath.setText(d.savePath)
+            binding.sliderThreads.value = d.threadsCount.coerceIn(binding.sliderThreads.valueFrom.toInt(), binding.sliderThreads.valueTo.toInt()).toFloat()
+            // The slider moves in steps of 64: a stored value off the step is shown at the nearest step (the stored value is unchanged until Change is pressed).
+            binding.sliderItemSpeed.value = (Math.round(d.speedLimitKBps / 64f) * 64f).coerceIn(binding.sliderItemSpeed.valueFrom, binding.sliderItemSpeed.valueTo)
+            binding.chkWifiOnly.isChecked = d.isWifiOnly
+            binding.edtChecksum.setText(d.expectedChecksum.orEmpty())
+            binding.edtCategory.setText(getString(pickable.first { it.first == d.category }.second), false)
+            binding.layoutAdvanced.visibility = View.VISIBLE
+        }
+    }
+
+    private fun submitChange() {
+        val old = editing ?: return
+        val url = binding.edtUrl.text.toString().trim()
+        val name = binding.edtFileName.text.toString().trim()
+        val path = binding.edtPath.text.toString().trim()
+        if (!(url.startsWith("http://", true) || url.startsWith("https://", true) || old.isTorrent) || name.isEmpty()) {
+            Toast.makeText(this, R.string.toast_invalid_url, Toast.LENGTH_SHORT).show(); return
+        }
+        val typed = binding.edtChecksum.text.toString()
+        val checksum = khaled.benzo.core.files.ChecksumPolicy.normalize(typed)
+        if (typed.isNotBlank() && checksum == null) { Toast.makeText(this, R.string.checksum_invalid, Toast.LENGTH_LONG).show(); return }
+        if (old.isTorrent && checksum != null) { Toast.makeText(this, R.string.checksum_torrent_unsupported, Toast.LENGTH_LONG).show(); return }
+        if (khaled.benzo.core.queue.EditPolicy.check(old, url, name, path) == khaled.benzo.core.queue.EditPolicy.Verdict.LOCKED_BY_PROGRESS) {
+            Toast.makeText(this, R.string.editor_change_locked, Toast.LENGTH_LONG).show(); return
+        }
+        val later = khaled.benzo.core.queue.EditPolicy.appliesNextStart(old)
+        viewModel.changeDownload(old, url, name, path, binding.sliderThreads.value.toInt(), binding.chkWifiOnly.isChecked,
+            pickedCategory, binding.sliderItemSpeed.value.toInt(), checksum) {
+            Toast.makeText(this, if (later) R.string.editor_change_saved_later else R.string.editor_change_saved, Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 
@@ -326,5 +377,6 @@ class EditorActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_PATH = 101
+        const val EXTRA_EDIT_ID = "edit_download_id"
     }
 }

@@ -446,4 +446,10 @@
     <string name="prop_finished">وقت الانتهاء</string>
     <string name="prop_hash">بصمة التورنت</string>
     <string name="prop_agent">معرّف المتصفح</string>
+    <string name="sel_edit">تعديل</string>
+    <string name="editor_change">تغيير</string>
+    <string name="editor_change_locked">لا يمكن تغيير الرابط أو الاسم أو المجلد بعد بدء التنزيل أو أثناءه. باقي الخيارات يمكن تغييرها.</string>
+    <string name="editor_change_saved">تم حفظ التغييرات</string>
+    <string name="editor_change_saved_later">تم الحفظ. سيُطبَّق عند بدء هذا التنزيل المرة القادمة.</string>
+    <string name="checksum_torrent_unsupported">لا يتم فحص المجموع الاختباري للتورنت.</string>
 </resources>
