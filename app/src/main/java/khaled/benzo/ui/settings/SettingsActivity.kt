@@ -109,6 +109,8 @@ class SettingsActivity : AppCompatActivity() {
         val start = b.length
         b.append(if (sel.isEmpty()) getString(R.string.proxy_disabled) else sel)
         b.setSpan(android.text.style.ForegroundColorSpan(com.google.android.material.color.MaterialColors.getColor(row, com.google.android.material.R.attr.colorPrimary)), start, b.length, 0)
+        // Always visible while a proxy is chosen: which paths still connect directly.
+        if (sel.isNotEmpty()) b.append('\n').append(getString(R.string.proxy_coverage))
         row.text = b
         val d = resources.displayMetrics.density
         row.minHeight = (72 * d).toInt(); row.gravity = android.view.Gravity.CENTER_VERTICAL

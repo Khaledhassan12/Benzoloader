@@ -246,8 +246,11 @@ class DownloadEngine(
 
         /** [proxy] is read on every request (see AppProxySelector). The default is no proxy. */
         fun createDefaultClient(proxy: () -> khaled.benzo.core.net.ProxyConfig? = { null }): OkHttpClient {
+            val pool = okhttp3.ConnectionPool()
             return OkHttpClient.Builder()
-                .proxySelector(khaled.benzo.core.net.AppProxySelector(proxy))
+                .connectionPool(pool)
+                // A proxy change drops idle pooled sockets. A transfer already running keeps its connection until it ends.
+                .proxySelector(khaled.benzo.core.net.AppProxySelector(proxy, onChange = { pool.evictAll() }))
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)

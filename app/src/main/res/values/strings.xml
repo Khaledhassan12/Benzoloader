@@ -462,4 +462,5 @@
     <string name="proxy_invalid">Not a valid proxy address. Sign-in details (name@host) are not supported.</string>
     <string name="proxy_remove_msg">Remove %1$s from the list?</string>
     <string name="proxy_scope_note">The proxy is used for link downloads and the size check in the editor. Torrents and the browser do not use it yet.</string>
+    <string name="proxy_coverage">Used for link downloads and the Editor size check. Torrents and the browser connect directly, without the proxy. Transfers already running keep their old route until restarted.</string>
 </resources>

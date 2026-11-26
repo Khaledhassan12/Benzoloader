@@ -46,7 +46,17 @@ data class ProxyConfig(val socks: Boolean, val host: String, val port: Int) {
  * With a proxy chosen it returns only that proxy: when it fails the request fails. It never falls back to a direct
  * connection, because that would send the user's traffic around the proxy they asked for.
  */
-class AppProxySelector(private val current: () -> ProxyConfig?) : ProxySelector() {
-    override fun select(uri: URI?): List<Proxy> = listOf(current()?.toJava() ?: Proxy.NO_PROXY)
+class AppProxySelector(private val current: () -> ProxyConfig?, private val onChange: () -> Unit = {}) : ProxySelector() {
+    private var seen = false
+    private var last: String? = null
+
+    /** The first call only records the choice. A later change calls [onChange] (the engine drops idle pooled connections then). */
+    override fun select(uri: URI?): List<Proxy> {
+        val c = current()
+        val label = c?.label()
+        val changed = synchronized(this) { val ch = seen && label != last; seen = true; last = label; ch }
+        if (changed) onChange()
+        return listOf(c?.toJava() ?: Proxy.NO_PROXY)
+    }
     override fun connectFailed(uri: URI?, sa: SocketAddress?, ioe: java.io.IOException?) {}
 }
