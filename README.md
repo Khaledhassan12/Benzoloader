@@ -23,7 +23,6 @@ HTTP/HTTPS multi-connection downloads · resume · BitTorrent · in-app browser 
 
 Every status is also written in words, so nothing depends on the icons displaying. Last full build and test run: 40 of 40 unit tests passed at commit `fd59931`. Later commits are ✍️ until a final build.
 No speed or reliability measurements exist; this document makes no performance claim.
-Per-feature detail: [docs/FEATURE_STATUS.md](docs/FEATURE_STATUS.md). Coverage against the original brief: [docs/SPEC_COVERAGE.md](docs/SPEC_COVERAGE.md).
 
 ## ✨ Features
 
@@ -56,8 +55,6 @@ Benzoloader/
 ├── build.gradle.kts        plugin versions (AGP, Kotlin, KSP)
 ├── settings.gradle.kts     repositories
 ├── gradle/, gradlew        Gradle wrapper
-├── docs/FEATURE_STATUS.md  per-feature implemented / tested table
-├── docs/REFERENCE_REVIEW.md  review of supplied references and resulting changes
 └── app/
     ├── build.gradle.kts    dependencies, ABIs, packaging
     └── src/

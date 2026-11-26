@@ -24,3 +24,5 @@ Skills/
 ADM - REPORT.md
 Benzo_Architectural_Blueprint.md
 WORKING_NOTES.md
+# Kotlin tool caches
+.kotlin/
