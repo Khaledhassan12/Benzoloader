@@ -18,7 +18,7 @@ class PathPickerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val listView = ListView(this)
+        val listView = ListView(this).apply { isNestedScrollingEnabled = true }
         listView.isNestedScrollingEnabled = true
         val screen = khaled.benzo.ui.common.CollapsingScreen.wrap(this, title, listView)
         setContentView(screen)

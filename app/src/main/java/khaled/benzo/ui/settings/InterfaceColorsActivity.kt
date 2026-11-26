@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.ScrollView
+import androidx.core.widget.NestedScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import khaled.benzo.R
@@ -27,7 +27,7 @@ class InterfaceColorsActivity : AppCompatActivity() {
         repo = SettingsRepository(this)
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         list = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        setContentView(khaled.benzo.ui.common.CollapsingScreen.wrap(this, getString(R.string.colors_title), ScrollView(this).apply { addView(list) }))
+        setContentView(khaled.benzo.ui.common.CollapsingScreen.wrap(this, getString(R.string.colors_title), NestedScrollView(this).apply { addView(list) }))
         val stockText = TextView(this).currentTextColor
         row(R.string.col_filename, { repo.uiColFilename }, { repo.uiColFilename = it }, stockText)
         row(R.string.col_info, { repo.uiColInfo }, { repo.uiColInfo = it }, stockText)

@@ -385,12 +385,12 @@ class MainActivity : AppCompatActivity() {
     /** Bottom bar is shown or hidden from Settings > Interface. When it is shown its add button replaces the floating one. */
     private fun applyBottomBar() {
         val repo = khaled.benzo.data.repository.SettingsRepository(this)
-        // Reference code (read for behaviour): with Top bar at bottom the toolbar takes the bottom bar's slot, so the
-        // bottom action bar is not built; the toolbar already carries the add button.
-        val show = repo.bottomBar && !repo.topBarAtBottom
+        // As in the first build: the bottom bar is shown whenever the setting is on (no frame of it exists in the reference media).
+        val show = repo.bottomBar
         binding.bottomBar.visibility = if (show) View.VISIBLE else View.GONE
         binding.fabAdd.visibility = if (show || repo.topBarAtBottom) View.GONE else View.VISIBLE
         applyTopBarPosition(show)
+        invalidateOptionsMenu()
     }
 
     /** Top bar at bottom: the toolbar sits on the bottom edge (above the bottom bar when that is shown) and the list is inset instead of scrolling under it. */
@@ -602,8 +602,19 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        // Queue and Finished live in the toolbar only while the bottom bar (which carries them) is hidden and the list is split in two.
+        val repo = khaled.benzo.data.repository.SettingsRepository(this)
+        val on = !repo.bottomBar && !repo.singleList
+        menu?.findItem(R.id.action_queue)?.isVisible = on
+        menu?.findItem(R.id.action_finished)?.isVisible = on
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_queue -> { viewModel.setStatusFilter(khaled.benzo.core.queue.StatusFilter.UNFINISHED); true }
+            R.id.action_finished -> { viewModel.setCategory(FileCategory.COMPLETED); true }
             R.id.action_filter -> { binding.drawerLayout.openDrawer(panelGravity); true }
             R.id.sort_by_name -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.NAME); true }
             R.id.sort_by_size -> { viewModel.setSort(khaled.benzo.core.queue.SortKey.SIZE); true }

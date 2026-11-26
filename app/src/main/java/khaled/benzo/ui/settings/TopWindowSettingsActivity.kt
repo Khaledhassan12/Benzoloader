@@ -12,7 +12,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.ScrollView
+import androidx.core.widget.NestedScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -39,7 +39,7 @@ class TopWindowSettingsActivity : AppCompatActivity() {
         repo = SettingsRepository(this)
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         list = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        setContentView(khaled.benzo.ui.common.CollapsingScreen.wrap(this, getString(R.string.cat_top_window), ScrollView(this).apply { addView(list) }))
+        setContentView(khaled.benzo.ui.common.CollapsingScreen.wrap(this, getString(R.string.cat_top_window), NestedScrollView(this).apply { addView(list) }))
         build()
     }
 

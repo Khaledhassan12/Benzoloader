@@ -9,6 +9,20 @@
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
+        android:id="@+id/action_queue"
+        android:icon="@drawable/ic_toolbar_queue"
+        android:title="@string/nav_queue"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_finished"
+        android:icon="@drawable/ic_toolbar_finished"
+        android:title="@string/nav_finished"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_nav_list"
         android:title="@string/action_filter"
