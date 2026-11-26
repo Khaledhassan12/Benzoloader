@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `c69ab88` (26 Nov 02:45, tests only). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `5ccda09` (26 Nov 03:05, Quick settings panel; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `5ccda09` | 26 Nov 03:05 | Quick settings panel: speed graph, overall bar, collapsible sections, bottom bar (replaces the old left menu) | WRITTEN, UNBUILT (never compiled or run) |
 | `c69ab88` | 26 Nov 02:45 | Tests: probe fake-server checks (written, not run) | tests written, not run |
 | `1887e2f` | 26 Nov 02:26 | Editor probe: cancel/stale guard, network rules, timeouts, tests (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
 | `66dbb6b` | 26 Nov 02:25 | Editor: size label and suggested name probe (unbuilt) | WRITTEN, UNBUILT (never compiled or run) |
