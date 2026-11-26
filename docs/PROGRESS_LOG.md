@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `7fa573b` (26 Nov 09:30, notification command buttons; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `3c628b0` (26 Nov 09:50, manual order drives start; Apply sorting; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `3c628b0` | 26 Nov 09:50 | Manual list order now decides queue start; Apply sorting (refresh mark, dialog, saved toast) stores the sort as list order; tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `7fa573b` | 26 Nov 09:30 | Notification command buttons: seven-entry picker (max three), actions, backup, tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `cfb3c36` | 26 Nov 09:05 | Total-finish vibration setting and slider, service uses it, backup, test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `52c175d` | 26 Nov 08:40 | Settings backup: hidden panel rows (comma list, safe characters only) + test | WRITTEN, TESTS WRITTEN, UNBUILT |
@@ -348,6 +349,12 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 - OBSERVED (video 3 part 2): Notifications > Command buttons opens a checkbox dialog with seven entries (start all, stop all, add, scheduler, settings, browser, exit); a toast said the program needs a restart.
 - Built: the seven-entry picker, saved as `notif_buttons` (in the settings backup), replacing the old "Pause all button" switch (the switch is hidden; its stored value is used only until the picker is first used, then the list wins). Actions: Start all (new service action, same as Resume all then the queue rules), Stop all (existing pause-all), Add (opens the Editor), Scheduler (Settings, scheduler section), Settings (hub), Browser, Exit. NotificationPolicy and tests written, not run.
 - DIFFERENCES and risks: Android shows at most three notification buttons, so the picker refuses a fourth tick with a message (the reference showed seven entries; whether it can show more is UNCLEAR). Exit is no longer forced: a user can untick it, leaving no Exit button (reference only had Settings ticked in the frame). Changes apply the next time the notification is rebuilt, no restart needed (reference toast not copied). Button icons are stock placeholders. The activity PendingIntents use a new task flag; behaviour of Editor/Browser from a notification is unrun. NOTE FOR FINAL REVIEW.
+
+### Manual order drives queue start; Apply sorting (written, unbuilt, unrendered, newly activated behaviour)
+- USER-STATED (Khaled, 26 Nov 09:35, via Main): moving an item changes the START order, and he prefers more than one ordering mode as in the earlier captures. Applied: `QueuePolicy.nextToStart` sorts waiting items by the list order key (the item id until moved by hand, so an unmoved list still starts oldest first), then reverses it when the "newest first" start setting is on. Tests written, not run.
+- Ordering modes (OBSERVED earlier, now all present): the Sorting section lists Order, Size, Name, Time and Category, each up and down (ten rows), plus hand moves To top, To bottom, Up, Down in the selection menu. The missing piece was Apply sorting, now built: OBSERVED a refresh-style mark on the Sorting header only while a sort other than Order is chosen, an "Apply sorting?" Cancel/OK dialog, a "saved" toast, and the Order (down) row selected afterwards. Built: the mark, a dialog in my own words that also says it decides which waiting download starts first, `OrderMoves.applySorted` over ALL items (filters ignored), then the Order (down) view. That Apply STORES the order is INFERRED, not seen.
+- EVIDENCE GAP, not a question for Khaled yet: which screen end starts first. With the default display (newest on top, Order down) the keys run smaller = lower on screen, so the BOTTOM of the list starts first, like the front of a queue; "To bottom" means starts next. The reference mapping was not seen. The existing "newest first" start setting and the display direction are still two settings, so screen order and start order match only when they agree. Final review should check this on a device.
+- Newly activated: users who moved items now see start order change; before, hand moves only changed display. Not rendered.
 
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.
