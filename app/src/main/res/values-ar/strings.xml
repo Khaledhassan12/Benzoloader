@@ -477,4 +477,9 @@
     <string name="sel_force_announce">إعلان إجباري</string>
     <string name="sel_torrent_done">تم لـ %1$d تورنت.</string>
     <string name="sel_torrent_partial">تم لـ %1$d من %2$d. الباقي غير شغال: شغّله أولًا.</string>
+    <string name="sel_to_top">إلى الأعلى</string>
+    <string name="sel_to_bottom">إلى الأسفل</string>
+    <string name="sel_up">أعلى</string>
+    <string name="sel_down">أسفل</string>
+    <string name="sel_move_needs_order">النقل اليدوي يعمل مع ترتيب "الترتيب". تحويل القائمة إلى هذا الترتيب الآن؟</string>
 </resources>

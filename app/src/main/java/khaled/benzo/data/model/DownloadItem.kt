@@ -28,8 +28,13 @@ data class DownloadItem(
     /** Limit for this download alone in KB/s. 0 = use the global limit only. */
     val speedLimitKBps: Int = 0,
     /** Expected file checksum as hex (MD5, SHA-1 or SHA-256 by length). Null = no check. */
-    val expectedChecksum: String? = null
+    val expectedChecksum: String? = null,
+    /** Hand-set position for the Order sort. 0 = never moved: the item sorts by its id, as before. */
+    val listOrder: Long = 0L
 ) {
+    /** What the Order sort compares. Moved items carry their own key; the rest keep their id. */
+    val orderKey: Long get() = if (listOrder > 0L) listOrder else id
+
     /** True when saved cookies or headers cannot be read (security key changed). The user must enter them again. */
     val needsReentry: Boolean
         get() = rawCookies != null || rawHeaders != null

@@ -477,4 +477,9 @@
     <string name="sel_force_announce">Force announce</string>
     <string name="sel_torrent_done">Done for %1$d torrent(s).</string>
     <string name="sel_torrent_partial">Done for %1$d of %2$d. The others are not running: start them first.</string>
+    <string name="sel_to_top">To top</string>
+    <string name="sel_to_bottom">To bottom</string>
+    <string name="sel_up">Up</string>
+    <string name="sel_down">Down</string>
+    <string name="sel_move_needs_order">Moving items by hand works in the Order sort. Switch the list to the Order sort now?</string>
 </resources>

@@ -35,5 +35,15 @@ object Migrations {
         }
     }
 
-    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
+    /**
+     * 3 -> 4: hand-set list position (Order sort, selection To top / To bottom / Up / Down). NOT NULL with the same DEFAULT
+     * the entity declares; 0 means "never moved". WRITTEN, UNBUILT: never run against a v3 database.
+     */
+    val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `downloads` ADD COLUMN `list_order` INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
+    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
 }

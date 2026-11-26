@@ -81,7 +81,7 @@ object QueuePolicy {
 
 /** UNFINISHED is the bottom bar's Queue: everything not completed (queued, connecting, running, paused, failed), so no pending work is hidden. */
 enum class StatusFilter { ALL, ACTIVE, QUEUED, PAUSED, FAILED, COMPLETED, UNFINISHED }
-/** ORDER is the order items were added (by id); the reference panel lists Order, Size, Name, Time and Category, each up and down. */
+/** ORDER is the order items were added (by id) until the user moves items by hand (orderKey); the reference panel lists Order, Size, Name, Time and Category, each up and down. */
 enum class SortKey { TIME, NAME, SIZE, CATEGORY, ORDER }
 
 object ListLogic {
@@ -116,7 +116,7 @@ object ListLogic {
             SortKey.TIME -> base.sortedBy { it.createdDate }
             SortKey.NAME -> base.sortedBy { it.fileName.lowercase() }
             SortKey.SIZE -> base.sortedBy { it.totalBytes }
-            SortKey.ORDER -> base.sortedBy { it.id }
+            SortKey.ORDER -> base.sortedBy { it.orderKey }
             SortKey.CATEGORY -> base.sortedWith(compareBy({ it.category.name }, { it.fileName.lowercase() }))
         }
         return if (ascending) sorted else sorted.reversed()

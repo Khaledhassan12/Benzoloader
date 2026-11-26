@@ -72,6 +72,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setSort(key: SortKey) = _state.update { it.withSort(key) }
 
+    /** Applies a hand move to the displayed items and stores new order keys. Only meaningful in the Order sort (the screen checks). */
+    fun moveItems(shown: List<DownloadItem>, selected: Set<Long>, move: khaled.benzo.core.queue.OrderMoves.Move) {
+        val ascending = _state.value.ascending
+        val before = shown.map { it.id }
+        val after = khaled.benzo.core.queue.OrderMoves.move(before, selected, move)
+        if (after == before) return
+        val keys = khaled.benzo.core.queue.OrderMoves.newKeys(before, after, shown.associate { it.id to it.orderKey }, ascending)
+        viewModelScope.launch { repository.setListOrders(keys) }
+    }
+
+    fun setOrderSort() = _state.update { it.withSortDirection(SortKey.ORDER, false) }
+    fun isOrderSort() = _state.value.sort == SortKey.ORDER
+
     fun deleteDownload(id: Long) {
         viewModelScope.launch {
             repository.deleteDownload(id)

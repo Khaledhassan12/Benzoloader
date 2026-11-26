@@ -5,6 +5,7 @@ import khaled.benzo.data.db.BenzoDatabase
 import khaled.benzo.data.db.ChunkEntity
 import khaled.benzo.data.db.DownloadEntity
 import khaled.benzo.data.model.DownloadChunk
+import androidx.room.withTransaction
 import khaled.benzo.data.model.DownloadItem
 import khaled.benzo.data.model.DownloadStatus
 import khaled.benzo.data.model.FileCategory
@@ -36,6 +37,11 @@ class DownloadRepository(context: Context) {
 
     suspend fun insertDownload(item: DownloadItem): Long {
         return downloadDao.insertDownload(DownloadEntity.fromModel(item))
+    }
+
+    /** Writes the new order keys together: a failure part-way leaves the old order, not a half-moved list. */
+    suspend fun setListOrders(keys: Map<Long, Long>) {
+        db.withTransaction { keys.forEach { (id, k) -> downloadDao.updateListOrder(id, k) } }
     }
 
     suspend fun updateSafeFields(id: Long, threads: Int, wifi: Boolean, category: FileCategory, limit: Int, checksum: String?) =
