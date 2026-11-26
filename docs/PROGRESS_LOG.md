@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `e8754fb` (26 Nov 05:58, Batch loading; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `f3bdb6c` (26 Nov 06:12, quick panel graph toggle and After finishing row; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `f3bdb6c` | 26 Nov 06:12 | Quick panel: graph show/hide in the Downloading header, After finishing row | WRITTEN, UNBUILT (never compiled or run) |
 | `e8754fb` | 26 Nov 05:58 | Batch loading: BatchPolicy expander, dialog, Tools entry, EN/AR strings, tests | WRITTEN, UNBUILT (never compiled or run) |
 | `98c3b40` | 26 Nov 05:55 | Manual order under a filter: splice over the full list, distinct keys, tests; final-stage checklist | WRITTEN, UNBUILT (never compiled or run) |
 | `db05cc4` | 26 Nov 05:45 | Manual order: schema v4 and Migration 3->4, OrderMoves, selection moves, tests | WRITTEN, UNBUILT (never compiled or run) |
@@ -303,6 +304,10 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 - UNKNOWN, not seen in the video: what Generate does with the items (queued or started), whether Advanced applies to all of them, the reference's count limit, Step for letters, whether Step 0 or From above To is accepted, letter case rules. My rejections for these are choices, not parity.
 - UNFINISHED: the Advanced section (folder, speed and other per-item fields) is not in the dialog; items use the default folder and thread count. Entry point in the reference (drawer position) is not confirmed.
 - Checks run: XML parse only.
+
+### Quick panel graph toggle and After finishing (written, unbuilt, unrendered)
+- OBSERVED (video 3): a chart icon in the Downloading header shows or hides the graph. Built: that button (stock placeholder icon, not a match) stored in `quick_graph_visible`, default shown (my choice, reference default not seen). The After finishing row (Do nothing / Exit) now also appears in the Downloading section and writes the same setting as Settings. Whether the reference puts it there is INFERRED from the earlier gap list.
+- Still open in the panel: eye visibility editor, Smart download, Download torrents, pop-up/icon switches, Material You/Dark rows, Export/Import entries, App section. Checks run: XML parse only.
 
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.
