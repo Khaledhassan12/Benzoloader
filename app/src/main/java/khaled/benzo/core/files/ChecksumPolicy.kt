@@ -17,6 +17,14 @@ object ChecksumPolicy {
 
     fun hexOf(bytes: ByteArray): String = bytes.joinToString("") { "%02x".format(it) }
 
+    enum class Result { MATCH, MISMATCH, UNREADABLE }
+
+    /** MISMATCH only when the file was fully read and its hash differs. Any read problem is UNREADABLE, never a mismatch. */
+    fun check(file: File, expected: String): Result {
+        if (algorithm(expected) == null) return Result.UNREADABLE
+        return try { if (matches(file, expected)) Result.MATCH else Result.MISMATCH } catch (e: Exception) { Result.UNREADABLE }
+    }
+
     fun matches(file: File, expected: String): Boolean {
         val algo = algorithm(expected) ?: return false
         val md = MessageDigest.getInstance(algo)

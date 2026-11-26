@@ -388,4 +388,5 @@
     <string name="editor_checksum">Checksum (MD5, SHA-1 or SHA-256, optional)</string>
     <string name="checksum_invalid">The checksum must be 32, 40 or 64 hex characters.</string>
     <string name="checksum_mismatch">The finished file does not match the checksum you entered. The file was kept.</string>
+    <string name="checksum_unreadable">The finished file could not be read to check the checksum, so it was not verified. The file was kept.</string>
 </resources>

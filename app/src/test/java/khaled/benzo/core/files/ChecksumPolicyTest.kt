@@ -16,6 +16,10 @@ class ChecksumPolicyTest {
         assertEquals("SHA-1", ChecksumPolicy.algorithm("a".repeat(40)))
         assertEquals("SHA-256", ChecksumPolicy.algorithm("a".repeat(64)))
     }
+    @Test fun unreadableIsNotMismatch() {
+        val missing = java.io.File("/nonexistent/none.bin")
+        assertEquals(ChecksumPolicy.Result.UNREADABLE, ChecksumPolicy.check(missing, "0".repeat(32)))
+    }
     @Test fun matchesEmptyFileMd5() {
         val f = java.io.File.createTempFile("cs", ".bin")
         try { assertTrue(ChecksumPolicy.matches(f, "d41d8cd98f00b204e9800998ecf8427e")); assertFalse(ChecksumPolicy.matches(f, "0".repeat(32))) }
