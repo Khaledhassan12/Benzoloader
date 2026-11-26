@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                 startService(Intent(this, DownloadService::class.java).apply { action = khaled.benzo.receiver.DownloadActionReceiver.ACTION_EXIT_APP })
                 finishAffinity()
             },
-            onChanged = { startService(Intent(this, DownloadService::class.java).apply { action = DownloadService.ACTION_PROCESS_QUEUE }) }
+            onChanged = { applyBottomBar(); startService(Intent(this, DownloadService::class.java).apply { action = DownloadService.ACTION_PROCESS_QUEUE }) }
         )
         binding.navigationView.addView(quickPanel, android.widget.FrameLayout.LayoutParams(-1, -1))
         binding.drawerLayout.addDrawerListener(object : androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener() {
@@ -397,6 +397,12 @@ class MainActivity : AppCompatActivity() {
         // As in the first build: the bottom bar is shown whenever the setting is on (no frame of it exists in the reference media).
         val show = repo.bottomBar
         binding.bottomBar.visibility = if (show) View.VISIBLE else View.GONE
+        // Reference frames: with Single list ON the bar carries start-all and stop-all where Queue and Finished sit otherwise.
+        val single = repo.singleList
+        binding.navStartAll.visibility = if (single) View.VISIBLE else View.GONE
+        binding.navStopAll.visibility = if (single) View.VISIBLE else View.GONE
+        binding.navQueueFrame.visibility = if (single) View.GONE else View.VISIBLE
+        binding.navFinishedFrame.visibility = if (single) View.GONE else View.VISIBLE
         binding.fabAdd.visibility = if (show || repo.topBarAtBottom) View.GONE else View.VISIBLE
         applyTopBarPosition(show)
         invalidateOptionsMenu()
@@ -426,6 +432,11 @@ class MainActivity : AppCompatActivity() {
         binding.navBrowser.setOnClickListener { startActivity(Intent(this, BrowserActivity::class.java)) }
         binding.navQueue.setOnClickListener { viewModel.setStatusFilter(khaled.benzo.core.queue.StatusFilter.UNFINISHED) }
         binding.navFinished.setOnClickListener { viewModel.setCategory(FileCategory.COMPLETED) }
+        binding.navStartAll.setOnClickListener {
+            viewModel.resumeAll()
+            startService(Intent(this, DownloadService::class.java).apply { action = DownloadService.ACTION_PROCESS_QUEUE })
+        }
+        binding.navStopAll.setOnClickListener { viewModel.pauseAll() }
         binding.navList.setOnClickListener { binding.drawerLayout.openDrawer(navGravity) }
         binding.navPower.setOnClickListener { v ->
             PopupMenu(this, v).apply {

@@ -262,9 +262,9 @@
     <string name="nav_queue">Queue</string>
     <string name="nav_finished">Finished</string>
     <string name="nav_list">Categories</string>
-    <string name="pref_bottom_bar">Bottom navigation bar</string>
+    <string name="pref_bottom_bar">Bottom action bar</string>
     <string name="cat_interface">Interface</string>
-    <string name="cat_interface_sub">Theme colour, bottom navigation bar</string>
+    <string name="cat_interface_sub">Theme colour, bottom action bar</string>
     <string name="pref_theme_color">Theme colour</string>
     <string name="pref_theme_color_note">Device colours need Android 12 or newer on a device that supports them. Otherwise the green theme is used.</string>
     <string name="theme_device">Device colours (Material You)</string>
@@ -447,6 +447,7 @@
     <string name="qp_cataloging">Cataloging</string>
     <string name="qp_scheduler">Scheduler</string>
     <string name="qp_top_window">Top window</string>
+    <string name="qp_single_list">Single list</string>
     <string name="qp_bottom_bar">Bottom action bar</string>
     <string name="qp_swap_menus">Swap side menus</string>
     <string name="qp_site_manager">Site manager</string>

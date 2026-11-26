@@ -24,7 +24,7 @@
 
     <item
         android:id="@+id/action_filter"
-        android:icon="@drawable/ic_nav_list"
+        android:icon="@drawable/ic_toolbar_filter"
         android:title="@string/action_filter"
         app:showAsAction="ifRoom" />
 

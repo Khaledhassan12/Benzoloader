@@ -115,7 +115,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/nav_power"
-            android:src="@drawable/ic_nav_power" />
+            android:src="@drawable/ic_bar_power" />
         <ImageButton
             android:id="@+id/navSettings"
             android:layout_width="0dp"
@@ -123,7 +123,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/action_settings"
-            android:src="@drawable/ic_settings" />
+            android:src="@drawable/ic_bar_settings" />
         <ImageButton
             android:id="@+id/navBrowser"
             android:layout_width="0dp"
@@ -131,7 +131,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/action_browser"
-            android:src="@drawable/ic_browser" />
+            android:src="@drawable/ic_bar_browser" />
         <ImageButton
             android:id="@+id/navAdd"
             android:layout_width="0dp"
@@ -139,8 +139,27 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/action_add"
-            android:src="@drawable/ic_nav_add" />
+            android:src="@drawable/ic_bar_add" />
+        <ImageButton
+            android:id="@+id/navStartAll"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_resume_all"
+            android:src="@drawable/ic_bar_start_all"
+            android:visibility="gone" />
+        <ImageButton
+            android:id="@+id/navStopAll"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_pause_all"
+            android:src="@drawable/ic_bar_stop_all"
+            android:visibility="gone" />
         <FrameLayout
+            android:id="@+id/navQueueFrame"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1">
@@ -168,6 +187,7 @@
                 android:visibility="gone" />
         </FrameLayout>
         <FrameLayout
+            android:id="@+id/navFinishedFrame"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1">
@@ -201,7 +221,7 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/nav_list"
-            android:src="@drawable/ic_nav_list" />
+            android:src="@drawable/ic_bar_list" />
     </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -154,7 +154,9 @@ class QuickPanel(
                     }
                     .setNegativeButton(R.string.dialog_cancel, null).show()
             }
+            switchRow(R.string.qp_single_list, settings.singleList) { settings.singleList = it }
             switchRow(R.string.qp_bottom_bar, settings.bottomBar) { settings.bottomBar = it }
+            switchRow(R.string.pref_top_bar_bottom, settings.topBarAtBottom) { settings.topBarAtBottom = it }
             switchRow(R.string.qp_swap_menus, settings.swapSideMenus) { settings.swapSideMenus = it }
         }
         section(Section.TOOLS, R.string.qp_tools) {
