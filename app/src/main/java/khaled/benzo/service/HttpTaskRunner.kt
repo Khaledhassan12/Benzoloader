@@ -13,12 +13,18 @@ class HttpTaskRunner(
     private val limiter: TokenBucketLimiter,
     private val defaultUserAgent: () -> String = { "" }
 ) {
+    /** The global limit applies as before; a per-download limit gets its own bucket, and the stricter of the two wins. */
+    private fun itemLimiter(item: DownloadItem): TokenBucketLimiter {
+        val own = item.speedLimitKBps * 1024L
+        return if (own > 0L) TokenBucketLimiter(own) else limiter
+    }
+
     suspend fun run(item: DownloadItem, onProgress: suspend (downloadedBytes: Long, speed: Long) -> Unit): Result<Unit> {
         val id = item.id
         return engine.runDownload(
             item = item,
             existingChunks = repository.getChunks(id),
-            limiter = limiter,
+            limiter = itemLimiter(item),
             headers = RequestHeaders.from(item, defaultUserAgent()),
             onChunkCreated = { chunks ->
                 repository.deleteChunks(id)

@@ -24,5 +24,16 @@ object Migrations {
         }
     }
 
-    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2)
+    /**
+     * 2 -> 3: per-download speed limit and expected checksum. Plain ADD COLUMN; the NOT NULL column carries the same
+     * DEFAULT the entity declares (defaultValue = "0"), the nullable one has none. WRITTEN, UNBUILT: never run against a v2 database.
+     */
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `downloads` ADD COLUMN `speed_limit_kbps` INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE `downloads` ADD COLUMN `expected_checksum` TEXT")
+        }
+    }
+
+    val ALL: Array<Migration> = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
 }

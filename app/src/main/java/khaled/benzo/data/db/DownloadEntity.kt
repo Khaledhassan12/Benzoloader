@@ -29,7 +29,9 @@ data class DownloadEntity(
     @ColumnInfo(name = "error_message") val errorMessage: String? = null,
     @ColumnInfo(name = "is_torrent") val isTorrent: Boolean = false,
     @ColumnInfo(name = "torrent_info_hash") val torrentInfoHash: String? = null,
-    @ColumnInfo(name = "is_wifi_only") val isWifiOnly: Boolean = false
+    @ColumnInfo(name = "is_wifi_only") val isWifiOnly: Boolean = false,
+    @ColumnInfo(name = "speed_limit_kbps", defaultValue = "0") val speedLimitKBps: Int = 0,
+    @ColumnInfo(name = "expected_checksum") val expectedChecksum: String? = null
 ) {
     fun toModel(): DownloadItem {
         val ck = khaled.benzo.core.security.Secrets.read(cookies)
@@ -57,7 +59,9 @@ data class DownloadEntity(
             errorMessage = errorMessage,
             isTorrent = isTorrent,
             torrentInfoHash = torrentInfoHash,
-            isWifiOnly = isWifiOnly
+            isWifiOnly = isWifiOnly,
+            speedLimitKBps = speedLimitKBps,
+            expectedChecksum = expectedChecksum
         )
     }
 
@@ -84,7 +88,9 @@ data class DownloadEntity(
                 errorMessage = model.errorMessage,
                 isTorrent = model.isTorrent,
                 torrentInfoHash = model.torrentInfoHash,
-                isWifiOnly = model.isWifiOnly
+                isWifiOnly = model.isWifiOnly,
+                speedLimitKBps = model.speedLimitKBps,
+                expectedChecksum = model.expectedChecksum
             )
         }
     }

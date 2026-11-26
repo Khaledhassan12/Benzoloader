@@ -383,4 +383,9 @@
     <string name="editor_category">التصنيف</string>
     <string name="editor_category_auto">تلقائي (من اسم الملف)</string>
     <string name="top_color_reset">إعادة الضبط</string>
+    <string name="editor_speed_limit">حد السرعة لهذا التحميل</string>
+    <string name="editor_speed_global">الحد العام</string>
+    <string name="editor_checksum">المجموع الاختباري (اختياري)</string>
+    <string name="checksum_invalid">المجموع الاختباري لازم يكون 32 أو 40 أو 64 حرف سداسي عشري.</string>
+    <string name="checksum_mismatch">الملف المكتمل مش مطابق للمجموع الاختباري اللي كتبته. الملف اتحفظ.</string>
 </resources>

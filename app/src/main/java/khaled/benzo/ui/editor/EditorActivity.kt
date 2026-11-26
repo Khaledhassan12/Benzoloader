@@ -122,6 +122,9 @@ class EditorActivity : AppCompatActivity() {
             binding.txtThreadsValue.text = value.toInt().toString()
         }
 
+        binding.sliderItemSpeed.addOnChangeListener { _, v, _ ->
+            binding.txtItemSpeedValue.text = if (v.toInt() == 0) getString(R.string.editor_speed_global) else "${v.toInt()} KB/s"
+        }
         binding.btnToggleAdvanced.setOnClickListener {
             binding.layoutAdvanced.visibility = if (binding.layoutAdvanced.visibility == View.VISIBLE) {
                 View.GONE
@@ -195,6 +198,12 @@ class EditorActivity : AppCompatActivity() {
             return
         }
 
+        val typedChecksum = binding.edtChecksum.text.toString()
+        if (typedChecksum.isNotBlank() && khaled.benzo.core.files.ChecksumPolicy.normalize(typedChecksum) == null) {
+            Toast.makeText(this, R.string.checksum_invalid, Toast.LENGTH_LONG).show()
+            return
+        }
+
         if (fileName.isEmpty()) {
             fileName = "download_" + System.currentTimeMillis()
         }
@@ -220,6 +229,8 @@ class EditorActivity : AppCompatActivity() {
             cookies = binding.edtCookies.text.toString().ifEmpty { null },
             startNow = startNow,
             pickedCategory = pickedCategory,
+            speedLimitKBps = binding.sliderItemSpeed.value.toInt(),
+            expectedChecksum = khaled.benzo.core.files.ChecksumPolicy.normalize(binding.edtChecksum.text.toString()),
             onError = { Toast.makeText(this, R.string.secrets_save_failed, Toast.LENGTH_LONG).show() }
         ) { downloadId ->
             if (startNow) {

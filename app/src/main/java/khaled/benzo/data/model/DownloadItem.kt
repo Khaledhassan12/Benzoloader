@@ -24,7 +24,11 @@ data class DownloadItem(
     val isWifiOnly: Boolean = false,
     /** Stored cookies/headers that could not be decrypted, kept as stored so they are never overwritten with nothing. */
     val rawCookies: String? = null,
-    val rawHeaders: String? = null
+    val rawHeaders: String? = null,
+    /** Limit for this download alone in KB/s. 0 = use the global limit only. */
+    val speedLimitKBps: Int = 0,
+    /** Expected file checksum as hex (MD5, SHA-1 or SHA-256 by length). Null = no check. */
+    val expectedChecksum: String? = null
 ) {
     /** True when saved cookies or headers cannot be read (security key changed). The user must enter them again. */
     val needsReentry: Boolean

@@ -205,7 +205,16 @@ class DownloadService : Service() {
             activeJobs.remove(id)
             activeItems.remove(id)
 
-            if (result.isSuccess) {
+            val expected = item.expectedChecksum
+            val checksumBad = result.isSuccess && expected != null &&
+                !runCatching { khaled.benzo.core.files.ChecksumPolicy.matches(
+                    downloadEngine.resolveTarget(repository.getDownload(id) ?: item), expected) }.getOrDefault(false)
+            if (checksumBad) {
+                // The file is kept (never deleted); the user sees why it is not marked finished.
+                repository.updateDownload(item.copy(status = DownloadStatus.ERROR, speed = 0L,
+                    errorMessage = getString(R.string.checksum_mismatch)))
+                notificationHelper.playSound(R.raw.error)
+            } else if (result.isSuccess) {
                 repository.updateStatusAndSpeed(id, DownloadStatus.COMPLETED, 0L)
                 val completedItem = repository.getDownload(id) ?: item
                 notificationHelper.showCompletedNotification(completedItem)

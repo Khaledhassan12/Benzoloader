@@ -26,6 +26,8 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
         cookies: String?,
         startNow: Boolean,
         pickedCategory: FileCategory? = null,
+        speedLimitKBps: Int = 0,
+        expectedChecksum: String? = null,
         onError: () -> Unit = {},
         onComplete: (Long) -> Unit
     ) {
@@ -57,6 +59,8 @@ class EditorViewModel(application: Application) : AndroidViewModel(application) 
                 speed = 0L,
                 createdDate = System.currentTimeMillis(),
                 isWifiOnly = isWifiOnly,
+                speedLimitKBps = speedLimitKBps,
+                expectedChecksum = expectedChecksum,
                 userAgent = userAgent,
                 referer = referer,
                 cookies = cookies
