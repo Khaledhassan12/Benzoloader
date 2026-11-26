@@ -167,7 +167,7 @@ class DownloadEngine(
                         async {
                             ChunkWorker(
                                 client = client, url = item.url, chunk = chunk, outputFile = targetFile,
-                                limiter = limiter, headers = chunkHeaders, wholeFile = wholeFile, maxRetries = maxRetries.coerceIn(0, 20),
+                                limiter = limiter, headers = chunkHeaders, wholeFile = wholeFile, maxRetries = maxRetries.coerceIn(0, 128),
                                 onProgress = { _, bytes ->
                                     downloaded.addAndGet(bytes.toLong())
                                     speedTracker.recordBytes(bytes.toLong())

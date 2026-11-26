@@ -72,7 +72,7 @@ class ChunkWorker(
                     return@withContext Result.failure(e)
                 }
                 // The wait is a coroutine delay, so pausing or cancelling the download ends it at once.
-                delay(maxOf(retryBaseDelayMs shl attempt, hint))
+                delay(maxOf(RetryBackoff.waitMs(retryBaseDelayMs, attempt), hint))
                 attempt++
             }
         }

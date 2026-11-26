@@ -80,8 +80,8 @@ class SettingsRepository(context: Context) {
 
     /** How many times a failing part is retried (with backoff) before the download is marked as failed. */
     var errorRetries: Int
-        get() = prefs.getInt(KEY_ERROR_RETRIES, 4).coerceIn(0, 10)
-        set(value) = prefs.edit().putInt(KEY_ERROR_RETRIES, value.coerceIn(0, 10)).apply()
+        get() = prefs.getInt(KEY_ERROR_RETRIES, 4).coerceIn(0, 128)
+        set(value) = prefs.edit().putInt(KEY_ERROR_RETRIES, value.coerceIn(0, 128)).apply()
 
     /** A download that fails after all retries becomes Paused (keeps its partial file) instead of Failed. */
     var pauseAfterError: Boolean

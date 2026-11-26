@@ -31,7 +31,7 @@ object SettingsBackup {
         "schedule_stop_minute" to Spec.IntRange(0, 1439),
         "catalog_enabled" to Spec.Bool,
         "catalog_folder_names" to Spec.Text(2000),
-        "error_retries" to Spec.IntRange(0, 10),
+        "error_retries" to Spec.IntRange(0, 128),
         "pause_after_error" to Spec.Bool,
         "auto_resume" to Spec.Bool,
         "notif_lock_screen" to Spec.Bool,
