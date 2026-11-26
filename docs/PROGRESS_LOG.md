@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `52c175d` (26 Nov 08:40, backup covers hidden panel rows; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `cfb3c36` (26 Nov 09:05, total-finish vibration; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `cfb3c36` | 26 Nov 09:05 | Total-finish vibration setting and slider, service uses it, backup, test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `52c175d` | 26 Nov 08:40 | Settings backup: hidden panel rows (comma list, safe characters only) + test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `85899b9` | 26 Nov 08:25 | Quick panel eye editor: checkboxes beside rows, hidden rows saved; PanelVisibility + tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `ae3fc64` | 26 Nov 08:00 | Quick panel: Exit after finishing as an Options switch (moved from a Downloading value row), Tools Export/Import list entries | WRITTEN, UNBUILT (never compiled or run) |
@@ -337,6 +338,10 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 ### Quick panel eye editor (written, unbuilt, unrendered)
 - OBSERVED (video 3 part 1): the eye icon in a section header shows a checkbox beside every row, and unticking changes which rows show. Built: eye button in the Downloading header (stock placeholder icon) toggles edit mode; every row gets a checkbox ticked while shown; unticked rows disappear outside edit mode. Row keys are the row title resource names. Stored in `quick_panel_hidden`; saved across leaving edit mode is my choice (reference persistence NOT SEEN).
 - The eye is only in the Downloading header (reference may show it per section, UNCLEAR). Hidden keys are now in the settings backup (08:40, stored as a comma list so the preference type matches what import writes). Order-of-init risk handled: knownKeys and editing are declared before the init block that draws. Not rendered.
+
+### Total-finish vibration (written, unbuilt, unrendered, newly activated behaviour)
+- OBSERVED (video 3 part 2): Vibration has four duration rows: intercept 50 ms, success 150 ms, error 300 ms, total finish 500 ms. Ours had success and error. Added `vib_total_ms` (default 500 = the CAPTURED value, not a verified factory default), a slider in Settings, backup coverage, and `AfterFinishPolicy.allFinished`.
+- INFERRED, not seen: "total finish" means the last download finished with nothing running, waiting (QUEUED) or seeding. When that holds, the finish buzz uses the total length INSTEAD of the success length (one buzz, my choice). A completed torrent keeps seeding, so it never counts as total finish while seeding. This changes behaviour for existing users with vibration on: NOTE FOR FINAL REVIEW. Reference range runs OFF to 900; ours is 50 to 1000. The "intercept" vibration (50 ms) is still NOT built: when it fires is not seen. Not rendered; test written, not run.
 
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.
