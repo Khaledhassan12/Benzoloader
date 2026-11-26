@@ -206,12 +206,15 @@ class DownloadService : Service() {
             activeItems.remove(id)
 
             val expected = item.expectedChecksum
+            // Success is only reported after the check passed. Hashing runs on the IO dispatcher (this scope), never the main thread.
+            // Applies to plain HTTP downloads only; torrents take the other path above and are never checked.
             val checksumBad = result.isSuccess && expected != null &&
                 !runCatching { khaled.benzo.core.files.ChecksumPolicy.matches(
                     downloadEngine.resolveTarget(repository.getDownload(id) ?: item), expected) }.getOrDefault(false)
             if (checksumBad) {
-                // The file is kept (never deleted); the user sees why it is not marked finished.
-                repository.updateDownload(item.copy(status = DownloadStatus.ERROR, speed = 0L,
+                // The file is kept (never deleted); the user sees why it is not marked finished. No finish toast, sound, vibration or after-finish action.
+                val fresh = repository.getDownload(id) ?: item
+                repository.updateDownload(fresh.copy(status = DownloadStatus.ERROR, speed = 0L,
                     errorMessage = getString(R.string.checksum_mismatch)))
                 notificationHelper.playSound(R.raw.error)
             } else if (result.isSuccess) {

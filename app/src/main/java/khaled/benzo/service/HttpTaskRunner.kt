@@ -13,10 +13,10 @@ class HttpTaskRunner(
     private val limiter: TokenBucketLimiter,
     private val defaultUserAgent: () -> String = { "" }
 ) {
-    /** The global limit applies as before; a per-download limit gets its own bucket, and the stricter of the two wins. */
+    /** The global limit always applies (shared). A per-download limit adds its own bucket on top, chained to the global one: it can only slow that download further. */
     private fun itemLimiter(item: DownloadItem): TokenBucketLimiter {
         val own = item.speedLimitKBps * 1024L
-        return if (own > 0L) TokenBucketLimiter(own) else limiter
+        return if (own > 0L) TokenBucketLimiter(own, parent = limiter) else limiter
     }
 
     suspend fun run(item: DownloadItem, onProgress: suspend (downloadedBytes: Long, speed: Long) -> Unit): Result<Unit> {

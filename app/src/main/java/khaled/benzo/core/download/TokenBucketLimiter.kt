@@ -2,7 +2,11 @@ package khaled.benzo.core.download
 
 import kotlinx.coroutines.delay
 
-class TokenBucketLimiter(private var maxBytesPerSecond: Long = 0L) {
+/**
+ * [parent] is the global limiter. A download's own limiter charges the parent too, so a per-download limit can only make a
+ * download slower, never let it exceed or bypass the global cap, and the global budget stays shared.
+ */
+class TokenBucketLimiter(private var maxBytesPerSecond: Long = 0L, private val parent: TokenBucketLimiter? = null) {
 
     private var availableTokens: Long = 0L
     private var lastRefillTime: Long = System.currentTimeMillis()
@@ -16,6 +20,7 @@ class TokenBucketLimiter(private var maxBytesPerSecond: Long = 0L) {
     }
 
     suspend fun acquire(requested: Int) {
+        parent?.acquire(requested)
         if (maxBytesPerSecond <= 0L) return // Unlimited
         // A request larger than one second of budget could never be satisfied (the bucket is capped at the limit),
         // so charge at most the current limit; the delay below still paces the stream.
