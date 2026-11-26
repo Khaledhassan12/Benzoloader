@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `2b13dc0` (26 Nov 05:10, Send choice; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `b075d75` (26 Nov 05:20, torrent force actions; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `b075d75` | 26 Nov 05:20 | Torrent Force recheck and Force announce, policy tests | WRITTEN, UNBUILT (never compiled or run) |
 | `2b13dc0` | 26 Nov 05:10 | Send: file or link choice with preview; OpenFileActivity for the notification tap; SendLinkPolicy tests | WRITTEN, UNBUILT (never compiled or run) |
 | `1832ac6` | 26 Nov 05:00 | Selection Send and Open, notification tap opens the file, FileActionPolicy tests | WRITTEN, UNBUILT (never compiled or run) |
 | `df292e2` | 26 Nov 04:50 | Proxy: permanent coverage line, pool eviction, routing/leak tests | WRITTEN, UNBUILT (never compiled or run) |
