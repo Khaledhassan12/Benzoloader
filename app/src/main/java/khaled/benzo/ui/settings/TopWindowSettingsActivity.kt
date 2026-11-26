@@ -40,7 +40,7 @@ class TopWindowSettingsActivity : AppCompatActivity() {
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         val toolbar = com.google.android.material.appbar.MaterialToolbar(this).apply {
             setTitle(R.string.cat_top_window)
-            setNavigationIcon(R.drawable.abc_ic_ab_back_material)
+            setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
             setNavigationOnClickListener { finish() }
         }
         root.addView(toolbar, LinearLayout.LayoutParams(-1, dp(56)))
