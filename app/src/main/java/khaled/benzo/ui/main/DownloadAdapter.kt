@@ -61,7 +61,10 @@ class DownloadAdapter(
         fun bind(item: DownloadItem) {
             applyColors()
             binding.txtFileName.text = item.fileName
-            binding.txtStatusSubtitle.text = "${khaled.benzo.ui.common.StatusText.of(binding.root.context, item.status, waiting[item.id])}"
+            val stats = khaled.benzo.data.repository.SettingsRepository(binding.root.context)
+            val added = if (stats.statAddedTime && item.createdDate > 0)
+                " \u00B7 " + android.text.format.DateFormat.format("MM-dd HH:mm", item.createdDate) else ""
+            binding.txtStatusSubtitle.text = "${khaled.benzo.ui.common.StatusText.of(binding.root.context, item.status, waiting[item.id])}" + added
 
             // Progress calculation
             val percent = if (item.totalBytes > 0) {
@@ -90,7 +93,7 @@ class DownloadAdapter(
             binding.txtEta.text = if (running && item.speed > 0 && item.totalBytes > 0) {
                 val seconds = (item.totalBytes - item.downloadedBytes).coerceAtLeast(0) / item.speed
                 String.format(Locale.US, "%02d:%02d", seconds / 60, seconds % 60)
-            } else if (item.status == DownloadStatus.COMPLETED && item.completedDate > 0) {
+            } else if (stats.statFinishTime && item.status == DownloadStatus.COMPLETED && item.completedDate > 0) {
                 android.text.format.DateFormat.format("yyyy-MM-dd HH:mm", item.completedDate).toString()
             } else ""
 

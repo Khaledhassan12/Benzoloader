@@ -85,6 +85,7 @@
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchBrowserSaveTabs" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pref_browser_save_tabs" />
       </LinearLayout>
       <LinearLayout android:id="@+id/section_interface" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <Button android:id="@+id/btnAdditionalStats" style="?attr/materialButtonOutlinedStyle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/stats_title" />
         <Button android:id="@+id/btnInterfaceColors" style="?attr/materialButtonOutlinedStyle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/colors_title" />
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchBottomBar" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_bottom_bar" />
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchSwapMenus" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_swap_menus" app:prefSummary="@string/sum_swap_menus" />

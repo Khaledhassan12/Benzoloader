@@ -322,7 +322,7 @@ class SettingsRepository(context: Context) {
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor, KEY_THEME_MODE to themeMode,
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
-        "vib_total_ms" to vibrateTotalMs, "notif_buttons" to notifButtons, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible,
+        "vib_total_ms" to vibrateTotalMs, "notif_buttons" to notifButtons, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible, "stat_added_time" to statAddedTime, "stat_finish_time" to statFinishTime,
         "ui_col_filename" to uiColFilename, "ui_col_info" to uiColInfo, "ui_col_progress" to uiColProgress, "ui_col_progress_bg" to uiColProgressBg, "ui_col_list" to uiColList,
         "quick_panel_hidden" to quickPanelHidden.sorted().joinToString(","),
         "top_window_enabled" to topWindowEnabled, "top_window_stats" to topWindowStatsMask,
@@ -380,6 +380,13 @@ class SettingsRepository(context: Context) {
     var uiColList: Int
         get() = prefs.getInt("ui_col_list", 0)
         set(value) = prefs.edit().putInt("ui_col_list", value).apply()
+    /** Additional statistics on a list row (checkbox dialog in Interface, OBSERVED video 5): added time, finishing time. */
+    var statAddedTime: Boolean
+        get() = prefs.getBoolean("stat_added_time", true)
+        set(value) = prefs.edit().putBoolean("stat_added_time", value).apply()
+    var statFinishTime: Boolean
+        get() = prefs.getBoolean("stat_finish_time", true)
+        set(value) = prefs.edit().putBoolean("stat_finish_time", value).apply()
     var topWindowEnabled: Boolean
         get() = prefs.getBoolean("top_window_enabled", false)
         set(v) = prefs.edit().putBoolean("top_window_enabled", v).apply()

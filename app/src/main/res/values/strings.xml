@@ -345,6 +345,9 @@
     <string name="col_progress">Colour of progress bar</string>
     <string name="col_list_bg">Background of list</string>
     <string name="col_stock">Stock colour</string>
+    <string name="stats_title">Additional statistics</string>
+    <string name="stats_added">Time added</string>
+    <string name="stats_finished">Time finished</string>
     <string name="panel_sorting">Sorting</string>
     <string name="panel_clear">Clear</string>
     <string name="panel_stopped">Stopped</string>

@@ -67,6 +67,8 @@ object SettingsBackup {
         "notif_buttons" to Spec.Text(100) { s -> s.all { it in 'a'..'z' || it == '_' || it == ',' } },
         "vib_total_ms" to Spec.IntRange(50, 1000, 50),
         "quick_graph_visible" to Spec.Bool,
+        "stat_added_time" to Spec.Bool,
+        "stat_finish_time" to Spec.Bool,
         "ui_col_filename" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
         "ui_col_info" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),
         "ui_col_progress" to Spec.IntRange(Int.MIN_VALUE, Int.MAX_VALUE),

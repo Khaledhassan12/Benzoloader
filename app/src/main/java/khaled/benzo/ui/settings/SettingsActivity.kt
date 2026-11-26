@@ -485,6 +485,14 @@ class SettingsActivity : AppCompatActivity() {
 
     /** Optional all-files access (Android 11+). Shows the current state; the user decides on the system screen. */
     private fun refreshAllFilesButton() {
+        binding.btnAdditionalStats.setOnClickListener {
+            val r = viewModel.repository
+            val checked = booleanArrayOf(r.statAddedTime, r.statFinishTime)
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this).setTitle(R.string.stats_title)
+                .setMultiChoiceItems(arrayOf(getString(R.string.stats_added), getString(R.string.stats_finished)), checked) { _, i, c -> checked[i] = c }
+                .setPositiveButton(android.R.string.ok) { _, _ -> r.statAddedTime = checked[0]; r.statFinishTime = checked[1] }
+                .setNegativeButton(android.R.string.cancel, null).show()
+        }
         binding.btnInterfaceColors.setOnClickListener { startActivity(android.content.Intent(this, InterfaceColorsActivity::class.java)) }
         val b = binding.btnAllFilesAccess
         if (!khaled.benzo.ui.common.AllFilesAccess.isApplicable()) { b.visibility = android.view.View.GONE; return }
