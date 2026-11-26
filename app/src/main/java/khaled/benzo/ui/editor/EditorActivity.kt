@@ -77,7 +77,7 @@ class EditorActivity : AppCompatActivity() {
     /** Short timeouts so a slow or odd server cannot hold the form. Only headers are read: the response body is never read, even when the server ignores Range. */
     private val probeEngine by lazy {
         khaled.benzo.core.download.DownloadEngine(
-            khaled.benzo.core.download.DownloadEngine.createDefaultClient().newBuilder()
+            khaled.benzo.core.download.DownloadEngine.createDefaultClient { viewModel.settingsRepository.activeProxy() }.newBuilder()
                 .connectTimeout(8, java.util.concurrent.TimeUnit.SECONDS).readTimeout(8, java.util.concurrent.TimeUnit.SECONDS)
                 .callTimeout(10, java.util.concurrent.TimeUnit.SECONDS).build())
     }

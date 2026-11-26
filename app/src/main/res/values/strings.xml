@@ -453,4 +453,13 @@
     <string name="editor_change_saved_later">Saved. It applies the next time this download starts.</string>
     <string name="checksum_torrent_unsupported">A checksum is not checked for torrents.</string>
     <string name="editor_change_collision">This name already exists in that folder, or another download uses it. Pick a different name or folder.</string>
+    <string name="row_proxy">Proxy</string>
+    <string name="proxy_disabled">Disabled</string>
+    <string name="proxy_new">New</string>
+    <string name="proxy_paste">Paste</string>
+    <string name="proxy_hint">host:port</string>
+    <string name="proxy_new_note">Use host:port for an HTTP proxy, or socks5://host:port. Sign-in details are not supported.</string>
+    <string name="proxy_invalid">Not a valid proxy address. Sign-in details (name@host) are not supported.</string>
+    <string name="proxy_remove_msg">Remove %1$s from the list?</string>
+    <string name="proxy_scope_note">The proxy is used for link downloads and the size check in the editor. Torrents and the browser do not use it yet.</string>
 </resources>

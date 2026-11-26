@@ -3,8 +3,8 @@ package khaled.benzo.core.queue
 /**
  * Decides whether the Editor may send its small size/name request before Start, and keeps results tied to the current link.
  * The request follows the same network rules as the download: no network, or a Wi-Fi-only rule (this download's box or the
- * global one) while not on Wi-Fi, means no request. There is no app proxy yet; when one exists, the probe must use the same
- * client so it can never go around it (tracked in the log).
+ * global one) while not on Wi-Fi, means no request. The probe uses the same proxy
+ * rule as the download engine (DownloadEngine.createDefaultClient with the chosen proxy), so it cannot go around it.
  */
 object ProbePolicy {
     enum class Decision { ALLOW, NO_NETWORK, WAITING_FOR_WIFI }

@@ -46,7 +46,7 @@ class DownloadService : Service() {
         settings = SettingsRepository(this)
         wakeLockManager = WakeLockManager(this)
         notificationHelper = NotificationHelper(this)
-        downloadEngine = DownloadEngine()
+        downloadEngine = DownloadEngine(DownloadEngine.createDefaultClient { settings.activeProxy() })
         limiter = TokenBucketLimiter(settings.speedLimitBytesPerSec)
         deviceConditions = DeviceConditions(this, settings)
         httpRunner = HttpTaskRunner(repository, downloadEngine, limiter) { khaled.benzo.data.repository.SettingsRepository(this).defaultUserAgent }

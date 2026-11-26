@@ -180,6 +180,19 @@ class SettingsRepository(context: Context) {
         get() = prefs.getString(KEY_DEFAULT_UA, "").orEmpty()
         set(value) = prefs.edit().putString(KEY_DEFAULT_UA, value.trim().take(300)).apply()
 
+    /** Proxies the user entered, one per line (always valid: only parsed values are stored). Not part of the settings export. */
+    var proxyList: List<String>
+        get() = prefs.getString(KEY_PROXY_LIST, "").orEmpty().split('\n').filter { it.isNotBlank() }
+        set(value) = prefs.edit().putString(KEY_PROXY_LIST, value.distinct().take(20).joinToString("\n")).apply()
+
+    /** The chosen proxy's label, or blank for "disabled". */
+    var proxySelected: String
+        get() = prefs.getString(KEY_PROXY_SELECTED, "").orEmpty()
+        set(value) = prefs.edit().putString(KEY_PROXY_SELECTED, value).apply()
+
+    fun activeProxy(): khaled.benzo.core.net.ProxyConfig? =
+        (khaled.benzo.core.net.ProxyConfig.parse(proxySelected) as? khaled.benzo.core.net.ProxyConfig.Parsed.Ok)?.config
+
     /** Where new downloads appear in the list: false = top (newest first, the long-standing order), true = bottom. Display only; start order is [newestFirst]. */
     var listAddToBottom: Boolean
         get() = prefs.getBoolean(KEY_LIST_BOTTOM, false)
@@ -409,6 +422,8 @@ class SettingsRepository(context: Context) {
         private const val KEY_CLEAR_NOTIFS_EXIT = "clear_notifs_on_exit"
         private const val KEY_MIN_THREAD_KB = "min_thread_kb"
         private const val KEY_DEFAULT_UA = "default_user_agent"
+        private const val KEY_PROXY_LIST = "proxy_list"
+        private const val KEY_PROXY_SELECTED = "proxy_selected"
         private const val KEY_TORRENT_FIXED_PORT = "torrent_fixed_port"
         private const val KEY_TORRENT_PORT = "torrent_port"
         private const val KEY_TORRENT_ANON = "torrent_anonymous"

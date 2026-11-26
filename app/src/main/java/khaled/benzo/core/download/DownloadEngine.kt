@@ -244,8 +244,10 @@ class DownloadEngine(
             return (if (n.isEmpty()) "download" else n).take(200)
         }
 
-        fun createDefaultClient(): OkHttpClient {
+        /** [proxy] is read on every request (see AppProxySelector). The default is no proxy. */
+        fun createDefaultClient(proxy: () -> khaled.benzo.core.net.ProxyConfig? = { null }): OkHttpClient {
             return OkHttpClient.Builder()
+                .proxySelector(khaled.benzo.core.net.AppProxySelector(proxy))
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)

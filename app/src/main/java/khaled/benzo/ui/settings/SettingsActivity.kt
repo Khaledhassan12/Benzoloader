@@ -99,6 +99,88 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    private fun proxyRepo() = khaled.benzo.data.repository.SettingsRepository(this)
+
+    /** Title plus the chosen proxy (or "Disabled") in the accent colour; a tap opens the radio list. */
+    private fun showProxyRow() {
+        val row = binding.txtProxy
+        val sel = proxyRepo().proxySelected
+        val b = android.text.SpannableStringBuilder(getString(R.string.row_proxy)).append('\n')
+        val start = b.length
+        b.append(if (sel.isEmpty()) getString(R.string.proxy_disabled) else sel)
+        b.setSpan(android.text.style.ForegroundColorSpan(com.google.android.material.color.MaterialColors.getColor(row, com.google.android.material.R.attr.colorPrimary)), start, b.length, 0)
+        row.text = b
+        val d = resources.displayMetrics.density
+        row.minHeight = (72 * d).toInt(); row.gravity = android.view.Gravity.CENTER_VERTICAL
+        row.setPadding((20 * d).toInt(), (12 * d).toInt(), (20 * d).toInt(), (12 * d).toInt())
+        row.isClickable = true
+        row.setOnClickListener { showProxyDialog() }
+    }
+
+    /** Radio list: Disabled first, then the entered proxies. New adds one (checked before saving), long-press removes one. Applied at once. */
+    private fun showProxyDialog() {
+        val repo = proxyRepo()
+        val list = repo.proxyList
+        val names = (listOf(getString(R.string.proxy_disabled)) + list).toTypedArray()
+        var checked = if (repo.proxySelected.isEmpty()) 0 else (list.indexOf(repo.proxySelected) + 1).coerceAtLeast(0)
+        val dialog = com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.row_proxy)
+            .setSingleChoiceItems(names, checked) { _, which -> checked = which }
+            .setNeutralButton(R.string.proxy_new) { _, _ -> showProxyNew() }
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                repo.proxySelected = if (checked == 0) "" else list[checked - 1]
+                showProxyRow()
+                if (checked != 0) android.widget.Toast.makeText(this, R.string.proxy_scope_note, android.widget.Toast.LENGTH_LONG).show()
+            }.create()
+        dialog.show()
+        dialog.listView.setOnItemLongClickListener { _, _, pos, _ ->
+            if (pos == 0) return@setOnItemLongClickListener true
+            val gone = list[pos - 1]
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setMessage(getString(R.string.proxy_remove_msg, gone))
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    repo.proxyList = list - gone
+                    if (repo.proxySelected == gone) repo.proxySelected = ""
+                    dialog.dismiss(); showProxyRow(); showProxyDialog()
+                }.setNegativeButton(android.R.string.cancel, null).show()
+            true
+        }
+    }
+
+    private fun showProxyNew() {
+        val edit = android.widget.EditText(this).apply { hint = getString(R.string.proxy_hint); setSingleLine() }
+        val pad = (24 * resources.displayMetrics.density).toInt()
+        val d = com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.proxy_new)
+            .setMessage(R.string.proxy_new_note)
+            .setView(android.widget.FrameLayout(this).apply { setPadding(pad, 0, pad, 0); addView(edit) })
+            .setNeutralButton(R.string.proxy_paste, null)
+            .setNegativeButton(android.R.string.cancel) { _, _ -> showProxyDialog() }
+            .setPositiveButton(android.R.string.ok, null).create()
+        d.show()
+        val ok = d.getButton(android.app.AlertDialog.BUTTON_POSITIVE)
+        ok.isEnabled = false
+        edit.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) { ok.isEnabled = !s.isNullOrBlank() }
+        })
+        d.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+            val cm = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            cm.primaryClip?.getItemAt(0)?.text?.toString()?.let { edit.setText(it.trim()) }
+        }
+        ok.setOnClickListener {
+            when (val p = khaled.benzo.core.net.ProxyConfig.parse(edit.text.toString())) {
+                is khaled.benzo.core.net.ProxyConfig.Parsed.Bad -> android.widget.Toast.makeText(this, R.string.proxy_invalid, android.widget.Toast.LENGTH_LONG).show()
+                is khaled.benzo.core.net.ProxyConfig.Parsed.Ok -> {
+                    val repo = proxyRepo(); repo.proxyList = repo.proxyList + p.config.label()
+                    d.dismiss(); showProxyDialog()
+                }
+            }
+        }
+    }
+
     private var userAgentValue: String = ""
 
     /** Title plus the current value (or "Default") in the accent colour; tapping opens a text dialog. Saved with the rest on exit. */
@@ -279,6 +361,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchVibrateError.isChecked = repo.vibrateOnError
         binding.switchClearNotifsOnExit.isChecked = repo.clearNotifsOnExit
         showUserAgentRow(repo.defaultUserAgent)
+        showProxyRow()
         binding.switchTorrentFixedPort.isChecked = repo.torrentFixedPort
         binding.switchTorrentAnonymous.isChecked = repo.torrentAnonymous
         encryptionIndex = repo.torrentEncryption

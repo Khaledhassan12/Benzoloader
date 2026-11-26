@@ -453,4 +453,13 @@
     <string name="editor_change_saved_later">تم الحفظ. سيُطبَّق عند بدء هذا التنزيل المرة القادمة.</string>
     <string name="checksum_torrent_unsupported">لا يتم فحص المجموع الاختباري للتورنت.</string>
     <string name="editor_change_collision">هذا الاسم موجود بالفعل في هذا المجلد أو يستخدمه تنزيل آخر. اختر اسمًا أو مجلدًا مختلفًا.</string>
+    <string name="row_proxy">البروكسي</string>
+    <string name="proxy_disabled">معطّل</string>
+    <string name="proxy_new">جديد</string>
+    <string name="proxy_paste">لصق</string>
+    <string name="proxy_hint">المضيف:المنفذ</string>
+    <string name="proxy_new_note">استخدم المضيف:المنفذ لبروكسي HTTP أو socks5://المضيف:المنفذ. بيانات تسجيل الدخول غير مدعومة.</string>
+    <string name="proxy_invalid">عنوان البروكسي غير صالح. بيانات تسجيل الدخول (الاسم@المضيف) غير مدعومة.</string>
+    <string name="proxy_remove_msg">حذف %1$s من القائمة؟</string>
+    <string name="proxy_scope_note">يُستخدم البروكسي في تنزيل الروابط وفحص الحجم في المحرر. التورنت والمتصفح لا يستخدمانه حتى الآن.</string>
 </resources>
