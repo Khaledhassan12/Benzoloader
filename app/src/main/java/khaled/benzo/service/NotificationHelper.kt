@@ -168,12 +168,11 @@ class NotificationHelper(private val context: Context) {
     }
 
     fun showCompletedNotification(item: DownloadItem) {
-        // The tap opens the finished file itself (the earlier code pointed at the folder path and could not open anything).
-        val file = khaled.benzo.ui.main.ItemFileIntents.file(item)
-        val openIntent = Intent(Intent.ACTION_VIEW).apply {
-            val uri = if (file.isFile) androidx.core.content.FileProvider.getUriForFile(context, "khaled.benzo.fileprovider", file) else Uri.parse(item.savePath)
-            setDataAndType(uri, khaled.benzo.ui.main.ItemFileIntents.mime(item))
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
+        // The tap opens the finished file (the earlier code pointed at the folder path and could not open anything).
+        // It goes through a private activity that checks the file at tap time, so a missing file shows a message.
+        val openIntent = Intent(context, khaled.benzo.ui.main.OpenFileActivity::class.java).apply {
+            putExtra("download_id", item.id)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         val openPendingIntent = PendingIntent.getActivity(
             context,

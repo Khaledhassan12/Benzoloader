@@ -159,6 +159,12 @@
             android:name=".receiver.DownloadActionReceiver"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.main.OpenFileActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Benzo.Invisible" />
+
         <!-- File Provider -->
         <provider
             android:name=".provider.BenzoFileProvider"

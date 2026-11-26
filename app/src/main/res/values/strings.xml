@@ -468,4 +468,9 @@
     <string name="sel_no_file">Only finished downloads whose file is still on the device can be sent.</string>
     <string name="sel_open_one">Select one finished download whose file is still on the device.</string>
     <string name="sel_no_app">No app on this device can open this file.</string>
+    <string name="send_as_file">The file (%1$d)</string>
+    <string name="send_as_link">The link (%1$d), shown first</string>
+    <string name="send_link_title">This text will be sent</string>
+    <string name="send_link_warning">A link below has extra parts after ? or #, or a name and password before @. These can hold a private key. Check it before sending.</string>
+    <string name="sel_no_file_now">The file is no longer on the device.</string>
 </resources>

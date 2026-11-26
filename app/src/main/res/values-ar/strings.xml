@@ -468,4 +468,9 @@
     <string name="sel_no_file">يمكن إرسال التنزيلات المكتملة التي ما زال ملفها على الجهاز فقط.</string>
     <string name="sel_open_one">حدد تنزيلًا واحدًا مكتملًا ما زال ملفه على الجهاز.</string>
     <string name="sel_no_app">لا يوجد تطبيق على الجهاز يستطيع فتح هذا الملف.</string>
+    <string name="send_as_file">الملف (%1$d)</string>
+    <string name="send_as_link">الرابط (%1$d)، يظهر لك أولًا</string>
+    <string name="send_link_title">هذا النص سيتم إرساله</string>
+    <string name="send_link_warning">أحد الروابط أدناه فيه أجزاء إضافية بعد ? أو #، أو اسم وكلمة مرور قبل @. قد تحتوي على مفتاح خاص. راجعه قبل الإرسال.</string>
+    <string name="sel_no_file_now">الملف لم يعد موجودًا على الجهاز.</string>
 </resources>

@@ -267,11 +267,7 @@ class MainActivity : AppCompatActivity() {
                         mode.finish()
                     }.setNegativeButton(android.R.string.cancel, null).show()
                 2 -> chosen.firstOrNull()?.let { startActivity(Intent(this@MainActivity, FilePropertiesActivity::class.java).putExtra("download_id", it.id)) }
-                8 -> {
-                    val files = khaled.benzo.core.files.FileActionPolicy.usable(chosen) { d -> khaled.benzo.ui.main.ItemFileIntents.file(d).isFile }
-                    if (files.isEmpty()) android.widget.Toast.makeText(this@MainActivity, R.string.sel_no_file, android.widget.Toast.LENGTH_LONG).show()
-                    else startActivity(khaled.benzo.ui.main.ItemFileIntents.send(this@MainActivity, files))
-                }
+                8 -> showSendChoice(chosen)
                 9 -> {
                     val one = khaled.benzo.core.files.FileActionPolicy.openTarget(chosen) { d -> khaled.benzo.ui.main.ItemFileIntents.file(d).isFile }
                     if (one == null) android.widget.Toast.makeText(this@MainActivity, R.string.sel_open_one, android.widget.Toast.LENGTH_LONG).show()
@@ -289,6 +285,30 @@ class MainActivity : AppCompatActivity() {
         override fun onDestroyActionMode(mode: androidx.appcompat.view.ActionMode) {
             actionMode = null; selection = selection.clear(); adapter.setSelected(emptySet())
         }
+    }
+
+    /**
+     * Send asks what to send, because the reference did not show it (UNCLEAR). Nothing is sent without the system chooser
+     * and the user's tap there. A link is shown in full first, with a warning if it may hold a private key.
+     */
+    private fun showSendChoice(chosen: List<DownloadItem>) {
+        val files = khaled.benzo.core.files.FileActionPolicy.usable(chosen) { d -> khaled.benzo.ui.main.ItemFileIntents.file(d).isFile }
+        val links = khaled.benzo.core.files.SendLinkPolicy.links(chosen)
+        if (files.isEmpty() && links.isEmpty()) { android.widget.Toast.makeText(this, R.string.sel_no_file, android.widget.Toast.LENGTH_LONG).show(); return }
+        val labels = mutableListOf<String>(); val actions = mutableListOf<() -> Unit>()
+        if (files.isNotEmpty()) { labels += getString(R.string.send_as_file, files.size); actions += { startActivity(khaled.benzo.ui.main.ItemFileIntents.send(this, files)) } }
+        if (links.isNotEmpty()) { labels += getString(R.string.send_as_link, links.size); actions += { showSendLinkPreview(links) } }
+        androidx.appcompat.app.AlertDialog.Builder(this).setTitle(R.string.sel_send)
+            .setItems(labels.toTypedArray()) { _, i -> actions[i]() }
+            .setNegativeButton(android.R.string.cancel, null).show()
+    }
+
+    private fun showSendLinkPreview(links: List<String>) {
+        val warn = khaled.benzo.core.files.SendLinkPolicy.anyMayBePrivate(links)
+        val body = (if (warn) getString(R.string.send_link_warning) + "\n\n" else "") + links.joinToString("\n")
+        androidx.appcompat.app.AlertDialog.Builder(this).setTitle(R.string.send_link_title).setMessage(body)
+            .setPositiveButton(R.string.sel_send) { _, _ -> startActivity(khaled.benzo.ui.main.ItemFileIntents.sendLinks(links)) }
+            .setNegativeButton(android.R.string.cancel, null).show()
     }
 
     private fun showReentry(item: DownloadItem) {

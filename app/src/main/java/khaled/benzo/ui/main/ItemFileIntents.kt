@@ -22,6 +22,10 @@ object ItemFileIntents {
     fun open(c: Context, item: DownloadItem): Intent = Intent.createChooser(
         Intent(Intent.ACTION_VIEW).setDataAndType(uri(c, item), mime(item)).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION), null)
 
+    /** Plain text with the links, handed to the system chooser. The user has already seen this exact text. */
+    fun sendLinks(links: List<String>): Intent =
+        Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, links.joinToString("\n")), null)
+
     fun send(c: Context, items: List<DownloadItem>): Intent {
         val i = if (items.size == 1) Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_STREAM, uri(c, items[0])).setType(mime(items[0]))
         else Intent(Intent.ACTION_SEND_MULTIPLE).putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(items.map { uri(c, it) })).setType("*/*")
