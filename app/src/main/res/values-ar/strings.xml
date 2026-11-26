@@ -542,4 +542,8 @@
     <string name="sel_up">أعلى</string>
     <string name="sel_down">أسفل</string>
     <string name="sel_move_needs_order">النقل اليدوي يعمل مع ترتيب "الترتيب". تحويل القائمة إلى هذا الترتيب الآن؟</string>
+    <string name="pref_torrent_lsd">البحث عن مصادر في الشبكة المحلية</string>
+    <string name="pref_torrent_utp">استخدام بروتوكول uTP</string>
+    <string name="pref_torrent_upnp">فتح منفذ الراوتر بـ UPnP</string>
+    <string name="pref_torrent_natpmp">فتح منفذ الراوتر بـ NAT-PMP</string>
 </resources>

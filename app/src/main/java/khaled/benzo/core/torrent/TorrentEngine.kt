@@ -85,11 +85,28 @@ class TorrentEngine(context: Context? = null) {
         if (session.isRunning) applyNetwork()
     }
 
+    private var wantLsd = true
+    private var wantUtp = true
+    private var wantUpnp = true
+    private var wantNatpmp = true
+
+    /** Local discovery, uTP, UPnP and NAT-PMP switches. Cheap to call repeatedly. */
+    fun configureDiscovery(lsd: Boolean, utp: Boolean, upnp: Boolean, natpmp: Boolean) = synchronized(lock) {
+        if (lsd == wantLsd && utp == wantUtp && upnp == wantUpnp && natpmp == wantNatpmp) return@synchronized
+        wantLsd = lsd; wantUtp = utp; wantUpnp = upnp; wantNatpmp = natpmp
+        if (session.isRunning) applyNetwork()
+    }
+
     private fun applyNetwork() {
         val pack = session.settings()
         pack.enableDht(wantDht)
         pack.connectionsLimit(TorrentNetworkPolicy.connectionsToApply(wantConnections, libraryConnectionsDefault))
         pack.anonymousMode(wantAnonymous)
+        pack.setBoolean(com.frostwire.jlibtorrent.swig.settings_pack.bool_types.enable_lsd.swigValue(), wantLsd)
+        pack.setBoolean(com.frostwire.jlibtorrent.swig.settings_pack.bool_types.enable_upnp.swigValue(), wantUpnp)
+        pack.setBoolean(com.frostwire.jlibtorrent.swig.settings_pack.bool_types.enable_natpmp.swigValue(), wantNatpmp)
+        pack.setBoolean(com.frostwire.jlibtorrent.swig.settings_pack.bool_types.enable_outgoing_utp.swigValue(), wantUtp)
+        pack.setBoolean(com.frostwire.jlibtorrent.swig.settings_pack.bool_types.enable_incoming_utp.swigValue(), wantUtp)
         // Policy for both directions. API names read from the jlibtorrent 1.2.0.18 classes, NOT compiled yet.
         val policy = when (TorrentEncryption.fromIndex(wantEncryption)) {
             TorrentEncryption.REQUIRE -> com.frostwire.jlibtorrent.swig.settings_pack.enc_policy.pe_forced

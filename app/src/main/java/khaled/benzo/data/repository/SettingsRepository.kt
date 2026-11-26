@@ -322,6 +322,7 @@ class SettingsRepository(context: Context) {
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor, KEY_THEME_MODE to themeMode,
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
+        "torrent_lsd" to torrentLsd, "torrent_utp" to torrentUtp, "torrent_upnp" to torrentUpnp, "torrent_natpmp" to torrentNatpmp,
         "vib_total_ms" to vibrateTotalMs, "notif_buttons" to notifButtons, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible, "stat_added_time" to statAddedTime, "stat_finish_time" to statFinishTime,
         "ui_col_filename" to uiColFilename, "ui_col_info" to uiColInfo, "ui_col_progress" to uiColProgress, "ui_col_progress_bg" to uiColProgressBg, "ui_col_list" to uiColList,
         "quick_panel_hidden" to quickPanelHidden.sorted().joinToString(","),
@@ -355,6 +356,19 @@ class SettingsRepository(context: Context) {
     }
 
     /** Torrent encryption mode index: 0 prefer (default), 1 require, 2 disable. See TorrentEncryption. */
+    var torrentLsd: Boolean
+        get() = prefs.getBoolean("torrent_lsd", true)
+        set(v) = prefs.edit().putBoolean("torrent_lsd", v).apply()
+    var torrentUtp: Boolean
+        get() = prefs.getBoolean("torrent_utp", true)
+        set(v) = prefs.edit().putBoolean("torrent_utp", v).apply()
+    var torrentUpnp: Boolean
+        get() = prefs.getBoolean("torrent_upnp", true)
+        set(v) = prefs.edit().putBoolean("torrent_upnp", v).apply()
+    var torrentNatpmp: Boolean
+        get() = prefs.getBoolean("torrent_natpmp", true)
+        set(v) = prefs.edit().putBoolean("torrent_natpmp", v).apply()
+
     var torrentEncryption: Int
         get() = prefs.getInt("torrent_encryption", 0).coerceIn(0, 2)
         set(v) = prefs.edit().putInt("torrent_encryption", v.coerceIn(0, 2)).apply()

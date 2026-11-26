@@ -143,6 +143,7 @@ class DownloadService : Service() {
             settings.torrentDht, settings.torrentConnections,
             khaled.benzo.core.torrent.TorrentNetworkPolicy.portToApply(settings.torrentFixedPort, settings.torrentPort), settings.torrentAnonymous, settings.torrentEncryption
         )
+        khaled.benzo.core.torrent.TorrentEngine.orNull()?.configureDiscovery(settings.torrentLsd, settings.torrentUtp, settings.torrentUpnp, settings.torrentNatpmp)
         val entities = khaled.benzo.data.db.BenzoDatabase.getInstance(this)
             .downloadDao().getPendingAndActiveDownloads()
         val items = entities.map { it.toModel() }

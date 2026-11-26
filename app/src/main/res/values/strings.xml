@@ -542,4 +542,8 @@
     <string name="sel_up">Up</string>
     <string name="sel_down">Down</string>
     <string name="sel_move_needs_order">Moving items by hand works in the Order sort. Switch the list to the Order sort now?</string>
+    <string name="pref_torrent_lsd">Find peers on the local network</string>
+    <string name="pref_torrent_utp">Use the uTP transport</string>
+    <string name="pref_torrent_upnp">Open the router port with UPnP</string>
+    <string name="pref_torrent_natpmp">Open the router port with NAT-PMP</string>
 </resources>

@@ -38,6 +38,10 @@
           <com.google.android.material.textfield.TextInputEditText android:id="@+id/editTorrentPort" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:maxLength="5" />
         </com.google.android.material.textfield.TextInputLayout>
         <TextView android:id="@+id/txtTorrentEncryption" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:gravity="center_vertical" android:paddingHorizontal="20dp" android:background="?attr/selectableItemBackground" android:clickable="true" android:focusable="true" android:textAppearance="?attr/textAppearanceBodyMedium" />
+        <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchTorrentLsd" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_lsd" />
+        <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchTorrentUtp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_utp" />
+        <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchTorrentUpnp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_upnp" />
+        <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchTorrentNatpmp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_natpmp" />
         <khaled.benzo.ui.common.PrefSwitch style="@style/Widget.Benzo.PrefSwitch" android:id="@+id/switchTorrentAnonymous" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/pref_torrent_anonymous" app:prefSummary="@string/sum_torrent_anonymous" />
       </LinearLayout>
       <LinearLayout android:id="@+id/section_notifications" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">

@@ -400,6 +400,10 @@ class SettingsActivity : AppCompatActivity() {
         showProxyRow()
         binding.switchTorrentFixedPort.isChecked = repo.torrentFixedPort
         binding.switchTorrentAnonymous.isChecked = repo.torrentAnonymous
+        binding.switchTorrentLsd.isChecked = repo.torrentLsd
+        binding.switchTorrentUtp.isChecked = repo.torrentUtp
+        binding.switchTorrentUpnp.isChecked = repo.torrentUpnp
+        binding.switchTorrentNatpmp.isChecked = repo.torrentNatpmp
         encryptionIndex = repo.torrentEncryption
         showEncryptionRow()
         binding.txtTorrentEncryption.setOnClickListener {
@@ -440,6 +444,10 @@ class SettingsActivity : AppCompatActivity() {
         repo.defaultUserAgent = userAgentValue
         repo.torrentFixedPort = binding.switchTorrentFixedPort.isChecked
         repo.torrentAnonymous = binding.switchTorrentAnonymous.isChecked
+        repo.torrentLsd = binding.switchTorrentLsd.isChecked
+        repo.torrentUtp = binding.switchTorrentUtp.isChecked
+        repo.torrentUpnp = binding.switchTorrentUpnp.isChecked
+        repo.torrentNatpmp = binding.switchTorrentNatpmp.isChecked
         repo.torrentEncryption = encryptionIndex
         // An empty or out-of-range port keeps the previous saved port.
         binding.editTorrentPort.text?.toString()?.toIntOrNull()
