@@ -20,4 +20,13 @@ class AfterFinishPolicyTest {
         assertEquals(AfterFinish.NOTHING, AfterFinish.fromCode(7))
         assertEquals(AfterFinish.EXIT_SERVICE, AfterFinish.fromCode(1))
     }
+
+    /** WRITTEN, NOT RUN. */
+    @Test fun allFinishedNeedsNothingElseRunningWaitingOrSeeding() {
+        assertTrue(AfterFinishPolicy.allFinished(true, 0, 0, 0))
+        assertFalse(AfterFinishPolicy.allFinished(false, 0, 0, 0))
+        assertFalse(AfterFinishPolicy.allFinished(true, 1, 0, 0))
+        assertFalse(AfterFinishPolicy.allFinished(true, 0, 2, 0))
+        assertFalse(AfterFinishPolicy.allFinished(true, 0, 0, 1))
+    }
 }

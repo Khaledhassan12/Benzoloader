@@ -298,6 +298,7 @@
     <string name="sum_user_agent">يُرسل مع التحميلات التي ليس لها معرّف خاص بها. حروف وأرقام ورموز عادية فقط، واتركه على الافتراضي لاستخدام معرّف العميل نفسه.</string>
     <string name="ua_invalid">مسموح بحروف ASCII العادية فقط</string>
     <string name="row_vib_success">اهتزاز عند النجاح</string>
+    <string name="row_vib_total">اهتزاز لما كل التحميلات تخلص</string>
     <string name="row_vib_error">اهتزاز عند الخطأ</string>
     <string name="val_ms">%1$d مللي ثانية</string>
     <string name="pref_vibrate_on_error">اهتزاز عند فشل التحميل</string>

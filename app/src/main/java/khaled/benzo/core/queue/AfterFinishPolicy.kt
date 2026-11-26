@@ -15,5 +15,13 @@ object AfterFinishPolicy {
      * waiting to start, or being seeded. A failure never triggers it, so the user sees what went wrong.
      */
     fun shouldExit(mode: AfterFinish, justCompleted: Boolean, running: Int, waiting: Int, seeding: Int): Boolean =
-        mode == AfterFinish.EXIT_SERVICE && justCompleted && running == 0 && waiting == 0 && seeding == 0
+        mode == AfterFinish.EXIT_SERVICE && allFinished(justCompleted, running, waiting, seeding)
+
+    /**
+     * True when a download just completed and nothing else is running, waiting to start or being seeded. Used for the
+     * "total finish" vibration. INFERRED meaning: the reference lists a "total finish" vibration beside intercept, success
+     * and error (OBSERVED rows, value 500 ms); that it means "queue now empty" was not seen.
+     */
+    fun allFinished(justCompleted: Boolean, running: Int, waiting: Int, seeding: Int): Boolean =
+        justCompleted && running == 0 && waiting == 0 && seeding == 0
 }

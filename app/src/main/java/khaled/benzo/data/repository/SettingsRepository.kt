@@ -167,6 +167,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean(KEY_VIB_ERROR_ON, false)
         set(value) = prefs.edit().putBoolean(KEY_VIB_ERROR_ON, value).apply()
 
+    /** Length of the buzz when the last waiting download finishes. 500 ms is the CAPTURED reference value, not a verified factory default. */
+    var vibrateTotalMs: Int
+        get() = prefs.getInt("vib_total_ms", 500).coerceIn(50, 1000)
+        set(value) = prefs.edit().putInt("vib_total_ms", value.coerceIn(50, 1000)).apply()
+
     var vibrateErrorMs: Int
         get() = prefs.getInt(KEY_VIB_ERROR, 300).coerceIn(50, 1000)
         set(value) = prefs.edit().putInt(KEY_VIB_ERROR, value.coerceIn(50, 1000)).apply()
@@ -312,7 +317,7 @@ class SettingsRepository(context: Context) {
         KEY_BROWSER_HISTORY to browserHistory, KEY_BROWSER_SAVE_TABS to browserSaveTabs, KEY_DARK_MODE to isDarkMode, KEY_BOTTOM_BAR to bottomBar, KEY_THEME_COLOR to themeColor, KEY_THEME_MODE to themeMode,
         KEY_DOWNLOAD_PATH to defaultDownloadPath,
         "torrent_encryption" to torrentEncryption,
-        "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible,
+        "vib_total_ms" to vibrateTotalMs, "create_empty_file" to createEmptyFile, "quick_graph_visible" to quickGraphVisible,
         "quick_panel_hidden" to quickPanelHidden.sorted().joinToString(","),
         "top_window_enabled" to topWindowEnabled, "top_window_stats" to topWindowStatsMask,
         "top_window_text_color" to topWindowTextColor, "top_window_bg_color" to topWindowBackgroundColor,

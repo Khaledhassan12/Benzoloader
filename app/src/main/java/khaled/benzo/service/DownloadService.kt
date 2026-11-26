@@ -227,7 +227,7 @@ class DownloadService : Service() {
                 if (settings.soundOnComplete) {
                     notificationHelper.playSound(R.raw.done)
                 }
-                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateSuccessMs))
+                notificationHelper.vibrate(completionVibrationMs())
                 autoResume.onSuccess(id)
                 if (exitIfFinished(justCompleted = true)) return@launch
             } else {
@@ -270,7 +270,7 @@ class DownloadService : Service() {
                 repository.updateStatusAndSpeed(id, DownloadStatus.COMPLETED, 0L)
                 (repository.getDownload(id) ?: item).let { notificationHelper.showCompletedNotification(it); notificationHelper.showFinishedToast(it.fileName) }
                 if (settings.soundOnComplete) notificationHelper.playSound(R.raw.done)
-                notificationHelper.vibrate(khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, settings.vibrateSuccessMs))
+                notificationHelper.vibrate(completionVibrationMs())
                 if (exitIfFinished(justCompleted = true)) return@launch
             }
             if (activeJobs.isEmpty()) wakeLockManager.release()
@@ -340,6 +340,16 @@ class DownloadService : Service() {
         val notif = notificationHelper.buildForegroundNotification(tasks, totalSpeed)
         val notifManager = getSystemService(NOTIFICATION_SERVICE) as android.app.NotificationManager
         notifManager.notify(NotificationHelper.NOTIFICATION_ID_FOREGROUND, notif)
+    }
+
+    /**
+     * Vibration for a finished download: the "total finish" length when nothing else is running, waiting or seeding,
+     * otherwise the normal success length. One buzz, not two (my choice; the reference was not seen to do both).
+     */
+    private suspend fun completionVibrationMs(): Long {
+        val waiting = repository.getAllOnce().count { it.status == DownloadStatus.QUEUED }
+        val all = khaled.benzo.core.queue.AfterFinishPolicy.allFinished(true, activeJobs.size, waiting, seedingMonitor.watchedCount())
+        return khaled.benzo.core.notify.VibrationPolicy.durationMs(settings.vibrateOnComplete, if (all) settings.vibrateTotalMs else settings.vibrateSuccessMs)
     }
 
     /** "After finishing: exit". Counts what is still running, waiting to start (QUEUED) or seeding before it stops the service. */

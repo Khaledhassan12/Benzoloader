@@ -283,6 +283,7 @@ class SettingsActivity : AppCompatActivity() {
             ValueRow(this, binding.txtDefaultThreads, binding.sliderDefaultThreads, g(R.row_threads), { getString(R.val_threads, it) }),
             ValueRow(this, binding.txtMinThread, binding.sliderMinThread, g(R.row_min_thread), { if (it >= 1024) "%.1f MB".format(it / 1024f) else "$it KB" }),
             ValueRow(this, binding.txtVibSuccess, binding.sliderVibSuccess, g(R.row_vib_success), { getString(R.val_ms, it) }),
+            ValueRow(this, binding.txtVibTotal, binding.sliderVibTotal, g(R.row_vib_total), { getString(R.val_ms, it) }),
             ValueRow(this, binding.txtVibError, binding.sliderVibError, g(R.row_vib_error), { getString(R.val_ms, it) }),
             ValueRow(this, binding.txtErrorRetries, binding.sliderErrorRetries, g(R.row_retries), { getString(R.val_count, it) }),
             ValueRow(this, binding.txtSpeedLimit, binding.sliderSpeedLimit, g(R.row_speed),
@@ -363,6 +364,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderMinThread.value = repo.minThreadKb.toFloat()
         binding.sliderVibSuccess.value = repo.vibrateSuccessMs.toFloat()
         binding.sliderVibError.value = repo.vibrateErrorMs.toFloat()
+        binding.sliderVibTotal.value = repo.vibrateTotalMs.toFloat()
         binding.switchVibrateError.isChecked = repo.vibrateOnError
         binding.switchClearNotifsOnExit.isChecked = repo.clearNotifsOnExit
         showUserAgentRow(repo.defaultUserAgent)
@@ -403,6 +405,7 @@ class SettingsActivity : AppCompatActivity() {
         repo.minThreadKb = binding.sliderMinThread.value.toInt()
         repo.vibrateSuccessMs = binding.sliderVibSuccess.value.toInt()
         repo.vibrateErrorMs = binding.sliderVibError.value.toInt()
+        repo.vibrateTotalMs = binding.sliderVibTotal.value.toInt()
         repo.vibrateOnError = binding.switchVibrateError.isChecked
         repo.clearNotifsOnExit = binding.switchClearNotifsOnExit.isChecked
         repo.defaultUserAgent = userAgentValue
