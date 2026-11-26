@@ -202,7 +202,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         adapter = DownloadAdapter(
+            onItemLongClick = { item -> selection = selection.toggle(item.id); onSelectionChanged() },
             onItemClick = { item ->
+                if (selection.active) { selection = selection.toggle(item.id); onSelectionChanged(); return@DownloadAdapter }
                 if (item.needsReentry) { showReentry(item); return@DownloadAdapter }
                 val intent = Intent(this, FilePropertiesActivity::class.java).apply {
                     putExtra("download_id", item.id)
@@ -219,6 +221,59 @@ class MainActivity : AppCompatActivity() {
 
         binding.recyclerViewDownloads.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewDownloads.adapter = adapter
+    }
+
+    // ---- Selection mode (video: back arrow, "n / total", delete, info, overflow) ----
+    private var selection = khaled.benzo.core.queue.SelectionState()
+    private var actionMode: androidx.appcompat.view.ActionMode? = null
+
+    private fun visibleIds() = adapter.currentList.map { it.id }
+
+    private fun onSelectionChanged() {
+        adapter.setSelected(selection.selected)
+        if (!selection.active) { actionMode?.finish(); return }
+        if (actionMode == null) actionMode = startSupportActionMode(selectionCallback)
+        val total = adapter.currentList.size
+        actionMode?.title = "${selection.count} / $total"
+        val bytes = adapter.currentList.filter { it.id in selection.selected && it.totalBytes > 0 }.sumOf { it.totalBytes }
+        actionMode?.subtitle = if (bytes > 0) khaled.benzo.core.download.SpeedTracker.formatSize(bytes) else null
+        actionMode?.invalidate()
+    }
+
+    private val selectionCallback = object : androidx.appcompat.view.ActionMode.Callback {
+        override fun onCreateActionMode(mode: androidx.appcompat.view.ActionMode, menu: android.view.Menu): Boolean {
+            menu.add(0, 1, 0, R.string.sel_delete).setIcon(R.drawable.ic_delete).setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
+            menu.add(0, 2, 1, R.string.sel_info).setIcon(R.drawable.ic_info).setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
+            menu.add(0, 3, 2, R.string.sel_start); menu.add(0, 4, 3, R.string.sel_stop)
+            menu.add(0, 5, 4, R.string.sel_select_all); menu.add(0, 6, 5, R.string.sel_invert)
+            return true
+        }
+        override fun onPrepareActionMode(mode: androidx.appcompat.view.ActionMode, menu: android.view.Menu): Boolean {
+            menu.findItem(2)?.isVisible = selection.count == 1   // Properties shows one item
+            return true
+        }
+        override fun onActionItemClicked(mode: androidx.appcompat.view.ActionMode, item: android.view.MenuItem): Boolean {
+            val chosen = adapter.currentList.filter { it.id in selection.selected }
+            when (item.itemId) {
+                1 -> androidx.appcompat.app.AlertDialog.Builder(this@MainActivity)
+                    .setTitle(R.string.sel_delete_title).setMessage(getString(R.string.sel_delete_msg, chosen.size))
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        // Same path as the row menu: through the service, so a running transfer stops first.
+                        chosen.forEach { d -> startService(Intent(this@MainActivity, DownloadService::class.java).apply {
+                            action = DownloadActionReceiver.ACTION_CANCEL; putExtra(DownloadActionReceiver.EXTRA_DOWNLOAD_ID, d.id) }) }
+                        mode.finish()
+                    }.setNegativeButton(android.R.string.cancel, null).show()
+                2 -> chosen.firstOrNull()?.let { startActivity(Intent(this@MainActivity, FilePropertiesActivity::class.java).putExtra("download_id", it.id)) }
+                3 -> chosen.filter { it.status != DownloadStatus.RUNNING && it.status != DownloadStatus.COMPLETED }.forEach { toggleDownloadStatus(it) }
+                4 -> chosen.filter { it.status == DownloadStatus.RUNNING }.forEach { toggleDownloadStatus(it) }
+                5 -> { selection = selection.selectAll(visibleIds()); onSelectionChanged() }
+                6 -> { selection = selection.invert(visibleIds()); onSelectionChanged() }
+            }
+            return true
+        }
+        override fun onDestroyActionMode(mode: androidx.appcompat.view.ActionMode) {
+            actionMode = null; selection = selection.clear(); adapter.setSelected(emptySet())
+        }
     }
 
     private fun showReentry(item: DownloadItem) {
@@ -286,6 +341,7 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.downloads.collectLatest { list ->
                 adapter.submitList(list)
+                if (selection.active) { selection = selection.prune(list.map { it.id }); onSelectionChanged() }
                 binding.layoutEmptyState.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
             }
         }

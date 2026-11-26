@@ -422,4 +422,12 @@
     <string name="qp_settings">Settings</string>
     <string name="qp_browser">Browser</string>
     <string name="qp_idle">No active downloads</string>
+    <string name="sel_delete">Delete</string>
+    <string name="sel_info">Info</string>
+    <string name="sel_start">Start</string>
+    <string name="sel_stop">Stop</string>
+    <string name="sel_select_all">Select all</string>
+    <string name="sel_invert">Invert selection</string>
+    <string name="sel_delete_title">Delete downloads?</string>
+    <string name="sel_delete_msg">%1$d selected download(s) will be removed from the list. This is the same removal as the row menu.</string>
 </resources>

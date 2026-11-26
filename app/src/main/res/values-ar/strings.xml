@@ -422,4 +422,12 @@
     <string name="qp_settings">الإعدادات</string>
     <string name="qp_browser">المتصفح</string>
     <string name="qp_idle">لا توجد تحميلات نشطة</string>
+    <string name="sel_delete">حذف</string>
+    <string name="sel_info">معلومات</string>
+    <string name="sel_start">بدء</string>
+    <string name="sel_stop">إيقاف</string>
+    <string name="sel_select_all">تحديد الكل</string>
+    <string name="sel_invert">عكس التحديد</string>
+    <string name="sel_delete_title">حذف التحميلات؟</string>
+    <string name="sel_delete_msg">سيتم حذف %1$d تحميل محدد من القائمة، بنفس طريقة حذف الصف من قائمته.</string>
 </resources>

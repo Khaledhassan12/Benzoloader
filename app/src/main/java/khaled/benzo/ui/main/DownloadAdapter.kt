@@ -15,8 +15,15 @@ import java.util.Locale
 class DownloadAdapter(
     private val onItemClick: (DownloadItem) -> Unit,
     private val onControlClick: (DownloadItem) -> Unit,
-    private val onMenuClick: (DownloadItem, View) -> Unit
+    private val onMenuClick: (DownloadItem, View) -> Unit,
+    private val onItemLongClick: (DownloadItem) -> Unit = {}
 ) : ListAdapter<DownloadItem, DownloadAdapter.ViewHolder>(DiffCallback) {
+
+    private var selected: Set<Long> = emptySet()
+
+    /** Selected rows get a tinted background. Only the rows are redrawn, the list itself is unchanged. */
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
+    fun setSelected(ids: Set<Long>) { if (ids != selected) { selected = ids; notifyDataSetChanged() } }
 
     private var waiting: Map<Long, khaled.benzo.core.queue.BlockReason> = emptyMap()
 
@@ -76,6 +83,15 @@ class DownloadAdapter(
             binding.imgFileIcon.setOnClickListener { onControlClick(item) }
 
             binding.root.setOnClickListener { onItemClick(item) }
+            binding.root.setOnLongClickListener { onItemLongClick(item); true }
+            if (item.id in selected) {
+                binding.root.setBackgroundColor(com.google.android.material.color.MaterialColors.getColor(
+                    binding.root, com.google.android.material.R.attr.colorSecondaryContainer))
+            } else {
+                val tv = android.util.TypedValue()
+                binding.root.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, tv, true)
+                binding.root.setBackgroundResource(tv.resourceId)
+            }
             binding.btnItemMenu.setOnClickListener { v -> onMenuClick(item, v) }
         }
 
