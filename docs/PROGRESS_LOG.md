@@ -3,17 +3,19 @@
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
 **Latest implementation commit when this entry was written:** `3c628b0` (26 Nov 09:50, manual order drives start; Apply sorting; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
-**Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
-**Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
+**Local build and test evidence (own build, NOT CI):** `cfd04b8` compiled (`compileGithubDebugKotlin`) and 386 JVM unit tests passed locally on 26 Nov 10:11, after fixing three compile faults and one real bug. A debug-signed arm64-only APK was built from it. Every later batch is compiled and unit-tested before it is pushed (rule in force since Khaled's 09:54 request for an interim build); an entry that says otherwise is written-unbuilt.
+**CI:** NOT RUN. No GitHub Actions workflow exists on this branch. The final-stage CI build and a stable CI artifact are still to do.
+**User-reported run:** the interim APK was reported to install and launch on a phone (26 Nov 10:25). This is not evidence of feature parity or visual parity, and no screenshots or recordings are stored.
+**Earlier state:** `fd59931` was the last commit compiled before the interim build (40 of 40 tests). Code between it and `cfd04b8` is described as "unbuilt" in older rows below; read those as now compiled and logic-tested, still unrendered and not parity-checked.
 
 ## How to read the states
 | State | Meaning |
 |---|---|
-| BUILT+TESTED | Compiled and its JVM tests passed (only up to `fd59931`) |
+| BUILT+TESTED | Compiled and its JVM tests passed locally (through `cfd04b8`; local build, not CI). Says nothing about looks or phone behaviour |
 | WRITTEN | Code is in the repo. Not compiled, not run. May contain compile errors |
 | TESTS WRITTEN | Unit tests exist but have not been run |
 | NOT RENDERED | Layout written; never drawn on a screen. No visual match is claimed |
-| NOT DEVICE-TESTED | Never run on a phone. Runtime behaviour is unverified |
+| NOT DEVICE-TESTED | Reported to install and launch (interim APK) but this feature was not checked on a phone. Runtime behaviour and parity unverified |
 | PARTIAL | Some of the feature exists; the gap is named |
 | NOT STARTED | Nothing written |
 | OPEN | Needs a decision, a device, or a build before it can move |
@@ -358,10 +360,10 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 ### Interim build (26 Nov 10:14, Khaled asked for a test build now)
 - BUILT locally, not by CI: `compileGithubDebugKotlin` succeeds at `cfd04b8` after fixing three compile faults (lifecycleScope call in EditorActivity, missing R import and an invalid R.string alias in SettingsActivity). 386 unit tests ran, all pass after fixes (one real bug: ExportBundle.split added a stray blank line; three test faults; one expectation relaxed: the multi-connection test now needs 4 ranged requests, not 8, byte-exactness still asserted).
-- Debug-signed arm64-only APK published as pre-release `interim-cfd04b8` (SHA-256 a35ff92c...c92). NEVER RUN on a device or emulator; no screenshots exist. Everything described above as "unbuilt" before this point is now COMPILED and unit-tested at logic level only; it is still unrendered and never run.
+- Debug-signed arm64-only APK published as pre-release `interim-cfd04b8` (SHA-256 a35ff92c...c92). Reported to install and launch on a phone (26 Nov 10:25); parity unverified; no screenshots or recordings are stored. Everything described above as "unbuilt" before this point is now COMPILED and unit-tested at logic level only; it is still unrendered and never run.
 
 ## Known risks right now
-1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.
+1. Code through `cfd04b8` compiled locally (see header). A CI build has not run and could differ (different toolchain).
 2. No screen has been rendered. Layout parity with the reference captures is unverified.
 3. HTTP and torrent durability claims are unverified until tests that inject failures are run.
 4. Success vibration is newly active for installs that never chose it.
