@@ -26,7 +26,7 @@ class CatalogCategoryActivity : AppCompatActivity() {
         category = FileCategory.entries.firstOrNull { it.key == intent.getStringExtra(EXTRA_CATEGORY) } ?: run { finish(); return }
         val names = repo.catalogFolderNames
         val toolbar = findViewById<Toolbar>(R.id.toolbarCategory)
-        toolbar.title = names.nameFor(category)
+        khaled.benzo.ui.common.BarTitle.set(toolbar, names.nameFor(category))
         toolbar.setNavigationOnClickListener { finish() }
         val edit = findViewById<EditText>(R.id.editFolderName)
         edit.setText(names.nameFor(category))

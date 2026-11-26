@@ -57,7 +57,7 @@ class SettingsActivity : AppCompatActivity() {
             val v = findViewById<android.view.View>(resources.getIdentifier("section_" + s.id, "id", packageName))
             v?.visibility = if (s == wanted) android.view.View.VISIBLE else android.view.View.GONE
         }
-        binding.toolbarSettings.setTitle(wanted.title)
+        khaled.benzo.ui.common.BarTitle.set(binding.toolbarSettings, getString(wanted.title))
     }
 
     companion object { const val EXTRA_SECTION = "section" }
