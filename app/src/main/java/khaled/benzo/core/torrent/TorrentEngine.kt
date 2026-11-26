@@ -85,6 +85,26 @@ class TorrentEngine(context: Context? = null) {
         if (session.isRunning) applyNetwork()
     }
 
+    private var wantPerConnections = 0
+    private var wantUploadSlots = 0
+
+    /** Per-torrent connection and upload-slot limits, 0 = leave the library value. Applied to every torrent in the session; cheap to call repeatedly. */
+    fun applyPerTorrentLimits(perConnections: Int, uploadSlots: Int) = synchronized(lock) {
+        wantPerConnections = perConnections; wantUploadSlots = uploadSlots
+        if (!session.isRunning || (perConnections <= 0 && uploadSlots <= 0)) return@synchronized
+        try {
+            val all = session.swig().get_torrents()
+            for (i in 0 until all.size().toInt()) {
+                val h = all.get(i)
+                if (!h.is_valid()) continue
+                if (perConnections > 0) h.set_max_connections(perConnections)
+                if (uploadSlots > 0) h.set_max_uploads(uploadSlots)
+            }
+        } catch (e: Exception) {
+            // Limits are tuning only; a failure here must not stop a download.
+        }
+    }
+
     private var wantLsd = true
     private var wantUtp = true
     private var wantUpnp = true

@@ -546,4 +546,6 @@
     <string name="pref_torrent_utp">استخدام بروتوكول uTP</string>
     <string name="pref_torrent_upnp">فتح منفذ الراوتر بـ UPnP</string>
     <string name="pref_torrent_natpmp">فتح منفذ الراوتر بـ NAT-PMP</string>
+    <string name="row_per_torrent">اتصالات كل تورنت</string>
+    <string name="row_upload_slots">خانات الرفع لكل تورنت</string>
 </resources>

@@ -80,6 +80,8 @@ object SettingsBackup {
         "theme_mode" to Spec.IntRange(0, 2, 1),
         "download_path" to Spec.Text(512) { isPlausiblePath(it) },
         "torrent_encryption" to Spec.IntRange(0, 2),
+        "torrent_per_connections" to Spec.IntRange(0, 500, 10),
+        "torrent_upload_slots" to Spec.IntRange(0, 20, 1),
         "torrent_lsd" to Spec.Bool,
         "torrent_utp" to Spec.Bool,
         "torrent_upnp" to Spec.Bool,

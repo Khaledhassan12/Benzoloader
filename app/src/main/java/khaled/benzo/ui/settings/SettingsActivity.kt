@@ -323,6 +323,10 @@ class SettingsActivity : AppCompatActivity() {
             ValueRow(this, binding.txtSeedMinutes, binding.sliderSeedMinutes, g(R.string.row_seed_time),
                 { if (it == 0) g(R.string.pref_unlimited) else "%d:%02d".format(it / 60, it % 60) }),
             ValueRow(this, binding.txtTorrentConnections, binding.sliderTorrentConnections, g(R.string.row_connections),
+                { if (it == 0) g(R.string.pref_torrent_connections_default) else it.toString() }),
+            ValueRow(this, binding.txtTorrentPerConn, binding.sliderTorrentPerConn, g(R.string.row_per_torrent),
+                { if (it == 0) g(R.string.pref_torrent_connections_default) else it.toString() }),
+            ValueRow(this, binding.txtTorrentSlots, binding.sliderTorrentSlots, g(R.string.row_upload_slots),
                 { if (it == 0) g(R.string.pref_torrent_connections_default) else it.toString() })
         )
     }
@@ -383,6 +387,8 @@ class SettingsActivity : AppCompatActivity() {
             if (index >= 0 && index != repo.themeColor) { repo.themeColor = index; recreate() }
         }
         binding.sliderTorrentConnections.value = repo.torrentConnections.toFloat()
+        binding.sliderTorrentPerConn.value = repo.torrentPerConnections.toFloat()
+        binding.sliderTorrentSlots.value = repo.torrentUploadSlots.toFloat()
         binding.switchNewestFirst.isChecked = repo.newestFirst
         binding.switchQuickAdd.isChecked = repo.quickAddLinks
         afterFinishCode = repo.afterFinish
@@ -419,6 +425,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.switchTorrentFixedPort.setOnCheckedChangeListener { _, on -> binding.editTorrentPort.isEnabled = on }
         updateConnectionsLabel()
         binding.sliderTorrentConnections.addOnChangeListener { _, _, _ -> updateConnectionsLabel() }
+        binding.sliderTorrentPerConn.addOnChangeListener { _, _, _ -> updateConnectionsLabel() }
+        binding.sliderTorrentSlots.addOnChangeListener { _, _, _ -> updateConnectionsLabel() }
         updateSeedLabels()
         binding.sliderSeedRatio.addOnChangeListener { _, _, _ -> updateSeedLabels() }
         binding.sliderBattery.addOnChangeListener { _, _, _ -> updateBatteryLabel() }
@@ -444,6 +452,8 @@ class SettingsActivity : AppCompatActivity() {
         repo.defaultUserAgent = userAgentValue
         repo.torrentFixedPort = binding.switchTorrentFixedPort.isChecked
         repo.torrentAnonymous = binding.switchTorrentAnonymous.isChecked
+        repo.torrentPerConnections = binding.sliderTorrentPerConn.value.toInt()
+        repo.torrentUploadSlots = binding.sliderTorrentSlots.value.toInt()
         repo.torrentLsd = binding.switchTorrentLsd.isChecked
         repo.torrentUtp = binding.switchTorrentUtp.isChecked
         repo.torrentUpnp = binding.switchTorrentUpnp.isChecked

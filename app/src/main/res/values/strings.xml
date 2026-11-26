@@ -546,4 +546,6 @@
     <string name="pref_torrent_utp">Use the uTP transport</string>
     <string name="pref_torrent_upnp">Open the router port with UPnP</string>
     <string name="pref_torrent_natpmp">Open the router port with NAT-PMP</string>
+    <string name="row_per_torrent">Connections per torrent</string>
+    <string name="row_upload_slots">Upload slots per torrent</string>
 </resources>
