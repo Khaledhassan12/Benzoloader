@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `e18085f` (26 Nov 11:00, Interface colours; compiled and unit-tested locally). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `7949b86` (26 Nov 11:25, Additional statistics; compiled and unit-tested locally). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Local build and test evidence (own build, NOT CI):** `cfd04b8` compiled (`compileGithubDebugKotlin`) and 386 JVM unit tests passed locally on 26 Nov 10:11, after fixing three compile faults and one real bug. A debug-signed arm64-only APK was built from it. Every later batch is compiled and unit-tested before it is pushed (rule in force since Khaled's 09:54 request for an interim build); an entry that says otherwise is written-unbuilt.
 **CI:** NOT RUN. No GitHub Actions workflow exists on this branch. The final-stage CI build and a stable CI artifact are still to do.
 **User-reported run:** the interim APK was reported to install and launch on a phone (26 Nov 10:25). This is not evidence of feature parity or visual parity, and no screenshots or recordings are stored.
@@ -127,6 +127,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 |---|---|---|---|
 | `3c628b0` | 26 Nov 09:50 | Manual list order now decides queue start; Apply sorting (refresh mark, dialog, saved toast) stores the sort as list order; tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `e18085f` | 26 Nov 11:00 | Interface colours screen (5 rows) applied to list; backup | COMPILED, 386 TESTS PASS (no new tests), NOT RENDERED |
+| `7949b86` | 26 Nov 11:25 | Additional statistics dialog (time added, time finished); list rows follow; backup | COMPILED, TESTS PASS (no new tests), NOT RENDERED |
 | `7fa573b` | 26 Nov 09:30 | Notification command buttons: seven-entry picker (max three), actions, backup, tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `cfb3c36` | 26 Nov 09:05 | Total-finish vibration setting and slider, service uses it, backup, test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `52c175d` | 26 Nov 08:40 | Settings backup: hidden panel rows (comma list, safe characters only) + test | WRITTEN, TESTS WRITTEN, UNBUILT |
@@ -367,6 +368,10 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 - New screen InterfaceColorsActivity, opened by an "Interface colours" button at the top of the Settings Interface section (DIFFERENCE: the reference shows the colour rows inside the Interface screen itself). Rows: colour of file name, of information, background and colour of progress bar, background of list. Each shows hex, a swatch, and a cross while set (OBSERVED video 5). Stored 0 = stock colour. Applied in the download list (file name, status/size/speed/time text, running progress bar tint and background tint, list background). All five keys are in the settings backup.
 - NOT BUILT, kept open: Accent, Background of bars, Colour of creating file (state not identified), the Individual settings gate and the Material You dimming (reference showed Theme, Accent, bars and list dimmed with Material You on; effect of Individual settings UNCLEAR, so I did not invent one). The finished bar keeps its own look. The Presets entry of the picker gives our palette, not the reference's.
 - Not added: unit tests for these keys (they pass through the generic backup spec). The APK on the prerelease does NOT include this batch.
+
+### Additional statistics (compiled, tests pass, not rendered, not run)
+- OBSERVED (video 5): Interface has an "Additional statistics" value row (checkbox dialog; value text "addition time, finishing time"). Built: a button in the Interface section opening a two-entry checkbox dialog in my words (time added, time finished), stored as stat_added_time and stat_finish_time (both in backup, both default ON = the captured value, NOT a verified factory default). Time added is appended to the row's status line (new); time finished is the completed date already shown in the time column, now switchable.
+- DIFFERENCES / INFERRED: where the reference prints these is unseen (placement is my choice). Not built: Size unit and Speed dialogs (their meaning for units and average speed is not grounded; average speed needs start time we do not keep). Button, not a value row showing the choice.
 
 ## Known risks right now
 1. Code through `cfd04b8` compiled locally (see header). A CI build has not run and could differ (different toolchain).
