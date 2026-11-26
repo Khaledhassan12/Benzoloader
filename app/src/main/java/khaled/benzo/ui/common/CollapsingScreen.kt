@@ -18,7 +18,8 @@ object CollapsingScreen {
 
     fun wrap(a: Activity, title: CharSequence, content: View): CoordinatorLayout {
         val dp = a.resources.displayMetrics.density
-        val bar = attr(a, R.attr.barBackground, 0xFF212121.toInt())
+        // Same colour as the page body (window background), so the bar never differs from the page, including Material You and theme switches.
+        val bar = attr(a, android.R.attr.colorBackground, 0xFF121212.toInt())
         val on = attr(a, R.attr.onBar, 0xFFFFFFFF.toInt())
         val root = CoordinatorLayout(a)
         val appBar = AppBarLayout(a).apply { setBackgroundColor(bar) }

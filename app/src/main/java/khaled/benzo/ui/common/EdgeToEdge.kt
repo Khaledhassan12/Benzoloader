@@ -23,10 +23,13 @@ object EdgeToEdge {
         if (window.isFloating) return
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val tv = TypedValue()
-        val bar = if (activity.theme.resolveAttribute(R.attr.barBackground, tv, true) && tv.type >= TypedValue.TYPE_FIRST_COLOR_INT && tv.type <= TypedValue.TYPE_LAST_COLOR_INT) tv.data
+        // Full pages with a collapsing bar use the page colour itself, opaque, so bar, status bar and page are one colour.
+        val pageColoured = activity !is khaled.benzo.ui.main.MainActivity && activity !is khaled.benzo.ui.browser.BrowserActivity
+        val attrId = if (pageColoured) android.R.attr.colorBackground else R.attr.barBackground
+        val bar = if (activity.theme.resolveAttribute(attrId, tv, true) && tv.type >= TypedValue.TYPE_FIRST_COLOR_INT && tv.type <= TypedValue.TYPE_LAST_COLOR_INT) tv.data
         else activity.theme.obtainStyledAttributes(intArrayOf(android.R.attr.colorBackground)).use { it.getColor(0, Color.BLACK) }
         val light = ColorUtils.calculateLuminance(bar) > 0.5
-        val tint = ColorUtils.setAlphaComponent(bar, if (light) 128 else 80)
+        val tint = if (pageColoured) bar else ColorUtils.setAlphaComponent(bar, if (light) 128 else 80)
         window.statusBarColor = tint
         window.navigationBarColor = tint
         if (android.os.Build.VERSION.SDK_INT >= 29) {

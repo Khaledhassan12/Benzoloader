@@ -7,14 +7,14 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/barBackground"
+        android:background="?android:attr/colorBackground"
         app:liftOnScroll="false">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingBar"
             android:layout_width="match_parent"
             android:layout_height="144dp"
-            app:contentScrim="?attr/barBackground"
+            app:contentScrim="?android:attr/colorBackground"
             app:collapsedTitleTextColor="?attr/onBar"
             app:expandedTitleTextColor="?attr/onBar"
             app:expandedTitleMarginStart="20dp"
