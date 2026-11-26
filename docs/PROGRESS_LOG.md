@@ -2,7 +2,7 @@
 
 Live status of the work on this branch. Updated with every pushed batch. `main` is untouched. No pull request.
 
-**Latest implementation commit when this entry was written:** `209fd9d` (26 Nov 06:40, settings backup coverage for two new switches; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
+**Latest implementation commit when this entry was written:** `7fed3a2` (26 Nov 07:00, shared colour picker; code). The log's own commit comes right after it; the newest-first "Batch history" table lists every commit since `fdf6b4d`.
 **Last commit that was compiled and unit-tested (a different thing from the latest commit above):** `fd59931` (40 of 40 tests passed). Every commit after it is written, unbuilt, unrendered and never run.
 **Build gate:** no build, no Gradle, no compile tests until the final stage. Then CI builds an installable APK as an artifact.
 
@@ -123,6 +123,7 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 
 | Commit | Time (Cairo) | Change | State |
 |---|---|---|---|
+| `7fed3a2` | 26 Nov 07:00 | Shared colour picker dialog, ColorMath, Top window colour rows use it, tests | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `209fd9d` | 26 Nov 06:40 | Settings backup: create_empty_file and quick_graph_visible added, test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `de38f1a` | 26 Nov 06:35 | Create empty file switch in Settings > Downloading, engine reservation on/off, test | WRITTEN, TESTS WRITTEN, UNBUILT |
 | `f3bdb6c` | 26 Nov 06:12 | Quick panel: graph show/hide in the Downloading header, After finishing row | WRITTEN, UNBUILT (never compiled or run) |
@@ -314,6 +315,12 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 ### Create empty file (written, unbuilt, unrendered)
 - OBSERVED (videos 3 and 5): switch "create empty file", sub-line about speeding up downloading, shown ON. Built: `createEmptyFile` setting (default ON), switch in Settings > Downloading saved on tap, `DownloadEngine.preallocate` (off = no setLength reservation, the file grows as parts write; the end check that every byte arrived and the length matches still runs). Test written, not run.
 - UNVERIFIED: any speed effect; behaviour of out-of-order writes into a growing file on every file system; recovery of a half-written file with the switch off. Switching it mid-download changes only the next start. Now in the settings backup (06:40, Main request). ON is the CAPTURED reference value, not a verified factory default. Label wording is mine and differs from the reference sub-line. Not rendered.
+
+### Shared colour picker (written, unbuilt, unrendered)
+- OBSERVED (video 5, about 330 s, Top window "Color of text"): dialog titled with the row name; a saturation/brightness square tinted by the hue with a ring marker; a vertical hue bar at its right; a horizontal alpha slider; a row with an AARRGGBB hex box, the old swatch, an arrow, the new swatch and a second hex box; buttons Presets (left), Cancel, OK. Also OBSERVED on the Top window rows: swatch at the row end, hex under the title, and a cross on rows that differ from default.
+- Built: `ColorPickerDialog` (own drawing code: square, hue bar, alpha slider, live hex box, swatches), `ColorMath` (HSV and AARRGGBB maths, hex parse and format) with `ColorMathTest` (written, not run). Top window colour rows now use it, replacing the hex-only box.
+- NOT SEEN: what the reference Presets opens. Mine lists "Default" (replaces the old Reset button) and a 12-colour palette of my own choice. A half-typed hex value is not applied: OK shows an error and stays open (my choice).
+- NOT DONE: the cross reset on rows that differ from default; the Interface colour rows (Accent, filename, information, progress colours) still need the "Individual settings" gate and the theme plumbing before they can use this picker (OPEN, theme ownership). Not rendered: touch handling, sizes and the look of the dialog are unchecked.
 
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.
