@@ -356,6 +356,10 @@ The table starts with the newest commit. Commits after `fdf6b4d` (the former top
 - EVIDENCE GAP, not a question for Khaled yet: which screen end starts first. With the default display (newest on top, Order down) the keys run smaller = lower on screen, so the BOTTOM of the list starts first, like the front of a queue; "To bottom" means starts next. The reference mapping was not seen. The existing "newest first" start setting and the display direction are still two settings, so screen order and start order match only when they agree. Final review should check this on a device.
 - Newly activated: users who moved items now see start order change; before, hand moves only changed display. Not rendered.
 
+### Interim build (26 Nov 10:14, Khaled asked for a test build now)
+- BUILT locally, not by CI: `compileGithubDebugKotlin` succeeds at `cfd04b8` after fixing three compile faults (lifecycleScope call in EditorActivity, missing R import and an invalid R.string alias in SettingsActivity). 386 unit tests ran, all pass after fixes (one real bug: ExportBundle.split added a stray blank line; three test faults; one expectation relaxed: the multi-connection test now needs 4 ranged requests, not 8, byte-exactness still asserted).
+- Debug-signed arm64-only APK published as pre-release `interim-cfd04b8` (SHA-256 a35ff92c...c92). NEVER RUN on a device or emulator; no screenshots exist. Everything described above as "unbuilt" before this point is now COMPILED and unit-tested at logic level only; it is still unrendered and never run.
+
 ## Known risks right now
 1. Nothing after `fd59931` has been compiled. The first CI build may show compile errors in the written code. They will be fixed then.
 2. No screen has been rendered. Layout parity with the reference captures is unverified.
