@@ -23,6 +23,12 @@ class DownloadEngine(
     /** Retries per part before the download fails (set from Settings by the service). */
     @Volatile var maxRetries: Int = 4
 
+    /**
+     * Reserve the full file length before writing (the reference's "create empty file", OBSERVED ON, sub-line about speeding
+     * up downloading). Off: the file grows as parts are written. Whether this changes speed on a real device is UNVERIFIED.
+     */
+    @Volatile var preallocate: Boolean = true
+
     /** Smallest part size in bytes (set from Settings by the service). */
     @Volatile var minChunkBytes: Long = ChunkPlanner.MIN_CHUNK_BYTES
 
@@ -135,7 +141,9 @@ class DownloadEngine(
         }
         val totalSize = if (chunks.any { it.endByte < 0 }) -1L else chunks.maxOf { it.endByte } + 1
         if (totalSize > 0) {
-            RandomAccessFile(targetFile, "rw").use { raf -> if (raf.length() != totalSize) raf.setLength(totalSize) }
+            if (preallocate) {
+                RandomAccessFile(targetFile, "rw").use { raf -> if (raf.length() != totalSize) raf.setLength(totalSize) }
+            } else if (!targetFile.exists()) targetFile.createNewFile()
         } else if (!targetFile.exists()) targetFile.createNewFile()
         val wholeFile = chunks.size == 1 && chunks[0].startByte == 0L
 

@@ -195,6 +195,7 @@ class DownloadService : Service() {
         if (item.isTorrent) { startTorrentTask(item); return }
         downloadEngine.maxRetries = settings.errorRetries
         downloadEngine.minChunkBytes = settings.minThreadKb * 1024L
+        downloadEngine.preallocate = settings.createEmptyFile
 
         val job = serviceScope.launch {
             val result = httpRunner.run(item) { downloadedBytes, speed ->

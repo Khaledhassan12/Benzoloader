@@ -252,6 +252,11 @@ class SettingsRepository(context: Context) {
         get() = prefs.getBoolean("quick_graph_visible", true)
         set(value) = prefs.edit().putBoolean("quick_graph_visible", value).apply()
 
+    /** "Create empty file": reserve the whole file before downloading. Default ON as in the reference capture. Not in the settings backup yet. */
+    var createEmptyFile: Boolean
+        get() = prefs.getBoolean("create_empty_file", true)
+        set(value) = prefs.edit().putBoolean("create_empty_file", value).apply()
+
     var bottomBar: Boolean
         get() = prefs.getBoolean(KEY_BOTTOM_BAR, true)
         set(value) = prefs.edit().putBoolean(KEY_BOTTOM_BAR, value).apply()

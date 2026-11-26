@@ -315,6 +315,9 @@ class SettingsActivity : AppCompatActivity() {
         binding.sliderErrorRetries.value = repo.errorRetries.toFloat()
         binding.switchPauseAfterError.isChecked = repo.pauseAfterError
         binding.switchAutoResume.isChecked = repo.autoResume
+        binding.switchCreateEmptyFile.isChecked = repo.createEmptyFile
+        // Saved on the tap, not with the Save list: it takes effect for the next download the service starts.
+        binding.switchCreateEmptyFile.setOnCheckedChangeListener { _, on -> repo.createEmptyFile = on }
         startMinute = repo.scheduleStartMinute
         stopMinute = repo.scheduleStopMinute
         updateScheduleLabels()

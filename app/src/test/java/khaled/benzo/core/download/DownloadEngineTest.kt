@@ -94,6 +94,15 @@ class DownloadEngineTest {
         assertEquals(sha(data), sha(File(dir, "out.bin").readBytes()))
     }
 
+    /** WRITTEN, NOT RUN: with the reservation off, the multi-part result must still be byte exact and pass verification. */
+    @Test fun withoutReservationMultiConnectionIsByteExact() = runBlocking {
+        val engine = DownloadEngine().also { it.preallocate = false }
+        val r = engine.runDownload(item("/range", 8), emptyList(), TokenBucketLimiter(0), emptyMap(),
+            onChunkCreated = { it }, onChunksSnapshot = { }, onProgress = { _, _ -> })
+        assertTrue(r.isSuccess)
+        assertEquals(sha(data), sha(File(dir, "out.bin").readBytes()))
+    }
+
     @Test fun multiConnectionDownloadIsByteExact() = runBlocking {
         rangeRequests.set(0)
         assertTrue(run(item("/range", 8)).isSuccess)
